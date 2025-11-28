@@ -1,78 +1,39 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Профиль{% endblock %}
 
-    <title>Профиль</title>
+{% block content %}
 
-    <!-- Подключение CSS -->
-    <link rel="stylesheet" href="{% static 'user_profile/profile.css' %}">
-</head>
+<link rel="stylesheet" href="{% static 'user_profile/profile.css' %}">
 
-<body>
-
-    <!-- Верхний чёрный блок -->
-    <div class="header"></div>
-
-    <!-- Аватар -->
+<!-- Аватар -->
+<div style="text-align:center;">
     {% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" class="avatar">
     {% else %}
-        <img src="{% static 'default_avatar.png' %}" class="avatar">
+        <img src="{% static 'icons/profile.svg' %}" class="avatar">
     {% endif %}
+</div>
 
-    <!-- Username -->
-    <div class="username">{{ profile.user.username }}</div>
+<!-- Имя пользователя -->
+<div class="username">{{ profile.user.username }}</div>
 
-    <!-- Промокоды -->
-    <div class="promo-title">Промокоды</div>
+<!-- Промокоды -->
+<div class="promo-title">Промокоды</div>
 
-    {% if promocodes %}
-        {% for promo in promocodes %}
-            <div class="promo-card">
-                <div class="promo-code">{{ promo.code }}</div>
-                <div>{{ promo.description }}</div>
-
-                {% if promo.expires_at %}
-                    <div class="expires">Срок: {{ promo.expires_at }}</div>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Пока нет промокодов</p>
-    {% endif %}
-
-    <!-- Нижняя навигация -->
-    <div class="nav-bar">
-
-        <div class="nav-item">
-            <img src="{% static 'user_profile/icons/friends.svg' %}" class="nav-icon">
-            <span>Друзья</span>
+{% if promocodes %}
+    {% for promo in promocodes %}
+        <div class="promo-card">
+            <div class="promo-code">{{ promo.code }}</div>
+            <div>{{ promo.description }}</div>
+            {% if promo.expires_at %}
+                <div>Срок: {{ promo.expires_at }}</div>
+            {% endif %}
         </div>
+    {% endfor %}
+{% else %}
+    <p style="text-align:center;">Пока нет промокодов</p>
+{% endif %}
 
-        <div class="nav-item">
-            <img src="{% static 'user_profile/icons/feed.svg' %}" class="nav-icon">
-            <span>Лента</span>
-        </div>
-
-        <div class="nav-item add-button">
-            <img src="{% static 'user_profile/icons/add.svg' %}" class="add-icon">
-        </div>
-
-        <div class="nav-item">
-            <img src="{% static 'user_profile/icons/promo.svg' %}" class="nav-icon">
-            <span>Промо</span>
-        </div>
-
-        <div class="nav-item active">
-            <img src="{% static 'user_profile/icons/profile.svg' %}" class="nav-icon">
-            <span>Профиль</span>
-        </div>
-
-    </div>
-
-</body>
-</html>
+{% endblock %}

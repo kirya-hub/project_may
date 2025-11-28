@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+
+    <div class="header"></div>
+
+    <div style="padding-bottom: 140px;">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div class="nav-bar">
+
+        <div class="nav-item">
+            <img src="{% static 'icons/friends.svg' %}" class="nav-icon">
+            <span>Друзья</span>
+        </div>
+
+        <div class="nav-item">
+            <img src="{% static 'icons/feed.svg' %}" class="nav-icon">
+            <span>Лента</span>
+        </div>
+
+        <div class="add-button">
+            <img src="{% static 'icons/add.svg' %}" class="add-icon">
+        </div>
+
+        <div class="nav-item">
+            <img src="{% static 'icons/promo.svg' %}" class="nav-icon">
+            <span>Промо</span>
+        </div>
+
+        <div class="nav-item active">
+            <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
+            <span>Профиль</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
