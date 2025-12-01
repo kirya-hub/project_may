@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def add_order_page(request):
+    return render(request, 'add_order/add_order.html')

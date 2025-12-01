@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Добавить заказ{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/add_order.css' %}">
+<div class="add-order-container">
+
+    <!-- Блок 1 — Добавить чек -->
+    <section class="block">
+        <h2 class="block-title">Добавить чек</h2>
+
+        <div class="upload-area big-upload">
+            <span class="plus-icon">+</span>
+        </div>
+    </section>
+
+
+    <!-- Блок 2 — Оставить отзыв -->
+    <section class="block">
+        <h2 class="block-title">Оставить отзыв</h2>
+
+        <div class="review-row">
+
+            <div class="upload-area small-upload">
+                <span class="plus-icon">+</span>
+                <span class="upload-text">Фото</span>
+            </div>
+
+            <textarea class="comment-input" placeholder="Комментарий..."></textarea>
+
+        </div>
+    </section>
+
+
+    <!-- Кнопка публикации -->
+    <div class="publish-container">
+        <button class="publish-btn">Опубликовать</button>
+    </div>
+
+</div>
+
+{% endblock %}

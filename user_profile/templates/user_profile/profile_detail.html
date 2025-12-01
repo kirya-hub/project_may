@@ -5,9 +5,7 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'user_profile/profile.css' %}">
-
-<!-- Аватар -->
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 <div style="text-align:center;">
     {% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" class="avatar">
@@ -16,10 +14,8 @@
     {% endif %}
 </div>
 
-<!-- Имя пользователя -->
 <div class="username">{{ profile.user.username }}</div>
 
-<!-- Промокоды -->
 <div class="promo-title">Промокоды</div>
 
 {% if promocodes %}
