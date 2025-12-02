@@ -6,40 +6,79 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/add_order.css' %}">
+
 <div class="add-order-container">
 
-    <!-- Блок 1 — Добавить чек -->
-    <section class="block">
-        <h2 class="block-title">Добавить чек</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        <div class="upload-area big-upload">
-            <span class="plus-icon">+</span>
-        </div>
-    </section>
+        <!-- === БЛОК 1: ЧЕК === -->
+        <section class="block">
+            <h2 class="block-title">Добавить чек</h2>
 
+            <div class="upload-wrapper-big">
+                <label for="check_input" class="upload-area big-upload" id="check-label">
+                    <span class="plus-icon">+</span>
+                </label>
 
-    <!-- Блок 2 — Оставить отзыв -->
-    <section class="block">
-        <h2 class="block-title">Оставить отзыв</h2>
+                <img id="check-preview" class="preview-img" style="display:none;">
 
-        <div class="review-row">
-
-            <div class="upload-area small-upload">
-                <span class="plus-icon">+</span>
-                <span class="upload-text">Фото</span>
+                {{ form.check_image }}
             </div>
+        </section>
 
-            <textarea class="comment-input" placeholder="Комментарий..."></textarea>
 
+        <!-- === БЛОК 2: ОТЗЫВ === -->
+        <section class="block">
+            <h2 class="block-title">Оставить отзыв</h2>
+
+            <div class="review-row">
+
+                <div class="upload-wrapper-small">
+                    <label for="dish_input" class="upload-area small-upload" id="dish-label">
+                        <span class="plus-icon">+</span>
+                        <span class="upload-text">Фото</span>
+                    </label>
+
+                    <img id="dish-preview" class="preview-img-small" style="display:none;">
+
+                    {{ form.dish_photo }}
+                </div>
+
+                {{ form.comment }}
+            </div>
+        </section>
+
+
+        <!-- === КНОПКА === -->
+        <div class="publish-container">
+            <button type="submit" class="publish-btn">Опубликовать</button>
         </div>
-    </section>
 
-
-    <!-- Кнопка публикации -->
-    <div class="publish-container">
-        <button class="publish-btn">Опубликовать</button>
-    </div>
-
+    </form>
 </div>
+
+
+<!-- === JS === -->
+<script>
+function loadPreview(input, previewId, labelId) {
+    const preview = document.getElementById(previewId);
+    const label = document.getElementById(labelId);
+
+    if (input.files && input.files[0]) {
+        label.style.display = "none";
+        preview.style.display = "block";
+        preview.src = URL.createObjectURL(input.files[0]);
+    }
+}
+
+document.getElementById("check_input").addEventListener("change", function() {
+    loadPreview(this, "check-preview", "check-label");
+});
+
+document.getElementById("dish_input").addEventListener("change", function() {
+    loadPreview(this, "dish-preview", "dish-label");
+});
+</script>
 
 {% endblock %}
