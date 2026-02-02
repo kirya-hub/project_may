@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Фото профиля{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+
+<div class="edit-wrap">
+  <div class="edit-title">Фото профиля</div>
+
+  <form method="post" enctype="multipart/form-data" class="edit-form">
+    {% csrf_token %}
+
+    <!-- скрытый input -->
+    <input
+      type="file"
+      name="avatar"
+      id="id_avatar"
+      accept="image/*"
+      hidden
+    >
+
+    <!-- кастомная кнопка -->
+    <label for="id_avatar" class="file-btn">
+      Выбрать фото
+    </label>
+
+    <!-- текст состояния -->
+    <div id="file-name" class="file-name">
+      Файл не выбран
+    </div>
+
+    <button type="submit" class="save-btn">
+      Сохранить
+    </button>
+  </form>
+
+  <a href="{% url 'my_profile' %}" class="back-link">Назад</a>
+</div>
+
+<script>
+  const input = document.getElementById('id_avatar');
+  const fileName = document.getElementById('file-name');
+
+  input.addEventListener('change', function () {
+    if (this.files.length > 0) {
+      fileName.textContent = this.files[0].name;
+    } else {
+      fileName.textContent = 'Файл не выбран';
+    }
+  });
+</script>
+
+{% endblock %}

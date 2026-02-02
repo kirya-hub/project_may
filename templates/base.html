@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+
     <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -41,21 +43,28 @@
             <span>Лента</span>
         </div>
 
-        <div class="add-button">
+        <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
+        href="{% url 'add_order' %}">
             <img src="{% static 'icons/add.svg' %}" class="add-icon">
-        </div>
+        </a>
 
         <div class="nav-item">
             <img src="{% static 'icons/promo.svg' %}" class="nav-icon">
             <span>Промо</span>
         </div>
 
-        <div class="nav-item active">
+        <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
+            href="{% if request.user.is_authenticated %}
+                    {% url 'my_profile' %}
+                {% else %}
+                    {% url 'login' %}
+                {% endif %}">
             <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
             <span>Профиль</span>
-        </div>
+        </a>
+
 
     </div>
-
+    
 </body>
 </html>

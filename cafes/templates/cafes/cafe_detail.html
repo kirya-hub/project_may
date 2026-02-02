@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ cafe.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cafe_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="cafe-container">
+
+    <div class="cafe-header">
+        {% if cafe.avatar %}
+            <img src="{{ cafe.avatar.url }}" class="cafe-avatar">
+        {% endif %}
+        <h1 class="cafe-name">{{ cafe.name }}</h1>
+        <p class="cafe-address">{{ cafe.address }}</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="menu-section-title">Меню</h2>
+
+    <div class="menu-grid">
+        {% for category in cafe.categories.all %}
+            {% if category.slug %}
+            <a href="{% url 'category_detail' cafe.slug category.slug %}" class="menu-item">
+                {% if category.icon %}
+                    <img src="{{ category.icon.url }}" class="menu-icon">
+                {% endif %}
+                <p class="menu-title">{{ category.title }}</p>
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

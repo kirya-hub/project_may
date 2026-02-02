@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block title %}Профиль{% endblock %}
-
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+
 <div style="text-align:center;">
     {% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" class="avatar">
@@ -13,6 +13,12 @@
         <img src="{% static 'icons/profile.svg' %}" class="avatar">
     {% endif %}
 </div>
+
+{% if request.user.is_authenticated and request.user == profile.user %}
+  <div style="text-align:center; margin-top: 10px;">
+    <a href="{% url 'edit_avatar' %}" class="auth-main-btn">Изменить фото</a>
+  </div>
+{% endif %}
 
 <div class="username">{{ profile.user.username }}</div>
 
@@ -30,6 +36,13 @@
     {% endfor %}
 {% else %}
     <p style="text-align:center;">Пока нет промокодов</p>
+{% endif %}
+
+{% if request.user.is_authenticated and request.user == profile.user %}
+  <form method="post" action="{% url 'logout' %}" class="logout-form">
+    {% csrf_token %}
+    <button type="submit" class="logout-link">Выйти</button>
+  </form>
 {% endif %}
 
 {% endblock %}
