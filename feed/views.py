@@ -8,9 +8,8 @@ from add_order.models import Order
 from .models import Like
 
 
-
 def feed_home(request):
-    qs = Order.objects.select_related("user").order_by("-created_at")
+    qs = Order.objects.select_related("user", "user__profile", "cafe").order_by("-created_at")
 
     qs = qs.annotate(likes_count=Count("likes", distinct=True))
 

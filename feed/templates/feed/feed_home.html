@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static tz %}
 
 {% block title %}Лента{% endblock %}
 
@@ -11,11 +11,31 @@
     <div class="post-card">
 
       <div class="post-head">
-        <div class="post-user">
-          <strong>{{ o.user.username }}</strong>
+        <div class="post-left">
+
+          {% if o.user.profile.avatar %}
+            <div class="post-avatar">
+              <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
+            </div>
+          {% else %}
+            <div class="post-avatar post-avatar-fallback" aria-label="Аватар">
+              {{ o.user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+
+          <div class="post-userblock">
+            <div class="post-username">{{ o.user.username }}</div>
+
+            {% if o.cafe %}
+              <div class="post-cafe">{{ o.cafe.name }}</div>
+            {% elif o.place_name %}
+              <div class="post-cafe">{{ o.place_name }}</div>
+            {% endif %}
+          </div>
         </div>
+
         <div class="post-date">
-          {{ o.created_at|date:"d.m.Y H:i" }}
+          {{ o.created_at|localtime|date:"d.m.Y H:i" }}
         </div>
       </div>
 
@@ -28,7 +48,6 @@
       {% endif %}
 
       <div class="post-actions">
-
         {% if user.is_authenticated %}
           <form action="{% url 'toggle_like' o.id %}" method="post">
             {% csrf_token %}
@@ -38,16 +57,12 @@
             </button>
           </form>
         {% else %}
-          <div class="btn-like btn-like-disabled">
-            🤍 {{ o.likes_count }} (войти чтобы лайкнуть)
-          </div>
+          <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
         {% endif %}
 
-        <button class="btn-comment" type="button" disabled>
-          💬 Комменты позже
-        </button>
-
+        <button class="btn-comment" type="button" disabled>💬 Комментарии позже</button>
       </div>
+
     </div>
   {% empty %}
     <div class="empty">Пока нет публикаций. Добавь первый заказ 🙂</div>

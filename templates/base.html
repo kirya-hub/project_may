@@ -33,15 +33,15 @@
 
     <div class="nav-bar">
 
-        <div class="nav-item">
-            <img src="{% static 'icons/friends.svg' %}" class="nav-icon">
-            <span>Друзья</span>
-        </div>
-
         <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
             <img src="{% static 'icons/feed.svg' %}" class="nav-icon">
             <span>Лента</span>
         </a>
+
+        <div class="nav-item">
+            <img src="{% static 'icons/friends.svg' %}" class="nav-icon">
+            <span>Друзья</span>
+        </div>
 
         <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
         href="{% url 'add_order' %}">
