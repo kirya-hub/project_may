@@ -1,20 +1,30 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-{% block title %}Профиль{% endblock %}
-{% block content %}
 
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
 
-<div style="text-align:center; padding-top: 30px;">
-  <img src="{% static 'icons/profile.svg' %}" class="avatar">
-  <div class="username">Профиль</div>
-  <p style="margin-top:12px; color:#666;">
-    Войдите, чтобы сохранять промокоды и добавлять заказы.
-  </p>
+<div class="profile-wrap">
 
-  <div style="margin-top:18px;">
-    <a href="{% url 'login' %}" class="auth-main-btn">Войти / Регистрация</a>
+  <div class="profile-top">
+
+    <div class="avatar-wrap">
+      <img class="avatar-guest" src="{% static 'icons/profile.svg' %}" alt="Пользователь">
+    </div>
+
+    <div class="username">Профиль</div>
+
+    <div class="profile-subtext">
+      Войдите, чтобы сохранять промокоды и добавлять заказы.
+    </div>
+
+    <a class="auth-main-btn" href="{% url 'login' %}">
+      Войти / Регистрация
+    </a>
+
   </div>
-</div>
 
+</div>
 {% endblock %}

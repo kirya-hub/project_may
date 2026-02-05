@@ -38,10 +38,10 @@
             <span>Друзья</span>
         </div>
 
-        <div class="nav-item">
+        <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
             <img src="{% static 'icons/feed.svg' %}" class="nav-icon">
             <span>Лента</span>
-        </div>
+        </a>
 
         <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
         href="{% url 'add_order' %}">
@@ -54,15 +54,10 @@
         </div>
 
         <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
-            href="{% if request.user.is_authenticated %}
-                    {% url 'my_profile' %}
-                {% else %}
-                    {% url 'login' %}
-                {% endif %}">
-            <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
-            <span>Профиль</span>
+            href="{% url 'profile_home' %}">
+                <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
+                <span>Профиль</span>
         </a>
-
 
     </div>
     

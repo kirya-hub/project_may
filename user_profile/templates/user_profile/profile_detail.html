@@ -1,48 +1,60 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Профиль{% endblock %}
-{% block content %}
 
+{% block content %}
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
 
-<div style="text-align:center;">
-    {% if profile.avatar %}
-        <img src="{{ profile.avatar.url }}" class="avatar">
-    {% else %}
-        <img src="{% static 'icons/profile.svg' %}" class="avatar">
+<div class="profile-wrap">
+
+  <div class="profile-top">
+
+    <div class="avatar-wrap">
+      {% if profile.avatar %}
+        <img class="avatar-photo" src="{{ profile.avatar.url }}" alt="Аватар">
+      {% else %}
+        <img class="avatar-guest" src="{% static 'icons/profile.svg' %}" alt="Аватар">
+      {% endif %}
+    </div>
+
+    {% if request.user.is_authenticated and request.user == profile.user %}
+      <a class="btn-edit-photo" href="{% url 'edit_avatar' %}">Изменить фото</a>
     {% endif %}
-</div>
 
-{% if request.user.is_authenticated and request.user == profile.user %}
-  <div style="text-align:center; margin-top: 10px;">
-    <a href="{% url 'edit_avatar' %}" class="auth-main-btn">Изменить фото</a>
+    <div class="username">@{{ profile.user.username }}</div>
   </div>
-{% endif %}
 
-<div class="username">{{ profile.user.username }}</div>
+  <div class="section-title">Промокоды</div>
 
-<div class="promo-title">Промокоды</div>
+  {% if promocodes %}
+    {% for p in promocodes %}
+      <div class="promo-card">
+        <div style="font-weight: 950; font-size: 16px;">{{ p.code }}</div>
 
-{% if promocodes %}
-    {% for promo in promocodes %}
-        <div class="promo-card">
-            <div class="promo-code">{{ promo.code }}</div>
-            <div>{{ promo.description }}</div>
-            {% if promo.expires_at %}
-                <div>Срок: {{ promo.expires_at }}</div>
-            {% endif %}
-        </div>
+        {% if p.description %}
+          <div style="margin-top: 6px; color:#666; font-size: 14px; line-height: 1.35;">
+            {{ p.description }}
+          </div>
+        {% endif %}
+
+        {% if p.expires_at %}
+          <div style="margin-top: 8px; font-size: 12px; color:#999;">
+            До: {{ p.expires_at|date:"d.m.Y" }}
+          </div>
+        {% endif %}
+      </div>
     {% endfor %}
-{% else %}
-    <p style="text-align:center;">Пока нет промокодов</p>
-{% endif %}
+  {% else %}
+    <div class="promo-card">Пока нет промокодов</div>
+  {% endif %}
 
-{% if request.user.is_authenticated and request.user == profile.user %}
-  <form method="post" action="{% url 'logout' %}" class="logout-form">
-    {% csrf_token %}
-    <button type="submit" class="logout-link">Выйти</button>
-  </form>
-{% endif %}
+  {% if request.user.is_authenticated and request.user == profile.user %}
+    <form class="logout-form" action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button class="logout-btn" type="submit">Выйти</button>
+    </form>
+  {% endif %}
 
+</div>
 {% endblock %}

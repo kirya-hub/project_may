@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import OrderForm
 
-from django.contrib import messages
-
+@login_required
 def add_order_page(request):
     if request.method == 'POST':
         form = OrderForm(request.POST, request.FILES)
@@ -13,9 +14,7 @@ def add_order_page(request):
 
             messages.success(request, "Заказ успешно опубликован!")
             return redirect('add_order')
-
     else:
         form = OrderForm()
 
     return render(request, 'add_order/add_order.html', {'form': form})
-

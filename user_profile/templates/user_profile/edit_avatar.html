@@ -6,37 +6,30 @@
 
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
 
-<div class="edit-wrap">
-  <div class="edit-title">Фото профиля</div>
+<div class="edit-page">
+  <div class="edit-wrap">
+    <div class="edit-title">Фото профиля</div>
 
-  <form method="post" enctype="multipart/form-data" class="edit-form">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data" class="edit-form">
+      {% csrf_token %}
 
-    <!-- скрытый input -->
-    <input
-      type="file"
-      name="avatar"
-      id="id_avatar"
-      accept="image/*"
-      hidden
-    >
+      <input
+        type="file"
+        name="avatar"
+        id="id_avatar"
+        accept="image/*"
+        hidden
+      >
 
-    <!-- кастомная кнопка -->
-    <label for="id_avatar" class="file-btn">
-      Выбрать фото
-    </label>
+      <label for="id_avatar" class="file-btn">Выбрать фото</label>
 
-    <!-- текст состояния -->
-    <div id="file-name" class="file-name">
-      Файл не выбран
-    </div>
+      <div id="file-name" class="file-name">Файл не выбран</div>
 
-    <button type="submit" class="save-btn">
-      Сохранить
-    </button>
-  </form>
+      <button type="submit" class="save-btn">Сохранить</button>
+    </form>
 
-  <a href="{% url 'my_profile' %}" class="back-link">Назад</a>
+    <a href="{% url 'my_profile' %}" class="back-link">Назад</a>
+  </div>
 </div>
 
 <script>
@@ -44,11 +37,8 @@
   const fileName = document.getElementById('file-name');
 
   input.addEventListener('change', function () {
-    if (this.files.length > 0) {
-      fileName.textContent = this.files[0].name;
-    } else {
-      fileName.textContent = 'Файл не выбран';
-    }
+    if (this.files.length > 0) fileName.textContent = this.files[0].name;
+    else fileName.textContent = 'Файл не выбран';
   });
 </script>
 

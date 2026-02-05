@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import AvatarForm
+from django.utils import timezone
+from django.db import models
 
 
 @login_required
@@ -17,13 +19,16 @@ def profile_detail(request, username=None, user_id=None):
         user = get_object_or_404(User, id=user_id)
 
     profile = get_object_or_404(Profile, user=user)
-    promocodes = profile.promocodes.all()
+
+    today = timezone.now().date()
+    promocodes = profile.promocodes.filter(is_active=True).filter(
+        models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today)
+    )
 
     context = {
         'profile': profile,
         'promocodes': promocodes
     }
-
     return render(request, 'user_profile/profile_detail.html', context)
 
 
