@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+
+<div class="edit-page">
+  <div class="edit-wrap">
+    <div class="edit-title">Редактировать профиль</div>
+
+    <form method="post" enctype="multipart/form-data" class="edit-form">
+      {% csrf_token %}
+
+      <div class="field">
+        <label class="field-label" for="id_name">Имя</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="field-error">{{ form.name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- скрытый input -->
+      <input
+        type="file"
+        name="avatar"
+        id="id_avatar"
+        accept="image/*"
+        hidden
+      >
+
+      <div class="field">
+        <div class="field-label">Аватар</div>
+
+        <div class="avatar-row">
+          <label for="id_avatar" class="file-btn">Выбрать фото</label>
+          <div id="file-name" class="file-name">
+            {% if form.instance.avatar %}Текущее фото{% else %}Файл не выбран{% endif %}
+          </div>
+        </div>
+
+        {% if form.avatar.errors %}
+          <div class="field-error">{{ form.avatar.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="save-btn">Сохранить</button>
+    </form>
+
+    <a href="{% url 'my_profile' %}" class="back-link">Назад</a>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('id_avatar');
+  const fileName = document.getElementById('file-name');
+
+  if (input) {
+    input.addEventListener('change', function () {
+      if (this.files && this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+      } else {
+        fileName.textContent = 'Файл не выбран';
+      }
+    });
+  }
+</script>
+{% endblock %}

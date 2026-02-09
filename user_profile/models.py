@@ -14,12 +14,13 @@ class Profile(models.Model):
         null=True,
         verbose_name="Аватар"
     )
-    friends = models.ManyToManyField(
-        "self",
-        symmetrical=False,
-        blank=True,
-        verbose_name="Друзья"
+    name = models.CharField(
+        "Имя", 
+        max_length=50, 
+        blank=True, 
+        default=""
     )
+
 
     class Meta:
         verbose_name = "Профиль"

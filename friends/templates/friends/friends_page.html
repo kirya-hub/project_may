@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Друзья{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/friends.css' %}">
+
+<div class="friends-wrap">
+
+  <div class="friends-header">
+    <div class="friends-title">Друзья</div>
+    <div class="friends-count">{{ friends_count }}</div>
+  </div>
+
+  <form method="get" class="friends-search">
+    <input type="hidden" name="tab" value="{{ tab }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по username или имени">
+    <button type="submit">Найти</button>
+  </form>
+
+  <div class="friends-tabs">
+    <a class="{% if tab == 'friends' %}active{% endif %}" href="?tab=friends{% if q %}&q={{ q }}{% endif %}">Друзья</a>
+    <a class="{% if tab == 'following' %}active{% endif %}" href="?tab=following{% if q %}&q={{ q }}{% endif %}">Подписки</a>
+    <a class="{% if tab == 'followers' %}active{% endif %}" href="?tab=followers{% if q %}&q={{ q }}{% endif %}">Подписчики</a>
+  </div>
+
+  {% if not q %}
+    <div class="popular-block">
+      <div class="popular-title">Популярные</div>
+      <div class="user-list">
+        {% for u in popular %}
+          {% include "friends/user_card.html" with u=u show_reply=False %}
+        {% empty %}
+          <div class="empty">Пока никого нет</div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="list-title">
+    {% if tab == "friends" %}Ваши друзья{% endif %}
+    {% if tab == "following" %}Вы подписаны{% endif %}
+    {% if tab == "followers" %}Подписчики{% endif %}
+  </div>
+
+  <div class="user-list">
+    {% for u in users %}
+      {% include "friends/user_card.html" with u=u show_reply=True %}
+    {% empty %}
+      <div class="empty">Пусто</div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

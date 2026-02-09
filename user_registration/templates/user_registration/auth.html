@@ -39,6 +39,12 @@
     <form class="auth-card" method="post" action="{% url 'register' %}">
       {% csrf_token %}
       {{ form.non_field_errors }}
+      
+      <div class="field">
+        <label>Имя</label>
+        {{ form.name }}
+        {{ form.name.errors }}
+      </div>
 
       <div class="field">
         <label>Имя пользователя</label>

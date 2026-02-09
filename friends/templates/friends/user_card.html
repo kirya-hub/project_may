@@ -1,0 +1,46 @@
+{% load static %}
+
+<div class="user-card">
+  <a class="user-left" href="{% url 'profile_by_username' u.username %}">
+    {% if u.profile.avatar %}
+      <img class="user-ava" src="{{ u.profile.avatar.url }}" alt="">
+    {% else %}
+      <img class="user-ava" src="{% static 'icons/profile.svg' %}" alt="">
+    {% endif %}
+
+    <div class="user-text">
+      <div class="user-name">
+        {% if u.profile.name %}{{ u.profile.name }}{% else %}{{ u.username }}{% endif %}
+      </div>
+      <div class="user-username">@{{ u.username }}</div>
+    </div>
+  </a>
+
+  <div class="user-actions">
+    {% if u.is_friend %}
+      <div class="badge">Друг</div>
+
+    {% elif u.is_following %}
+      <form method="post" action="{% url 'friends:follow_toggle' u.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="btn btn-outline" type="submit">Отписаться</button>
+      </form>
+
+    {% else %}
+      {% if show_reply and tab == "followers" %}
+        <form method="post" action="{% url 'friends:follow_toggle' u.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button class="btn" type="submit">Подписаться в ответ</button>
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'friends:follow_toggle' u.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button class="btn" type="submit">Подписаться</button>
+        </form>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

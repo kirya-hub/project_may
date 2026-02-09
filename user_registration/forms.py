@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 
 
 class RegisterForm(UserCreationForm):
+    name = forms.CharField(required=True, label='Имя', max_length=50)
     email = forms.EmailField(required=True, label='Email')
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('name', 'username', 'email', 'password1', 'password2')
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()

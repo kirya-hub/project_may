@@ -14,6 +14,7 @@ urlpatterns = [
     path('profile/', include('user_profile.urls')),
     path('add/', include('add_order.urls')),
     path('cafes/', include('cafes.urls')),
+    path("friends/", include("friends.urls")),
 ]
 
 if settings.DEBUG:
