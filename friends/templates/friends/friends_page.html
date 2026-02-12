@@ -13,11 +13,43 @@
     <div class="friends-count">{{ friends_count }}</div>
   </div>
 
-  <form method="get" class="friends-search">
+  <form method="get" class="friends-search" id="friends-search-form">
     <input type="hidden" name="tab" value="{{ tab }}">
-    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по username или имени">
-    <button type="submit">Найти</button>
+
+    <div class="search-field">
+      <input
+        type="text"
+        name="q"
+        id="friends-q"
+        value="{{ q }}"
+        placeholder="Поиск по username или имени"
+        autocomplete="off"
+      >
+      <button type="button" class="search-clear" id="friends-clear" aria-label="Очистить">×</button>
+    </div>
   </form>
+
+  <script>
+    (function () {
+      const input = document.getElementById('friends-q');
+      const clearBtn = document.getElementById('friends-clear');
+      const form = document.getElementById('friends-search-form');
+
+      function sync() {
+        if (input.value.trim().length) clearBtn.classList.add('show');
+        else clearBtn.classList.remove('show');
+      }
+
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        sync();
+        form.submit();
+      });
+
+      input.addEventListener('input', sync);
+      sync();
+    })();
+  </script>
 
   <div class="friends-tabs">
     <a class="{% if tab == 'friends' %}active{% endif %}" href="?tab=friends{% if q %}&q={{ q }}{% endif %}">Друзья</a>
@@ -32,23 +64,32 @@
         {% for u in popular %}
           {% include "friends/user_card.html" with u=u show_reply=False %}
         {% empty %}
-          <div class="empty">Пока никого нет</div>
+          <div class="empty">Нет результатов</div>
         {% endfor %}
+
       </div>
     </div>
   {% endif %}
 
   <div class="list-title">
-    {% if tab == "friends" %}Ваши друзья{% endif %}
-    {% if tab == "following" %}Вы подписаны{% endif %}
-    {% if tab == "followers" %}Подписчики{% endif %}
+    {% if q %}
+      Результаты поиска
+    {% else %}
+      {% if tab == "friends" %}Ваши друзья{% endif %}
+      {% if tab == "following" %}Подписки{% endif %}
+      {% if tab == "followers" %}Подписчики{% endif %}
+    {% endif %}
   </div>
 
   <div class="user-list">
     {% for u in users %}
       {% include "friends/user_card.html" with u=u show_reply=True %}
-    {% empty %}
-      <div class="empty">Пусто</div>
+        {% empty %}
+      {% if q %}
+        <div class="empty">Результатов нет</div>
+      {% else %}
+        <div class="empty">Нет результатов</div>
+      {% endif %}
     {% endfor %}
   </div>
 

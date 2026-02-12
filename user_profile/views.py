@@ -3,12 +3,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db import models
+from django.db.models import Count, Exists, OuterRef
 
 from .models import Profile
 from .forms import ProfileEditForm
 
 from friends.models import Follow
 from friends.services import friends_qs
+
+from add_order.models import Order
+from feed.models import Like
 
 
 @login_required
@@ -29,10 +33,8 @@ def profile_detail(request, username=None, user_id=None):
         models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today)
     )
 
-    # друзья = взаимная подписка
     friends_count = friends_qs(user).count()
 
-    # превью аватарок (ТОЛЬКО для своего профиля)
     friends_preview = []
     if request.user.is_authenticated and request.user == user:
         friends_preview = (
@@ -40,7 +42,6 @@ def profile_detail(request, username=None, user_id=None):
             .select_related("profile")[:3]
         )
 
-    # статусы подписки
     is_following = False
     is_friend = False
 
@@ -57,6 +58,23 @@ def profile_detail(request, username=None, user_id=None):
 
         is_friend = is_following and is_follower
 
+    posts = (
+        Order.objects
+        .filter(user=user)
+        .select_related("user", "user__profile", "cafe")
+        .order_by("-created_at")
+        .annotate(likes_count=Count("likes", distinct=True))
+    )
+
+    if request.user.is_authenticated:
+        posts = posts.annotate(
+            is_liked=Exists(
+                Like.objects.filter(user=request.user, order=OuterRef("pk"))
+            )
+        )
+    else:
+        posts = posts.annotate(is_liked=models.Value(False, output_field=models.BooleanField()))
+
     context = {
         "profile": profile,
         "promocodes": promocodes,
@@ -64,6 +82,7 @@ def profile_detail(request, username=None, user_id=None):
         "friends_preview": friends_preview,
         "is_following": is_following,
         "is_friend": is_friend,
+        "posts": posts,
     }
 
     return render(request, "user_profile/profile_detail.html", context)

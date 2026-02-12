@@ -12,7 +12,6 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- === БЛОК 1: ЧЕК === -->
         <section class="block">
             <h2 class="block-title">Добавить чек</h2>
 
@@ -27,8 +26,6 @@
             </div>
         </section>
 
-
-        <!-- === БЛОК 2: ОТЗЫВ === -->
         <section class="block">
             <h2 class="block-title">Оставить отзыв</h2>
 
@@ -49,8 +46,6 @@
             </div>
         </section>
 
-
-        <!-- === БЛОК 3: КАФЕ === -->
         <section class="block">
             <h2 class="block-title">Выбрать кафе</h2>
 
@@ -60,8 +55,6 @@
             </div>
         </section>
 
-
-        <!-- === КНОПКА === -->
         <div class="publish-container">
             <button type="submit" class="publish-btn">Опубликовать</button>
         </div>
@@ -69,8 +62,6 @@
     </form>
 </div>
 
-
-<!-- === JS === -->
 <script>
 function loadPreview(input, previewId, labelId) {
     const preview = document.getElementById(previewId);

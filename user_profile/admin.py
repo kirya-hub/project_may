@@ -14,18 +14,9 @@ class ProfileAdmin(admin.ModelAdmin):
     avatar_preview.short_description = "Аватар"
 
     def friends_count(self, obj):
-        """
-        Друзья = взаимная подписка.
-        Считаем так:
-        друзья = сколько пользователей, на кого подписан obj.user,
-        и которые подписаны на obj.user.
-        """
         user = obj.user
-        # мои подписки
         following_ids = Follow.objects.filter(follower=user).values_list("following_id", flat=True)
-        # кто подписан на меня
         followers_ids = Follow.objects.filter(following=user).values_list("follower_id", flat=True)
-        # взаимное пересечение
         return Follow.objects.filter(follower=user, following_id__in=followers_ids).count()
 
     friends_count.short_description = "Друзей"

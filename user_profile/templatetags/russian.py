@@ -2,22 +2,29 @@ from django import template
 
 register = template.Library()
 
-@register.filter
-def ru_plural(value, forms: str):
+
+@register.filter(name="russian")
+def russian(value, forms: str):
     """
+    Склонение по числу.
     forms: "друг,друга,друзей"
+    usage: {{ n|russian:"друг,друга,друзей" }}
     """
     try:
         n = abs(int(value))
     except (TypeError, ValueError):
-        return ""
-    one, few, many = [x.strip() for x in forms.split(",")]
-    n10 = n % 10
-    n100 = n % 100
-    if 11 <= n100 <= 14:
-        return many
-    if n10 == 1:
-        return one
-    if 2 <= n10 <= 4:
-        return few
-    return many
+        return forms.split(",")[-1].strip()
+
+    f = [x.strip() for x in forms.split(",")]
+    if len(f) != 3:
+        return forms
+
+    if 11 <= (n % 100) <= 14:
+        return f[2]
+
+    last = n % 10
+    if last == 1:
+        return f[0]
+    if 2 <= last <= 4:
+        return f[1]
+    return f[2]

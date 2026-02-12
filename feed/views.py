@@ -9,7 +9,11 @@ from .models import Like
 
 
 def feed_home(request):
-    qs = Order.objects.select_related("user", "user__profile", "cafe").order_by("-created_at")
+    qs = (
+        Order.objects
+        .select_related("user", "user__profile", "cafe")
+        .order_by("-created_at")
+    )
 
     qs = qs.annotate(likes_count=Count("likes", distinct=True))
 
@@ -34,4 +38,5 @@ def toggle_like(request, order_id: int):
     if not created:
         like.delete()
 
-    return redirect("home")
+    next_url = request.POST.get("next") or request.META.get("HTTP_REFERER") or "home"
+    return redirect(next_url)

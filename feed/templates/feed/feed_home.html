@@ -1,71 +1,20 @@
 {% extends "base.html" %}
-{% load static tz %}
+{% load static %}
 
 {% block title %}Лента{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/feed.css' %}">
 
 <div class="feed">
   {% for o in orders %}
-    <div class="post-card">
-
-      <div class="post-head">
-        <div class="post-left">
-
-          {% if o.user.profile.avatar %}
-            <div class="post-avatar">
-              <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
-            </div>
-          {% else %}
-            <div class="post-avatar post-avatar-fallback" aria-label="Аватар">
-              {{ o.user.username|slice:":1"|upper }}
-            </div>
-          {% endif %}
-
-          <div class="post-userblock">
-            <div class="post-username">{{ o.user.username }}</div>
-
-            {% if o.cafe %}
-              <div class="post-cafe">{{ o.cafe.name }}</div>
-            {% elif o.place_name %}
-              <div class="post-cafe">{{ o.place_name }}</div>
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="post-date">
-          {{ o.created_at|localtime|date:"d.m.Y H:i" }}
-        </div>
-      </div>
-
-      {% if o.dish_photo %}
-        <img class="post-img" src="{{ o.dish_photo.url }}" alt="Фото блюда">
-      {% endif %}
-
-      {% if o.comment %}
-        <div class="post-text">{{ o.comment }}</div>
-      {% endif %}
-
-      <div class="post-actions">
-        {% if user.is_authenticated %}
-          <form action="{% url 'toggle_like' o.id %}" method="post">
-            {% csrf_token %}
-            <button class="btn-like" type="submit">
-              {% if o.is_liked %}❤️{% else %}🤍{% endif %}
-              {{ o.likes_count }}
-            </button>
-          </form>
-        {% else %}
-          <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
-        {% endif %}
-
-        <button class="btn-comment" type="button" disabled>💬 Комментарии позже</button>
-      </div>
-
-    </div>
+    {% include "feed/_post_card.html" with o=o %}
   {% empty %}
     <div class="empty">Пока нет публикаций. Добавь первый заказ 🙂</div>
   {% endfor %}
 </div>
+
 {% endblock %}

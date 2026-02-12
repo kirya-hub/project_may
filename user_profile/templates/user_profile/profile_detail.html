@@ -4,11 +4,20 @@
 
 {% block title %}Профиль{% endblock %}
 
-{% block content %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if request.user.is_authenticated and request.user != profile.user %}
+<script>
+  document.body.classList.add("show-back");
+</script>
+{% endif %}
 
 <div class="profile-wrap">
-
   <div class="profile-top">
 
     <div class="avatar-wrap">
@@ -32,29 +41,28 @@
 
     {% if request.user.is_authenticated and request.user == profile.user %}
       <div class="profile-actions">
-        <a class="icon-btn" href="{% url 'edit_profile' %}" title="Редактировать">
+        <a class="icon-btn" href="{% url 'edit_profile' %}" title="Редактировать профиль">
           <img src="{% static 'icons/edit.svg' %}" alt="edit">
         </a>
+
+        <form class="logout-icon-form" action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button class="icon-btn" type="submit" title="Выйти">
+            <img src="{% static 'icons/logout.svg' %}" alt="logout">
+          </button>
+        </form>
       </div>
 
-      <!-- БЕЛАЯ ПЛАШКА ДРУЗЕЙ С АВАТАРКАМИ -->
       <a href="{% url 'friends:friends_page' %}" class="friends-card light">
-        <div class="friends-card-left">
-          <div class="friends-card-title">
-            {{ friends_count }} {{ friends_count|ru_plural:"друг,друга,друзей" }}
-          </div>
-        </div>
-
-        <div class="friends-card-right">
-          <div class="friends-avatars">
-            {% for friend in friends_preview %}
-              {% if friend.profile.avatar %}
-                <img src="{{ friend.profile.avatar.url }}" class="friend-ava" alt="">
-              {% else %}
-                <img src="{% static 'icons/profile.svg' %}" class="friend-ava" alt="">
-              {% endif %}
-            {% endfor %}
-          </div>
+        <div class="friends-card-title">{{ friends_count }} {{ friends_count|russian:"друг,друга,друзей" }}</div>
+        <div class="friends-avatars">
+          {% for u in friends_preview %}
+            {% if u.profile.avatar %}
+              <img class="friend-ava" src="{{ u.profile.avatar.url }}" alt="friend">
+            {% else %}
+              <img class="friend-ava stub" src="{% static 'icons/profile.svg' %}" alt="friend">
+            {% endif %}
+          {% endfor %}
         </div>
       </a>
     {% endif %}
@@ -105,11 +113,16 @@
     <div class="promo-card">Пока нет промокодов</div>
   {% endif %}
 
-  {% if request.user.is_authenticated and request.user == profile.user %}
-    <form class="logout-form" action="{% url 'logout' %}" method="post">
-      {% csrf_token %}
-      <button class="logout-btn" type="submit">Выйти</button>
-    </form>
+  <div class="section-title" style="margin-top: 18px;">Публикации</div>
+
+  {% if posts %}
+    <div class="feed" style="padding: 0; gap: 14px;">
+      {% for o in posts %}
+        {% include "feed/_post_card.html" with o=o %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="promo-card">Пока нет публикаций</div>
   {% endif %}
 
 </div>

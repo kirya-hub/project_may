@@ -16,30 +16,32 @@ User = get_user_model()
 
 @login_required
 def friends_page(request):
-    tab = request.GET.get("tab", "friends")  # friends | following | followers
+    tab = request.GET.get("tab", "friends")
     q = (request.GET.get("q") or "").strip()
 
     base = User.objects.exclude(id=request.user.id).select_related("profile")
 
-    if q:
-        # ищем по username и по profile.name
-        base = base.filter(
-            models.Q(username__icontains=q) | models.Q(profile__name__icontains=q)
-        )
-
     base = with_follow_flags(base, request.user)
 
-    if tab == "friends":
-        qs = friends_qs(request.user).exclude(id=request.user.id).select_related("profile")
-        qs = with_follow_flags(qs, request.user)
-    elif tab == "following":
-        qs = base.filter(is_following=True)
-    elif tab == "followers":
-        qs = base.filter(is_follower=True)
-    else:
-        return HttpResponseBadRequest("Unknown tab")
+    if q:
+        users = base.filter(
+            models.Q(username__icontains=q) | models.Q(profile__name__icontains=q)
+        ).order_by("username")
 
-    # популярные: больше всего подписчиков
+    else:
+        if tab == "friends":
+            users = friends_qs(request.user).exclude(id=request.user.id).select_related("profile")
+            users = with_follow_flags(users, request.user)
+
+        elif tab == "following":
+            users = base.filter(is_following=True, is_follower=False).order_by("username")
+
+        elif tab == "followers":
+            users = base.filter(is_follower=True, is_following=False).order_by("username")
+
+        else:
+            return HttpResponseBadRequest("Unknown tab")
+
     popular = (
         User.objects.exclude(id=request.user.id)
         .select_related("profile")
@@ -56,7 +58,7 @@ def friends_page(request):
         {
             "tab": tab,
             "q": q,
-            "users": qs,
+            "users": users,
             "popular": popular,
             "friends_count": friends_count,
         },
