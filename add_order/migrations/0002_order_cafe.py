@@ -5,23 +5,22 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("add_order", "0001_initial"),
-        ("cafes", "0003_menucategory_slug"),
+        ('add_order', '0001_initial'),
+        ('cafes', '0003_menucategory_slug'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="order",
-            name="cafe",
+            model_name='order',
+            name='cafe',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="orders",
-                to="cafes.cafe",
-                verbose_name="Кафе",
+                related_name='orders',
+                to='cafes.cafe',
+                verbose_name='Кафе',
             ),
         ),
     ]

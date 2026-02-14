@@ -9,9 +9,8 @@ class MenuItemInline(admin.TabularInline):
 
 @admin.register(MenuCategory)
 class MenuCategoryAdmin(admin.ModelAdmin):
-    list_display = ("title", "cafe")
+    list_display = ('title', 'cafe')
     inlines = [MenuItemInline]
-
 
 
 class MenuCategoryInline(admin.TabularInline):
@@ -21,10 +20,10 @@ class MenuCategoryInline(admin.TabularInline):
 
 @admin.register(Cafe)
 class CafeAdmin(admin.ModelAdmin):
-    list_display = ("name", "address")
+    list_display = ('name', 'address')
     inlines = [MenuCategoryInline]
 
 
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "price")
+    list_display = ('name', 'category', 'price')

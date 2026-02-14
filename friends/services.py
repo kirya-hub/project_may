@@ -19,15 +19,13 @@ def with_follow_flags(qs, me):
             is_friend=Exists(Follow.objects.none()),
         )
 
-    following_exists = Follow.objects.filter(follower=me, following=OuterRef("pk"))
-    follower_exists = Follow.objects.filter(follower=OuterRef("pk"), following=me)
+    following_exists = Follow.objects.filter(follower=me, following=OuterRef('pk'))
+    follower_exists = Follow.objects.filter(follower=OuterRef('pk'), following=me)
 
     return qs.annotate(
         is_following=Exists(following_exists),
         is_follower=Exists(follower_exists),
-    ).annotate(
-        is_friend=Q(is_following=True) & Q(is_follower=True)
-    )
+    ).annotate(is_friend=Q(is_following=True) & Q(is_follower=True))
 
 
 def friends_qs(me):
@@ -35,6 +33,6 @@ def friends_qs(me):
     if not me.is_authenticated:
         return User.objects.none()
 
-    my_following = Follow.objects.filter(follower=me).values_list("following_id", flat=True)
-    my_followers = Follow.objects.filter(following=me).values_list("follower_id", flat=True)
+    my_following = Follow.objects.filter(follower=me).values_list('following_id', flat=True)
+    my_followers = Follow.objects.filter(following=me).values_list('follower_id', flat=True)
     return User.objects.filter(id__in=my_following).filter(id__in=my_followers)

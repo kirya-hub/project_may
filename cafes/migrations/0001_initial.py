@@ -5,30 +5,57 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Cafe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('name', models.CharField(max_length=255)),
                 ('slug', models.SlugField(blank=True, unique=True)),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to='cafes/avatars/')),
+                (
+                    'avatar',
+                    models.ImageField(blank=True, null=True, upload_to='cafes/avatars/'),
+                ),
                 ('address', models.CharField(blank=True, max_length=255)),
             ],
         ),
         migrations.CreateModel(
             name='MenuCategory',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('title', models.CharField(max_length=100)),
-                ('icon', models.ImageField(blank=True, null=True, upload_to='cafes/menu_icons/')),
-                ('cafe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='categories', to='cafes.cafe')),
+                (
+                    'icon',
+                    models.ImageField(blank=True, null=True, upload_to='cafes/menu_icons/'),
+                ),
+                (
+                    'cafe',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='categories',
+                        to='cafes.cafe',
+                    ),
+                ),
             ],
         ),
     ]

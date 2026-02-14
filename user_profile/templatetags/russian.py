@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.filter(name="russian")
+@register.filter(name='russian')
 def russian(value, forms: str):
     """
     Склонение по числу.
@@ -13,9 +13,9 @@ def russian(value, forms: str):
     try:
         n = abs(int(value))
     except (TypeError, ValueError):
-        return forms.split(",")[-1].strip()
+        return forms.split(',')[-1].strip()
 
-    f = [x.strip() for x in forms.split(",")]
+    f = [x.strip() for x in forms.split(',')]
     if len(f) != 3:
         return forms
 

@@ -16,37 +16,37 @@ User = get_user_model()
 
 @login_required
 def friends_page(request):
-    tab = request.GET.get("tab", "friends")
-    q = (request.GET.get("q") or "").strip()
+    tab = request.GET.get('tab', 'friends')
+    q = (request.GET.get('q') or '').strip()
 
-    base = User.objects.exclude(id=request.user.id).select_related("profile")
+    base = User.objects.exclude(id=request.user.id).select_related('profile')
 
     base = with_follow_flags(base, request.user)
 
     if q:
         users = base.filter(
             models.Q(username__icontains=q) | models.Q(profile__name__icontains=q)
-        ).order_by("username")
+        ).order_by('username')
 
     else:
-        if tab == "friends":
-            users = friends_qs(request.user).exclude(id=request.user.id).select_related("profile")
+        if tab == 'friends':
+            users = friends_qs(request.user).exclude(id=request.user.id).select_related('profile')
             users = with_follow_flags(users, request.user)
 
-        elif tab == "following":
-            users = base.filter(is_following=True, is_follower=False).order_by("username")
+        elif tab == 'following':
+            users = base.filter(is_following=True, is_follower=False).order_by('username')
 
-        elif tab == "followers":
-            users = base.filter(is_follower=True, is_following=False).order_by("username")
+        elif tab == 'followers':
+            users = base.filter(is_follower=True, is_following=False).order_by('username')
 
         else:
-            return HttpResponseBadRequest("Unknown tab")
+            return HttpResponseBadRequest('Unknown tab')
 
     popular = (
         User.objects.exclude(id=request.user.id)
-        .select_related("profile")
-        .annotate(followers_count=Count("follower_relations"))
-        .order_by("-followers_count", "username")[:10]
+        .select_related('profile')
+        .annotate(followers_count=Count('follower_relations'))
+        .order_by('-followers_count', 'username')[:10]
     )
     popular = with_follow_flags(popular, request.user)
 
@@ -54,13 +54,13 @@ def friends_page(request):
 
     return render(
         request,
-        "friends/friends_page.html",
+        'friends/friends_page.html',
         {
-            "tab": tab,
-            "q": q,
-            "users": users,
-            "popular": popular,
-            "friends_count": friends_count,
+            'tab': tab,
+            'q': q,
+            'users': users,
+            'popular': popular,
+            'friends_count': friends_count,
         },
     )
 
@@ -71,7 +71,7 @@ def follow_toggle(request, user_id: int):
     target = get_object_or_404(User, id=user_id)
 
     if target.id == request.user.id:
-        return redirect(reverse("friends:friends_page"))
+        return redirect(reverse('friends:friends_page'))
 
     rel = Follow.objects.filter(follower=request.user, following=target)
     if rel.exists():
@@ -79,5 +79,5 @@ def follow_toggle(request, user_id: int):
     else:
         Follow.objects.create(follower=request.user, following=target)
 
-    next_url = request.POST.get("next") or reverse("friends:friends_page")
+    next_url = request.POST.get('next') or reverse('friends:friends_page')
     return redirect(next_url)

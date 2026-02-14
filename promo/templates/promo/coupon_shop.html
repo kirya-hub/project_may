@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Магазин купонов{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
+  <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom: 10px;">
+    <div style="font-size: 22px; font-weight: 800;">Магазин</div>
+    <div style="font-weight:900;">{{ points }} баллов</div>
+  </div>
+
+  {% if offers %}
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {% for o in offers %}
+        <div style="border: 1px solid #eee; border-radius: 16px; padding: 14px;">
+          <div style="display:flex; justify-content:space-between; gap:12px;">
+            <div style="font-weight:900; font-size: 16px;">{{ o.title }}</div>
+            <div style="font-weight:900;">{{ o.cost_points }} баллов</div>
+          </div>
+
+          {% if o.cafe %}
+            <div style="opacity:.7; margin-top: 4px;">{{ o.cafe.name }}</div>
+          {% endif %}
+
+          {% if o.description %}
+            <div style="opacity:.8; margin-top: 8px; white-space: pre-line;">{{ o.description }}</div>
+          {% endif %}
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px; gap:10px;">
+            <div style="opacity:.65; font-size: 13px;">
+              {% if o.expires_in_days %}
+                Срок: {{ o.expires_in_days }} дн. после покупки
+              {% else %}
+                Без срока
+              {% endif %}
+            </div>
+
+            <form method="post" action="{% url 'promo:buy_coupon' o.id %}">
+              {% csrf_token %}
+              <button type="submit"
+                style="border:none; border-radius: 12px; padding: 10px 12px; font-weight:900; cursor:pointer;"
+                {% if o.id in owned_offer_ids or points10 < o.cost_points10 %}disabled{% endif %}
+              >
+                {% if o.id in owned_offer_ids %}Куплен{% else %}Купить{% endif %}
+              </button>
+            </form>
+          </div>
+
+          {% if o.id not in owned_offer_ids and points10 < o.cost_points10 %}
+            <div style="opacity:.55; font-size: 12px; margin-top: 8px;">Не хватает баллов</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="opacity:.7;">Пока нет купонов в продаже.</div>
+  {% endif %}
+</div>
+{% endblock %}

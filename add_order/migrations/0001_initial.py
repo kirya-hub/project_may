@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,15 +16,36 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Order',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('check_image', models.ImageField(upload_to='orders/checks/')),
-                ('dish_photo', models.ImageField(blank=True, null=True, upload_to='orders/photos/')),
+                (
+                    'dish_photo',
+                    models.ImageField(blank=True, null=True, upload_to='orders/photos/'),
+                ),
                 ('comment', models.TextField(blank=True, null=True)),
                 ('place_name', models.CharField(blank=True, max_length=255, null=True)),
-                ('total_sum', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
+                (
+                    'total_sum',
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True),
+                ),
                 ('parsed_data', models.JSONField(blank=True, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to=settings.AUTH_USER_MODEL)),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='orders',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

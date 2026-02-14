@@ -8,19 +8,19 @@ class Like(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="likes",
+        related_name='likes',
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="likes",
+        related_name='likes',
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "order"], name="unique_like_per_user"),
+            models.UniqueConstraint(fields=['user', 'order'], name='unique_like_per_user'),
         ]
 
     def __str__(self):
-        return f"{self.user_id} -> {self.order_id}"
+        return f'{self.user_id} -> {self.order_id}'

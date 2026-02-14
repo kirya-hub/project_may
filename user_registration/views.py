@@ -5,7 +5,6 @@ from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 
-from django.contrib.auth.models import User
 from user_profile.models import Profile
 from .forms import RegisterForm
 
@@ -30,18 +29,16 @@ class AuthRegisterView(FormView):
         ctx['mode'] = 'register'
         return ctx
 
-
     def form_valid(self, form):
         user = form.save()
 
         profile, _ = Profile.objects.get_or_create(user=user)
-        profile.name = form.cleaned_data.get("name", "") or user.username
+        profile.name = form.cleaned_data.get('name', '') or user.username
         profile.save()
 
         login(self.request, user)
         messages.success(self.request, 'Аккаунт создан. Добро пожаловать!')
         return redirect(self.get_success_url())
-
 
     def form_invalid(self, form):
         ctx = self.get_context_data(form=form)

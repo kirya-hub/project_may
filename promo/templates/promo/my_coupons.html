@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Мои купоны{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
+  <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom: 10px;">
+    <div style="font-size: 22px; font-weight: 800;">Мои купоны</div>
+    <a href="{% url 'promo:shop' %}" style="text-decoration:none; font-weight:800; color:#000;">Магазин →</a>
+  </div>
+
+  {% if coupons %}
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {% for c in coupons %}
+        <div style="border: 1px solid #eee; border-radius: 16px; padding: 14px;">
+          <div style="display:flex; justify-content:space-between; gap:12px;">
+            <div style="font-weight:900; font-size: 16px;">{{ c.code }}</div>
+            <div style="opacity:.7; font-weight:800;">{{ c.get_status_display }}</div>
+          </div>
+
+          {% if c.description %}
+            <div style="opacity:.85; margin-top: 8px; white-space: pre-line;">{{ c.description }}</div>
+          {% endif %}
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px; gap:10px;">
+            <div style="opacity:.65; font-size: 13px;">
+              {% if c.expires_at %}
+                {% if c.expires_at < today %}
+                  Истёк {{ c.expires_at|date:"d.m.Y" }}
+                {% else %}
+                  До {{ c.expires_at|date:"d.m.Y" }}
+                {% endif %}
+              {% else %}
+                Без срока
+              {% endif %}
+            </div>
+
+            {% if c.status == "ACTIVE" %}
+              <form method="post" action="{% url 'promo:use_coupon' c.id %}">
+                {% csrf_token %}
+                <button type="submit" style="border:none; border-radius: 12px; padding: 10px 12px; font-weight:900; cursor:pointer;">
+                  Использовать
+                </button>
+              </form>
+            {% endif %}
+          </div>
+
+          {% if c.used_at %}
+            <div style="opacity:.55; font-size: 12px; margin-top: 8px;">
+              Использован {{ c.used_at|date:"d.m.Y H:i" }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="opacity:.7;">У тебя пока нет купонов.</div>
+  {% endif %}
+</div>
+{% endblock %}

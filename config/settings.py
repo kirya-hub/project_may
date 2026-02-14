@@ -56,7 +56,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],   # <-- ВОТ ЭТО МЫ ДОБАВЛЯЕМ
+        'DIRS': [BASE_DIR / 'templates'],  # <-- ВОТ ЭТО МЫ ДОБАВЛЯЕМ
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,7 +81,7 @@ DATABASES = {
         'USER': os.getenv('PG_USER', default='postgres'),
         'HOST': os.getenv('PG_HOST', default='localhost'),
         'PORT': os.getenv('PG_PORT', default='5432'),
-        'PASSWORD': os.getenv('PG_PASSWORD')
+        'PASSWORD': os.getenv('PG_PASSWORD'),
     }
 }
 
@@ -123,7 +123,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static', 
+    BASE_DIR / 'static',
 ]
 
 MEDIA_URL = '/media/'

@@ -9,24 +9,18 @@ from .models import Like
 
 
 def feed_home(request):
-    qs = (
-        Order.objects
-        .select_related("user", "user__profile", "cafe")
-        .order_by("-created_at")
-    )
+    qs = Order.objects.select_related('user', 'user__profile', 'cafe').order_by('-created_at')
 
-    qs = qs.annotate(likes_count=Count("likes", distinct=True))
+    qs = qs.annotate(likes_count=Count('likes', distinct=True))
 
     if request.user.is_authenticated:
         qs = qs.annotate(
-            is_liked=Exists(
-                Like.objects.filter(user=request.user, order=OuterRef("pk"))
-            )
+            is_liked=Exists(Like.objects.filter(user=request.user, order=OuterRef('pk')))
         )
     else:
         qs = qs.annotate(is_liked=models.Value(False, output_field=models.BooleanField()))
 
-    return render(request, "feed/feed_home.html", {"orders": qs})
+    return render(request, 'feed/feed_home.html', {'orders': qs})
 
 
 @require_POST
@@ -38,5 +32,5 @@ def toggle_like(request, order_id: int):
     if not created:
         like.delete()
 
-    next_url = request.POST.get("next") or request.META.get("HTTP_REFERER") or "home"
+    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'home'
     return redirect(next_url)

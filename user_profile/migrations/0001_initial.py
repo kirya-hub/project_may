@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,10 +16,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Profile',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to='avatars/', verbose_name='Аватар')),
-                ('friends', models.ManyToManyField(blank=True, to='user_profile.profile', verbose_name='Друзья')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'avatar',
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to='avatars/',
+                        verbose_name='Аватар',
+                    ),
+                ),
+                (
+                    'friends',
+                    models.ManyToManyField(
+                        blank=True, to='user_profile.profile', verbose_name='Друзья'
+                    ),
+                ),
+                (
+                    'user',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Пользователь',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Профиль',
@@ -30,12 +57,34 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PromoCode',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('code', models.CharField(max_length=100, verbose_name='Промокод')),
                 ('description', models.TextField(blank=True, verbose_name='Описание')),
-                ('expires_at', models.DateField(blank=True, null=True, verbose_name='Срок действия')),
-                ('is_active', models.BooleanField(default=True, verbose_name='Активен')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='promocodes', to='user_profile.profile', verbose_name='Профиль')),
+                (
+                    'expires_at',
+                    models.DateField(blank=True, null=True, verbose_name='Срок действия'),
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(default=True, verbose_name='Активен'),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='promocodes',
+                        to='user_profile.profile',
+                        verbose_name='Профиль',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Промокод',

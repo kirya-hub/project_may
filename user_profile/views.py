@@ -28,8 +28,8 @@ def profile_detail(request, username=None, user_id=None):
 
     profile = get_object_or_404(Profile, user=user)
 
-    today = timezone.now().date()
-    promocodes = profile.promocodes.filter(is_active=True).filter(
+    today = timezone.localdate()
+    promocodes = profile.promocodes.filter(status='ACTIVE').filter(
         models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today)
     )
 
@@ -37,73 +37,61 @@ def profile_detail(request, username=None, user_id=None):
 
     friends_preview = []
     if request.user.is_authenticated and request.user == user:
-        friends_preview = (
-            friends_qs(request.user)
-            .select_related("profile")[:3]
-        )
+        friends_preview = friends_qs(request.user).select_related('profile')[:3]
 
     is_following = False
     is_friend = False
 
     if request.user.is_authenticated and request.user != user:
-        is_following = Follow.objects.filter(
-            follower=request.user,
-            following=user
-        ).exists()
+        is_following = Follow.objects.filter(follower=request.user, following=user).exists()
 
-        is_follower = Follow.objects.filter(
-            follower=user,
-            following=request.user
-        ).exists()
+        is_follower = Follow.objects.filter(follower=user, following=request.user).exists()
 
         is_friend = is_following and is_follower
 
     posts = (
-        Order.objects
-        .filter(user=user)
-        .select_related("user", "user__profile", "cafe")
-        .order_by("-created_at")
-        .annotate(likes_count=Count("likes", distinct=True))
+        Order.objects.filter(user=user)
+        .select_related('user', 'user__profile', 'cafe')
+        .order_by('-created_at')
+        .annotate(likes_count=Count('likes', distinct=True))
     )
 
     if request.user.is_authenticated:
         posts = posts.annotate(
-            is_liked=Exists(
-                Like.objects.filter(user=request.user, order=OuterRef("pk"))
-            )
+            is_liked=Exists(Like.objects.filter(user=request.user, order=OuterRef('pk')))
         )
     else:
         posts = posts.annotate(is_liked=models.Value(False, output_field=models.BooleanField()))
 
     context = {
-        "profile": profile,
-        "promocodes": promocodes,
-        "friends_count": friends_count,
-        "friends_preview": friends_preview,
-        "is_following": is_following,
-        "is_friend": is_friend,
-        "posts": posts,
+        'profile': profile,
+        'promocodes': promocodes,
+        'friends_count': friends_count,
+        'friends_preview': friends_preview,
+        'is_following': is_following,
+        'is_friend': is_friend,
+        'posts': posts,
     }
 
-    return render(request, "user_profile/profile_detail.html", context)
+    return render(request, 'user_profile/profile_detail.html', context)
 
 
 def profile_home(request):
     if request.user.is_authenticated:
-        return redirect("my_profile")
-    return render(request, "user_profile/profile_guest.html")
+        return redirect('my_profile')
+    return render(request, 'user_profile/profile_guest.html')
 
 
 @login_required
 def edit_profile(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect("my_profile")
+            return redirect('my_profile')
     else:
         form = ProfileEditForm(instance=profile)
 
-    return render(request, "user_profile/edit_profile.html", {"form": form})
+    return render(request, 'user_profile/edit_profile.html', {'form': form})

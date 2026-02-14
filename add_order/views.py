@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import OrderForm
+from promo.services import accrue_points_for_order
+
 
 @login_required
 def add_order_page(request):
@@ -12,7 +14,9 @@ def add_order_page(request):
             order.user = request.user
             order.save()
 
-            messages.success(request, "Заказ успешно опубликован!")
+            accrue_points_for_order(order)
+
+            messages.success(request, 'Заказ успешно опубликован!')
             return redirect('add_order')
     else:
         form = OrderForm()

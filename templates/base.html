@@ -56,10 +56,12 @@
             <img src="{% static 'icons/add.svg' %}" class="add-icon">
         </a>
 
-        <div class="nav-item">
+        <a class="nav-item {% if request.path|slice:':7' == '/promo/' %}active{% endif %}"
+          href="{% url 'promo:home' %}">
             <img src="{% static 'icons/promo.svg' %}" class="nav-icon">
             <span>Промо</span>
-        </div>
+        </a>
+
 
         <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
            href="{% url 'profile_home' %}">
