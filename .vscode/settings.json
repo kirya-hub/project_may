@@ -34,5 +34,6 @@
 
   "editor.minimap.enabled": false,
   "editor.wordWrap": "off",
-  "editor.formatOnPaste": true
+  "editor.formatOnPaste": true,
+  "python-envs.pythonProjects": []
 }
