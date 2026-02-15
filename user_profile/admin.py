@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Profile, PromoCode
+
 from friends.models import Follow
+
+from .models import Profile, PromoCode
 
 
 @admin.register(Profile)

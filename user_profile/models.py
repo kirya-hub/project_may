@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 
@@ -59,6 +60,13 @@ class PromoCode(models.Model):
         verbose_name = 'Промокод'
         verbose_name_plural = 'Промокоды'
         ordering = ['-acquired_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['profile', 'source_offer'],
+                condition=Q(source_offer__isnull=False),
+                name='uniq_promocode_profile_offer',
+            )
+        ]
 
     def __str__(self):
         return f'{self.code} ({self.profile.user.username})'

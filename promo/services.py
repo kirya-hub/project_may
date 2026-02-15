@@ -1,13 +1,14 @@
 import secrets
 import string
+from datetime import timedelta
+from decimal import ROUND_HALF_UP, Decimal
 
-from decimal import Decimal, ROUND_HALF_UP
 from django.db import transaction
 from django.utils import timezone
-from datetime import timedelta
-from user_profile.models import Profile, PromoCode
-from .models import PointsTransaction, CouponOffer
 
+from user_profile.models import Profile, PromoCode
+
+from .models import CouponOffer, PointsTransaction
 
 PERCENT = Decimal('0.05')
 DAILY_LIMIT = 2

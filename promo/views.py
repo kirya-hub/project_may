@@ -4,23 +4,24 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from user_profile.models import Profile, PromoCode
-from .models import PointsTransaction, CouponOffer
+
+from .models import CouponOffer, PointsTransaction
 from .services import NotEnoughPoints, purchase_offer
 
 
 @login_required
 def promo_home(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
-    txs = PointsTransaction.objects.filter(user=request.user)[:20]
-    points = (profile.points10 or 0) / 10
+
+    transactions = PointsTransaction.objects.filter(user=request.user).order_by('-created_at')[:20]
 
     return render(
         request,
         'promo/promo_home.html',
         {
-            'points': points,
+            'points': (profile.points10 or 0) / 10,
             'points10': profile.points10 or 0,
-            'transactions': txs,
+            'transactions': transactions,
         },
     )
 
@@ -34,9 +35,10 @@ def coupon_shop(request):
     )
 
     owned_offer_ids = list(
-        PromoCode.objects.filter(profile=profile, source_offer__isnull=False).values_list(
-            'source_offer_id', flat=True
-        )
+        PromoCode.objects.filter(
+            profile=profile,
+            source_offer__isnull=False,
+        ).values_list('source_offer_id', flat=True)
     )
 
     return render(
@@ -44,8 +46,8 @@ def coupon_shop(request):
         'promo/coupon_shop.html',
         {
             'offers': offers,
-            'points10': profile.points10 or 0,
             'points': (profile.points10 or 0) / 10,
+            'points10': profile.points10 or 0,
             'owned_offer_ids': owned_offer_ids,
         },
     )
@@ -58,14 +60,34 @@ def buy_coupon(request, offer_id: int):
 
     offer = get_object_or_404(CouponOffer, id=offer_id, is_active=True)
 
-    try:
-        pc = purchase_offer(request.user, offer)
-        messages.success(request, f'Купон куплен ✅ Код: {pc.code}')
+    profile, _ = Profile.objects.get_or_create(user=request.user)
 
+    # 🔒 Защита от повторной покупки
+    already = PromoCode.objects.filter(
+        profile=profile,
+        source_offer=offer,
+    ).first()
+
+    if already:
+        messages.info(
+            request,
+            f'Этот купон уже куплен. Код: {already.code}',
+        )
+        return redirect('promo:shop')
+
+    try:
+        new_coupon = purchase_offer(request.user, offer)
+        messages.success(
+            request,
+            f'Купон куплен ✅ Код: {new_coupon.code}',
+        )
     except NotEnoughPoints:
         messages.error(request, 'Не хватает баллов')
     except Exception:
-        messages.error(request, 'Не получилось купить купон. Попробуй ещё раз.')
+        messages.error(
+            request,
+            'Не получилось купить купон. Попробуй ещё раз.',
+        )
 
     return redirect('promo:shop')
 
@@ -75,9 +97,12 @@ def my_coupons(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
     today = timezone.localdate()
 
-    # авто-пометка истёкших
+    # авто-обновление истёкших
     PromoCode.objects.filter(
-        profile=profile, status='ACTIVE', expires_at__isnull=False, expires_at__lt=today
+        profile=profile,
+        status='ACTIVE',
+        expires_at__isnull=False,
+        expires_at__lt=today,
     ).update(status='EXPIRED')
 
     coupons = PromoCode.objects.filter(profile=profile).order_by('-acquired_at')
@@ -98,7 +123,12 @@ def use_coupon(request, coupon_id: int):
         return redirect('promo:my_coupons')
 
     profile, _ = Profile.objects.get_or_create(user=request.user)
-    coupon = get_object_or_404(PromoCode, id=coupon_id, profile=profile)
+
+    coupon = get_object_or_404(
+        PromoCode,
+        id=coupon_id,
+        profile=profile,
+    )
 
     if coupon.status != 'ACTIVE':
         messages.error(request, 'Этот купон нельзя использовать.')
