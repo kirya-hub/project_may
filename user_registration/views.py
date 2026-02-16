@@ -2,10 +2,11 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect
-from django.views.generic import FormView
 from django.urls import reverse_lazy
+from django.views.generic import FormView
 
 from user_profile.models import Profile
+
 from .forms import RegisterForm
 
 

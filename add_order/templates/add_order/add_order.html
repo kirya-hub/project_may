@@ -12,6 +12,15 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
+        {% if form.errors %}
+        <div style="padding:10px;border:1px solid #f5c2c7;background:#f8d7da;border-radius:10px;margin-bottom:12px;">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+            {{ field.errors }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <section class="block">
             <h2 class="block-title">Добавить чек</h2>
 
@@ -47,6 +56,15 @@
         </section>
 
         <section class="block">
+            <h2 class="block-title">Сумма чека</h2>
+
+            <div class="cafe-row">
+                <label class="cafe-label" for="{{ form.total_sum.id_for_label }}">Сумма</label>
+                {{ form.total_sum }}
+            </div>
+        </section>
+
+        <section class="block">
             <h2 class="block-title">Выбрать кафе</h2>
 
             <div class="cafe-row">
@@ -63,24 +81,30 @@
 </div>
 
 <script>
-function loadPreview(input, previewId, labelId) {
-    const preview = document.getElementById(previewId);
-    const label = document.getElementById(labelId);
+    function loadPreview(input, previewId, labelId) {
+        const preview = document.getElementById(previewId);
+        const label = document.getElementById(labelId);
 
-    if (input.files && input.files[0]) {
-        label.style.display = "none";
-        preview.style.display = "block";
-        preview.src = URL.createObjectURL(input.files[0]);
+        if (input && input.files && input.files[0]) {
+            label.style.display = "none";
+            preview.style.display = "block";
+            preview.src = URL.createObjectURL(input.files[0]);
+        }
     }
-}
 
-document.getElementById("check_input").addEventListener("change", function() {
-    loadPreview(this, "check-preview", "check-label");
-});
+    const checkInput = document.getElementById("check_input");
+    if (checkInput) {
+        checkInput.addEventListener("change", function () {
+            loadPreview(this, "check-preview", "check-label");
+        });
+    }
 
-document.getElementById("dish_input").addEventListener("change", function() {
-    loadPreview(this, "dish-preview", "dish-label");
-});
+    const dishInput = document.getElementById("dish_input");
+    if (dishInput) {
+        dishInput.addEventListener("change", function () {
+            loadPreview(this, "dish-preview", "dish-label");
+        });
+    }
 </script>
 
 {% endblock %}

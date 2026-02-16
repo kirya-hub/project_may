@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import cafe_detail, category_detail
 
 urlpatterns = [

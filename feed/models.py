@@ -8,12 +8,12 @@ class Like(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='order_likes',  # user.order_likes.all()
+        related_name='order_likes',
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='likes',  # order.likes.all()
+        related_name='likes',
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -26,5 +26,4 @@ class Like(models.Model):
         ]
 
     def __str__(self) -> str:
-        # Pylance не всегда понимает user_id/order_id, но .pk понимает стабильно
         return f'{self.user.pk} -> {self.order.pk}'

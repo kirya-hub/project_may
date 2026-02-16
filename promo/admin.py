@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import PointsTransaction, CouponOffer
+
+from .models import CouponOffer, PointsTransaction
 
 
 @admin.register(CouponOffer)

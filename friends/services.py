@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Exists, OuterRef, Q
+
 from .models import Follow
 
 User = get_user_model()

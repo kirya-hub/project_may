@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import feed_home, toggle_like
 
 urlpatterns = [

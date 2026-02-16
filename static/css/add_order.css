@@ -1,0 +1,147 @@
+body {
+    background: #f2f2f2 !important;
+}
+
+.add-order-container {
+    padding: 18px;
+    padding-bottom: 140px;
+}
+
+.block {
+    background: #fff;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #dcdcdc;
+    margin-bottom: 20px;
+}
+
+.block-title {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.upload-area {
+    border: 1px dashed #999;
+    border-radius: 14px;
+    background: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.big-upload {
+    height: 140px;
+    transition: 0.2s ease-in-out;
+}
+
+.small-upload {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-wrapper-big {
+    width: 100%;
+}
+
+.upload-wrapper-small {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.plus-icon {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.upload-text {
+    font-size: 11px;
+    opacity: 0.6;
+    position: absolute;
+    bottom: 4px;
+}
+
+.review-row {
+    display: flex;
+    gap: 12px;
+}
+
+.comment-input {
+    flex: 1;
+    height: 100px;
+    border: 1px solid #dcdcdc;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 15px;
+    background: #fff;
+    resize: none;
+}
+
+.cafe-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cafe-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+}
+
+.cafe-select {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #dcdcdc;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 15px;
+    background: #fff;
+    outline: none;
+}
+
+.cafe-select:focus {
+    border-color: #000;
+}
+
+.preview-img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    object-fit: contain;
+}
+
+.preview-img-small {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 0;
+    border: 1px solid #ddd;
+}
+
+.publish-container {
+    margin-top: 10px;
+}
+
+.publish-btn {
+    width: 100%;
+    height: 55px;
+    background: #000;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 14px;
+    font-weight: 600;
+}

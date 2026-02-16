@@ -1,15 +1,14 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.db import models
 from django.db.models import Count
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from django.db import models
-
 
 from .models import Follow
-from .services import with_follow_flags, friends_qs
+from .services import friends_qs, with_follow_flags
 
 User = get_user_model()
 

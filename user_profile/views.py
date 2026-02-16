@@ -1,18 +1,17 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count, Exists, OuterRef
-
-from .models import Profile
-from .forms import ProfileEditForm
-
-from friends.models import Follow
-from friends.services import friends_qs
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from add_order.models import Order
 from feed.models import Like
+from friends.models import Follow
+from friends.services import friends_qs
+
+from .forms import ProfileEditForm
+from .models import Profile
 
 
 @login_required

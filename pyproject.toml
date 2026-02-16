@@ -11,6 +11,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+  "django-stubs>=5.2.9",
+  "django-stubs-ext>=5.2.9",
   "ruff==0.15.1",
 ]
 

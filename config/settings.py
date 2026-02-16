@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'add_order',
     'cafes',
     'user_registration',
+    'drops',
+    'django_stubs_ext',
 ]
 
 MIDDLEWARE = [
