@@ -13,7 +13,6 @@ class OrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Для спринта 3: без кафе и суммы Drop и начисление не сработают
         if 'cafe' in self.fields:
             self.fields['cafe'].required = True
         if 'total_sum' in self.fields:

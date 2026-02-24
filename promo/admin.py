@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import CouponOffer, PointsTransaction
+from .models import CouponOffer, PointsBalance, PointsTransaction
+
+
+@admin.register(PointsBalance)
+class PointsBalanceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'points10', 'updated_at')
+    search_fields = ('user__username', 'user__email')
+    readonly_fields = ('updated_at',)
 
 
 @admin.register(CouponOffer)
@@ -22,4 +29,4 @@ class CouponOfferAdmin(admin.ModelAdmin):
 class PointsTransactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'kind', 'amount10', 'order', 'created_at')
     list_filter = ('kind',)
-    search_fields = ('user__username',)
+    search_fields = ('user__username', 'user__email')

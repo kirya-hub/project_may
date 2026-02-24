@@ -18,10 +18,8 @@ def add_order_page(request):
             order.user = request.user
             order.save()
 
-            # 1) начисляем баллы (ставит points_accrued=True если начисление прошло)
             accrue_points_for_order(order)
 
-            # 2) пробуем закрыть Drop и выдать награду
             try_complete_by_order(order)
 
             messages.success(request, 'Заказ опубликован!')

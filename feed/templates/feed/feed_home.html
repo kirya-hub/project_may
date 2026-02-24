@@ -4,16 +4,20 @@
 {% block title %}Лента{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
 {% endblock %}
 
 {% block content %}
 
 <div class="feed">
-  {% for o in orders %}
-    {% include "feed/_post_card.html" with o=o %}
+  {% for item in items %}
+  {% if item.type == "order" %}
+  {% include "feed/_post_card.html" with o=item.obj %}
+  {% else %}
+  {% include "feed/_event_card.html" with e=item.obj %}
+  {% endif %}
   {% empty %}
-    <div class="empty">Пока нет публикаций. Добавь первый заказ 🙂</div>
+  <div class="empty">Пока нет публикаций. Добавь первый заказ 🙂</div>
   {% endfor %}
 </div>
 

@@ -7,12 +7,6 @@ User = get_user_model()
 
 
 def with_follow_flags(qs, me):
-    """
-    Добавляет к каждому пользователю флаги:
-    - is_following: я подписан на него
-    - is_follower: он подписан на меня
-    - is_friend: взаимная подписка
-    """
     if not me or not me.is_authenticated:
         return qs.annotate(
             is_following=Exists(Follow.objects.none()),
@@ -30,7 +24,7 @@ def with_follow_flags(qs, me):
 
 
 def friends_qs(me):
-    """Пользователи, с которыми взаимная подписка."""
+
     if not me.is_authenticated:
         return User.objects.none()
 

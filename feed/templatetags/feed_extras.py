@@ -21,7 +21,6 @@ MONTHS_RU = [
 
 @register.filter
 def smart_time(dt):
-    """3 часа назад / 2 дня назад / если >7 дней: '5 фев'."""
     if not dt:
         return ''
 

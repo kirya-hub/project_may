@@ -49,8 +49,9 @@ body {
 
   color: #fff;
   padding: 0;
+  cursor: pointer;
 
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
 
@@ -64,7 +65,16 @@ body {
   width: 22px;
   height: 22px;
   display: block;
-  opacity: 0.95;
+
+  background-color: #fff;
+  -webkit-mask-image: var(--ico-url);
+  mask-image: var(--ico-url);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .header-back:hover {
@@ -76,8 +86,62 @@ body {
   transform: translateY(-50%) scale(0.96);
 }
 
-.show-back .header-back {
+.header-inbox {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+
   display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+}
+
+.header-inbox:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.header-inbox:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.header-inbox-ico {
+  width: 22px;
+  height: 22px;
+  display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+
+.inbox-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+
+  background: #ff2b2b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 18px;
+  text-align: center;
+
+  border: 2px solid #000;
 }
 
 .header-logo {
@@ -167,4 +231,24 @@ body {
   font-size: 14px;
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.message-success {
+  border-color: #b7eb8f;
+  background: #f6ffed;
+}
+
+.message-error {
+  border-color: #ffa39e;
+  background: #fff1f0;
+}
+
+.message-warning {
+  border-color: #ffe58f;
+  background: #fffbe6;
+}
+
+.message-info {
+  border-color: #91caff;
+  background: #e6f4ff;
 }

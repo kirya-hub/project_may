@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Обмен{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom: 10px;">
+        <div style="font-size: 22px; font-weight: 800;">Обмен</div>
+        <a href="{% url 'trades:activity' %}" style="text-decoration:none; font-weight:800; color:#000;">Активность
+            →</a>
+    </div>
+
+    <div style="opacity:.7; margin-bottom: 12px;">
+        Чтобы создать обмен — зайди в профиль друга и нажми “Обмен”, либо открой предложение по ссылке.
+    </div>
+
+    <div style="margin-top: 16px; font-weight:900;">Входящие</div>
+    {% if incoming %}
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top: 10px;">
+        {% for t in incoming %}
+        <a href="{% url 'trades:detail' t.id %}"
+            style="text-decoration:none; color:#000; border:1px solid #eee; border-radius:16px; padding:12px; display:block;">
+            <div style="display:flex; justify-content:space-between; gap:10px;">
+                <div><b>@{{ t.from_user.username }}</b></div>
+                <div style="opacity:.7; font-weight:800;">{{ t.get_status_display }}</div>
+            </div>
+            <div style="opacity:.6; margin-top:6px; font-size:12px;">{{ t.created_at|date:"d.m.Y H:i" }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="opacity:.7; margin-top: 8px;">Пока пусто.</div>
+    {% endif %}
+
+    <div style="margin-top: 18px; font-weight:900;">Исходящие</div>
+    {% if outgoing %}
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top: 10px;">
+        {% for t in outgoing %}
+        <a href="{% url 'trades:detail' t.id %}"
+            style="text-decoration:none; color:#000; border:1px solid #eee; border-radius:16px; padding:12px; display:block;">
+            <div style="display:flex; justify-content:space-between; gap:10px;">
+                <div><b>@{{ t.to_user.username }}</b></div>
+                <div style="opacity:.7; font-weight:800;">{{ t.get_status_display }}</div>
+            </div>
+            <div style="opacity:.6; margin-top:6px; font-size:12px;">{{ t.created_at|date:"d.m.Y H:i" }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="opacity:.7; margin-top: 8px;">Пока пусто.</div>
+    {% endif %}
+</div>
+{% endblock %}

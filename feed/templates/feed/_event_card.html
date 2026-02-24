@@ -1,0 +1,38 @@
+{% load static %}
+
+<div class="post" style="padding: 14px;">
+    <div class="post-head">
+
+        <div class="post-ava">
+            {% if e.user.profile.avatar %}
+            <img src="{{ e.user.profile.avatar.url }}" alt="ava">
+            {% else %}
+            <div class="ava-stub">
+                {{ e.user.username|first|upper }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="post-meta">
+            <div class="post-user">
+                <a href="{% url 'profile_by_username' e.user.username %}" style="text-decoration:none;color:inherit;">
+                    {{ e.user.username }}
+                </a>
+
+                {% if e.cafe %}
+                <span style="opacity:.55; font-weight:900;">·</span>
+                <span class="pill">{{ e.cafe.name }}</span>
+                {% endif %}
+            </div>
+
+            <div class="post-sub" style="opacity:.7;">
+                {{ e.created_at|date:"d M" }}
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin-top: 10px; font-weight: 800;">
+        {{ e.user.profile.name|default:e.user.username }} {{ e.text }}
+    </div>
+</div>

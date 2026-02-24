@@ -1,0 +1,106 @@
+.promo-page {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 14px 12px;
+}
+
+.promo-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.promo-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.promo-tab {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #eee;
+    text-decoration: none;
+    color: #000;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.promo-tab.is-active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.promo-tab-count {
+    opacity: 0.8;
+    font-weight: 900;
+}
+
+.promo-coupons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.coupon-card {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.coupon-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.coupon-code {
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.coupon-status {
+    opacity: 0.7;
+    font-weight: 800;
+}
+
+.coupon-desc {
+    opacity: 0.85;
+    margin-top: 8px;
+    white-space: pre-line;
+}
+
+.coupon-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.coupon-exp {
+    opacity: 0.65;
+    font-size: 13px;
+}
+
+.coupon-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.coupon-used {
+    opacity: 0.55;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.promo-empty {
+    opacity: 0.7;
+}

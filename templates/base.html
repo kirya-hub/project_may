@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,27 +16,58 @@
 <body>
 
     <div class="header">
+
         <a href="{% url 'home' %}" class="header-logo">SHARE</a>
 
+        {# ===== КНОПКА НАЗАД ===== #}
+        {% if show_back %}
+        {% if header_back_url %}
+        <a class="header-back" href="{{ header_back_url }}" aria-label="Назад">
+            <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
+        </a>
+        {% else %}
         <button class="header-back" type="button" aria-label="Назад" onclick="window.history.back();">
-          <svg class="header-back-ico" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+            <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
         </button>
+        {% endif %}
+        {% endif %}
+
+        {# ===== КОЛОКОЛЬЧИК (INBOX) ===== #}
+        {% if request.user.is_authenticated %}
+        <a class="header-inbox" href="{% url 'trades:activity' %}?next={{ request.path }}" aria-label="Уведомления">
+
+            <img class="header-inbox-ico" src="{% static 'icons/bell.svg' %}" alt="">
+
+            {% if inbox_badge_count|default:0 %}
+            <span class="inbox-badge">
+                {% if inbox_badge_count > 9 %}
+                9+
+                {% else %}
+                {{ inbox_badge_count }}
+                {% endif %}
+            </span>
+            {% endif %}
+
+        </a>
+        {% endif %}
 
     </div>
-
-    {% if messages %}
-    <div class="message-container">
-        {% for message in messages %}
-            <div class="message-success">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
     <div style="padding-top: 72px; padding-bottom: 140px;">
-        {% block content %}
-        {% endblock %}
+
+        {% if messages %}
+        <div class="message-container" style="max-width:520px;margin:10px auto;padding:0 12px;">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}"
+                style="margin:8px 0;padding:10px 12px;border:1px solid #eee;border-radius:12px;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
     </div>
 
     <div class="nav-bar">
@@ -46,25 +78,23 @@
         </a>
 
         <a class="nav-item {% if request.path|slice:':9' == '/friends/' %}active{% endif %}"
-           href="{% url 'friends:friends_page' %}">
+            href="{% url 'friends:friends_page' %}">
             <img src="{% static 'icons/friends.svg' %}" class="nav-icon">
             <span>Друзья</span>
         </a>
 
-        <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
-           href="{% url 'add_order' %}">
+        <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}" href="{% url 'add_order' %}">
             <img src="{% static 'icons/add.svg' %}" class="add-icon">
         </a>
 
         <a class="nav-item {% if request.path|slice:':7' == '/promo/' %}active{% endif %}"
-          href="{% url 'promo:home' %}">
+            href="{% url 'promo:home' %}">
             <img src="{% static 'icons/promo.svg' %}" class="nav-icon">
             <span>Промо</span>
         </a>
 
-
         <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
-           href="{% url 'profile_home' %}">
+            href="{% url 'profile_home' %}">
             <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
             <span>Профиль</span>
         </a>
@@ -72,4 +102,5 @@
     </div>
 
 </body>
+
 </html>

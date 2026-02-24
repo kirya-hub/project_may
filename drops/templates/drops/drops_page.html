@@ -4,32 +4,39 @@
 
 {% block content %}
 <div style="max-width:520px;margin:0 auto;padding:14px 12px 110px;">
-    <h2>Drop недели</h2>
+    <h2 style="margin:0 0 10px;">Drop недели</h2>
 
     <div style="opacity:.7;margin-bottom:12px;">
-        До конца: {{ drop_week.seconds_left }} сек
+        До конца: {{ drop_week.time_left_display }}
     </div>
 
     {% if drop_week.status == "CHOOSING" %}
     <div style="margin-bottom:12px;">Выбери 1 из 3 вариантов:</div>
+
     {% for opt in options %}
     <div style="border:1px solid #eee;border-radius:14px;padding:12px;margin-bottom:10px;">
-        <div style="font-weight:700;">{{ opt.cafe.name }}</div>
+        <div style="font-weight:800;">{{ opt.cafe.name }}</div>
         <div style="opacity:.7;">Редкость: {{ opt.get_rarity_display }}</div>
-        <div style="opacity:.7;">
-            Награда: {% if opt.reward_offer %}{{ opt.reward_offer.title }}{% else %}—{% endif %}
+        <div style="opacity:.7;">Награда: {% if opt.reward_offer %}{{ opt.reward_offer.title }}{% else %}—{% endif %}
         </div>
-        <a href="{% url 'choose_drop' opt.id %}">Выбрать</a>
+        <a href="{% url 'choose_drop' opt.id %}"
+            style="display:inline-block;margin-top:8px;font-weight:800;">Выбрать</a>
     </div>
     {% endfor %}
+
     {% elif drop_week.status == "ACTIVE" %}
-    <div style="margin-bottom:12px;">
+    <div style="margin-bottom:12px; font-weight:800;">
         Активно: {{ drop_week.chosen_option.cafe.name }} ({{ drop_week.chosen_option.get_rarity_display }})
     </div>
     <div style="opacity:.7;">Сделай чек в этом месте — и получишь награду.</div>
+
     {% elif drop_week.status == "COMPLETED" %}
-    <div style="margin-bottom:12px;">Миссия выполнена 🎉</div>
+    <div style="margin-bottom:12px; font-weight:900;">Миссия выполнена 🎉</div>
     <div style="opacity:.7;">Награда уже в купонах профиля.</div>
+
+    {% elif drop_week.status == "EXPIRED" %}
+    <div style="margin-bottom:12px; font-weight:900;">Drop истёк</div>
+    <div style="opacity:.7;">Неделя закончилась — заходи, чтобы получить новый Drop.</div>
     {% endif %}
 </div>
 {% endblock %}

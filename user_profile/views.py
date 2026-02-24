@@ -11,7 +11,7 @@ from friends.models import Follow
 from friends.services import friends_qs
 
 from .forms import ProfileEditForm
-from .models import Profile
+from .models import Profile, PromoCode
 
 
 @login_required
@@ -28,7 +28,7 @@ def profile_detail(request, username=None, user_id=None):
     profile = get_object_or_404(Profile, user=user)
 
     today = timezone.localdate()
-    promocodes = profile.promocodes.filter(status='ACTIVE').filter(
+    promocodes = profile.promocodes.filter(status=PromoCode.Status.ACTIVE).filter(
         models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today)
     )
 
@@ -43,10 +43,10 @@ def profile_detail(request, username=None, user_id=None):
 
     if request.user.is_authenticated and request.user != user:
         is_following = Follow.objects.filter(follower=request.user, following=user).exists()
-
         is_follower = Follow.objects.filter(follower=user, following=request.user).exists()
-
         is_friend = is_following and is_follower
+
+    can_trade = request.user.is_authenticated and request.user != user and is_friend
 
     posts = (
         Order.objects.filter(user=user)
@@ -69,7 +69,9 @@ def profile_detail(request, username=None, user_id=None):
         'friends_preview': friends_preview,
         'is_following': is_following,
         'is_friend': is_friend,
+        'can_trade': can_trade,
         'posts': posts,
+        'show_back': request.user.is_authenticated and request.user != user,
     }
 
     return render(request, 'user_profile/profile_detail.html', context)

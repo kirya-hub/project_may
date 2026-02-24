@@ -53,6 +53,24 @@ class DropWeek(models.Model):
         )
         return max(0, int((end - now).total_seconds()))
 
+    @property
+    def time_left_display(self) -> str:
+        """
+        Красивый таймер: дни + часы/минуты.
+        Примеры: "05:12", "2д 03:10", "00:00"
+        """
+        total = self.seconds_left
+        if total <= 0:
+            return '00:00'
+
+        days, rem = divmod(total, 86400)
+        hours, rem = divmod(rem, 3600)
+        minutes, _ = divmod(rem, 60)
+
+        if days > 0:
+            return f'{days}д {hours:02d}:{minutes:02d}'
+        return f'{hours:02d}:{minutes:02d}'
+
     def __str__(self):
         return f'DropWeek({self.user_id}, {self.week_start}, {self.status})'
 

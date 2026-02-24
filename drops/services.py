@@ -40,10 +40,24 @@ def pick_reward_offer(cafe: Cafe, rarity: str) -> CouponOffer | None:
 @transaction.atomic
 def get_or_create_week(user):
     ws = week_start_for()
+
+    DropWeek.objects.filter(
+        user=user,
+        week_start__lt=ws,
+        status__in=[DropWeek.Status.CHOOSING, DropWeek.Status.ACTIVE],
+    ).update(status=DropWeek.Status.EXPIRED)
+
     drop_week, created = DropWeek.objects.get_or_create(user=user, week_start=ws)
 
     if created or drop_week.options.count() == 0:
         generate_options(drop_week)
+
+    if (
+        drop_week.status in [DropWeek.Status.CHOOSING, DropWeek.Status.ACTIVE]
+        and drop_week.seconds_left <= 0
+    ):
+        drop_week.status = DropWeek.Status.EXPIRED
+        drop_week.save(update_fields=['status'])
 
     return drop_week
 
@@ -60,13 +74,18 @@ def generate_options(drop_week: DropWeek):
     new_list = list(Cafe.objects.exclude(id__in=visited_ids))
     any_list = list(Cafe.objects.all())
 
-    chosen_cafes: list[Cafe] = []
-
     random.shuffle(new_list)
     random.shuffle(any_list)
 
-    for c in new_list[:2]:
-        chosen_cafes.append(c)
+    if len(new_list) >= 3:
+        target_new = 3
+    elif len(new_list) >= 2:
+        target_new = 2
+    else:
+        target_new = len(new_list)
+
+    chosen_cafes: list[Cafe] = []
+    chosen_cafes.extend(new_list[:target_new])
 
     for c in any_list:
         if len(chosen_cafes) >= 3:
@@ -96,19 +115,24 @@ def choose_option(drop_week: DropWeek, option_id: int) -> DropWeek:
     drop_week.chosen_option = option
     drop_week.status = DropWeek.Status.ACTIVE
     drop_week.save(update_fields=['chosen_option', 'status'])
+
+    try:
+        from feed.models import FeedEvent
+
+        FeedEvent.objects.create(
+            user=drop_week.user,
+            kind=FeedEvent.Kind.DROP_CHOSEN,
+            cafe=option.cafe,
+            text=f'выбрал Drop в {option.cafe.name}',
+        )
+    except Exception:
+        pass
+
     return drop_week
 
 
 @transaction.atomic
 def try_complete_by_order(order: Order) -> bool:
-    """
-    Завершаем Drop после заказа:
-    - нужен начисленный кэшбек (points_accrued=True)
-    - нужен выбранный cafe
-    - cafe заказа должен совпасть с выбранным cafe Drop
-    - награда (PromoCode) не должна нарушать uniq constraint (profile, source_offer)
-      -> если такой купон уже есть, просто завершаем Drop без создания нового
-    """
     if not order.points_accrued:
         return False
     if not order.cafe_id:

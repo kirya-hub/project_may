@@ -13,6 +13,7 @@ urlpatterns = [
     path('friends/', include('friends.urls')),
     path('promo/', include('promo.urls')),
     path('drops/', include('drops.urls')),
+    path('trade/', include('trades.urls')),
 ]
 
 if settings.DEBUG:
