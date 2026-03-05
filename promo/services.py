@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from user_profile.models import Profile, PromoCode
 
-from .models import CouponOffer, PointsBalance, PointsTransaction
+from .models import CouponOffer, PointsBalance, PointsTransaction, TransactionKind
 
 PERCENT = Decimal('0.05')
 DAILY_ACCRUAL_LIMIT = 2
@@ -30,7 +30,6 @@ def _get_or_create_balance(user) -> PointsBalance:
 
 
 def _sync_profile_points(profile: Profile, points10: int) -> None:
-
     profile.points10 = points10
     profile.save(update_fields=['points10'])
 
@@ -57,7 +56,7 @@ def accrue_points_for_order(order) -> int:
     today_count = (
         PointsTransaction.objects.filter(
             user=order.user,
-            kind=PointsTransaction.Kind.ACCRUAL,
+            kind=TransactionKind.ACCRUAL,
             created_at__date=today,
         )
         .select_for_update()
@@ -78,7 +77,7 @@ def accrue_points_for_order(order) -> int:
             user=order.user,
             order=order,
             amount10=points10,
-            kind=PointsTransaction.Kind.ACCRUAL,
+            kind=TransactionKind.ACCRUAL,
         )
     except IntegrityError:
         order.points_accrued = True
@@ -87,11 +86,17 @@ def accrue_points_for_order(order) -> int:
 
     balance.points10 = (balance.points10 or 0) + points10
     balance.save(update_fields=['points10', 'updated_at'])
-
     _sync_profile_points(profile, balance.points10)
 
     order.points_accrued = True
     order.save(update_fields=['points_accrued'])
+
+    try:
+        from user_profile.levels import add_xp
+
+        add_xp(order.user, 10)
+    except Exception:
+        pass
 
     return points10
 
@@ -101,9 +106,8 @@ class NotEnoughPoints(Exception):
 
 
 def generate_code(groups: int = 2, group_len: int = 4) -> str:
-    """Пример: ABCD-7K2P"""
     alphabet = string.ascii_uppercase + string.digits
-    parts = []
+    parts: list[str] = []
     for _ in range(groups):
         parts.append(''.join(secrets.choice(alphabet) for _ in range(group_len)))
     return '-'.join(parts)
@@ -119,6 +123,7 @@ def generate_unique_code(max_attempts: int = 10) -> str:
 
 @transaction.atomic
 def purchase_offer(user, offer: CouponOffer) -> PromoCode:
+
     if not offer.is_active:
         raise ValueError('Купон не продаётся')
 
@@ -141,7 +146,7 @@ def purchase_offer(user, offer: CouponOffer) -> PromoCode:
         user=user,
         order=None,
         amount10=-cost,
-        kind=PointsTransaction.Kind.SPEND,
+        kind=TransactionKind.SPEND,
     )
 
     expires_at = None

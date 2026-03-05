@@ -1,0 +1,27 @@
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 18px;
+    padding: 0 8px;
+    margin-left: 6px;
+
+    border-radius: 999px;
+    background: #000;
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 18px;
+
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.level-badge::before {
+    content: "LVL ";
+    font-size: 10px;
+    font-weight: 900;
+    opacity: 0.9;
+}

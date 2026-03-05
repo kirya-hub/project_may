@@ -145,6 +145,15 @@ def trade_accept(request, trade_id: int):
     try:
         accept_trade(request.user, trade)
         messages.success(request, 'Обмен принят ✅ Купоны обменяны')
+
+        try:
+            from user_profile.levels import grant_trade_xp_once_per_day
+
+            grant_trade_xp_once_per_day(trade.from_user, 3)
+            grant_trade_xp_once_per_day(trade.to_user, 3)
+        except Exception:
+            pass
+
     except (CouponNotAvailable, TradeError) as e:
         messages.error(request, str(e))
     return redirect('trades:detail', trade_id=trade_id)

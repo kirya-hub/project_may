@@ -31,6 +31,22 @@ class Profile(models.Model):
         verbose_name='Баланс (x10)',
     )
 
+    level = models.PositiveIntegerField(
+        default=1,
+        verbose_name='Уровень',
+    )
+
+    xp = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Опыт',
+    )
+
+    last_trade_xp_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Дата последнего XP за обмен',
+    )
+
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
@@ -109,14 +125,12 @@ class PromoCode(models.Model):
 
     @property
     def is_expired(self) -> bool:
-
         if not self.expires_at:
             return False
         return self.expires_at < timezone.localdate()
 
     @property
     def expires_at_display(self) -> str:
-
         if not self.expires_at:
             return 'Без срока'
 

@@ -1,6 +1,7 @@
 {% load static %}
 {% load feed_extras %}
 {% load tz %}
+{% load level_tags %}
 
 <div class="post-card">
 
@@ -9,9 +10,9 @@
 
       <a class="post-avatar-link" href="{% url 'profile_by_username' o.user.username %}">
         {% if o.user.profile.avatar %}
-          <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
+        <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
         {% else %}
-          <div class="post-avatar-fallback">{{ o.user.username|slice:":1"|upper }}</div>
+        <div class="post-avatar-fallback">{{ o.user.username|slice:":1"|upper }}</div>
         {% endif %}
       </a>
 
@@ -19,16 +20,17 @@
         <div class="post-userline">
           <a class="post-user-link" href="{% url 'profile_by_username' o.user.username %}">
             {{ o.user.username }}
+            <span class="level-badge">{{ o.user|user_level }}</span>
           </a>
 
           {% if o.cafe %}
-            <span class="post-sep">·</span>
-            <a class="post-cafe-link" href="{% url 'cafe_detail' o.cafe.slug %}">
-              {{ o.cafe.name }}
-            </a>
+          <span class="post-sep">·</span>
+          <a class="post-cafe-link" href="{% url 'cafe_detail' o.cafe.slug %}">
+            {{ o.cafe.name }}
+          </a>
           {% elif o.place_name %}
-            <span class="post-sep">·</span>
-            <span class="post-cafe-plain">{{ o.place_name }}</span>
+          <span class="post-sep">·</span>
+          <span class="post-cafe-plain">{{ o.place_name }}</span>
           {% endif %}
         </div>
       </div>
@@ -37,26 +39,26 @@
   </div>
 
   {% if o.dish_photo %}
-    <img class="post-img" src="{{ o.dish_photo.url }}" alt="Фото блюда">
+  <img class="post-img" src="{{ o.dish_photo.url }}" alt="Фото блюда">
   {% endif %}
 
   {% if o.comment %}
-    <div class="post-text">{{ o.comment }}</div>
+  <div class="post-text">{{ o.comment }}</div>
   {% endif %}
 
   <div class="post-actions">
     <div class="post-actions-left">
       {% if user.is_authenticated %}
-        <form action="{% url 'toggle_like' o.id %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.get_full_path }}">
-          <button class="btn-like" type="submit">
-            {% if o.is_liked %}❤️{% else %}🤍{% endif %}
-            {{ o.likes_count }}
-          </button>
-        </form>
+      <form action="{% url 'toggle_like' o.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="btn-like" type="submit">
+          {% if o.is_liked %}❤️{% else %}🤍{% endif %}
+          {{ o.likes_count }}
+        </button>
+      </form>
       {% else %}
-        <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
+      <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
       {% endif %}
 
       <button class="btn-comment" type="button" disabled>💬 Комментарии позже</button>

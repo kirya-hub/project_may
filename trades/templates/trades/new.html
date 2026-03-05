@@ -1,58 +1,26 @@
 {% extends "base.html" %}
+{% load level_tags %}
 {% block title %}Новый обмен{% endblock %}
 
 {% block content %}
 <div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
     <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Новый обмен</div>
-    <div style="opacity:.7; margin-bottom: 14px;">С другом: <b>@{{ to_user.username }}</b></div>
+    <div style="opacity:.7; margin-bottom: 14px;">
+        С другом: <b>@{{ to_user.username }} <span class="level-badge">LVL {% user_level to_user %}</span></b>
+    </div>
 
     {% if form.errors %}
-    <div style="border:1px solid #ffa39e;background:#fff1f0;border-radius:12px;padding:10px 12px;margin-bottom:10px;">
-        {{ form.errors }}
+    <div
+        style="border:1px solid #ffd1d1; background:#fff3f3; padding:10px 12px; border-radius:12px; margin-bottom: 10px;">
+        <b>Ошибки:</b> {{ form.errors }}
     </div>
     {% endif %}
 
     <form method="post">
         {% csrf_token %}
+        {{ form.as_p }}
 
-        <div style="border:1px solid #eee; border-radius:16px; padding:12px; margin-bottom: 10px;">
-            <div style="font-weight:900; margin-bottom: 6px;">{{ form.offered.label }}</div>
-            {{ form.offered }}
-            {% if form.offered.errors %}
-            <div style="margin-top:8px;color:#b42318;font-size:12px;">
-                {{ form.offered.errors }}
-            </div>
-            {% endif %}
-        </div>
-
-        <div style="border:1px solid #eee; border-radius:16px; padding:12px; margin-bottom: 10px;">
-            <div style="font-weight:900; margin-bottom: 6px;">{{ form.requested.label }}</div>
-            {{ form.requested }}
-            {% if form.requested.errors %}
-            <div style="margin-top:8px;color:#b42318;font-size:12px;">
-                {{ form.requested.errors }}
-            </div>
-            {% endif %}
-        </div>
-
-        <div style="border:1px solid #eee; border-radius:16px; padding:12px; margin-bottom: 10px;">
-            <div style="font-weight:900; margin-bottom: 6px;">{{ form.message.label }}</div>
-            {{ form.message }}
-            {% if form.message.errors %}
-            <div style="margin-top:8px;color:#b42318;font-size:12px;">
-                {{ form.message.errors }}
-            </div>
-            {% endif %}
-        </div>
-
-        <button type="submit"
-            style="border:none; border-radius:12px; padding:12px 14px; font-weight:900; cursor:pointer;">
-            Отправить предложение
-        </button>
+        <button type="submit" class="btn" style="width:100%;">Отправить</button>
     </form>
-
-    <div style="opacity:.6; font-size: 12px; margin-top: 10px;">
-        Разрешён обмен 1↔1 или 2↔1.
-    </div>
 </div>
 {% endblock %}

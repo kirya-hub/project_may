@@ -11,8 +11,6 @@
 
 {% block content %}
 
-{# Кнопка «назад» рисуется в base.html через переменную show_back (см. view). #}
-
 <div class="profile-wrap">
   <div class="profile-top">
 
@@ -33,6 +31,22 @@
         {% endif %}
       </div>
       <div class="username">@{{ profile.user.username }}</div>
+    </div>
+
+    <div class="level-progress-card">
+      <div class="level-progress-top">
+        <div class="level-progress-title">Прогресс уровня</div>
+        <div class="level-progress-sub">Lv {{ level }} → {{ next_level }}</div>
+      </div>
+
+      <div class="level-progress-bar" style="--p: {{ level_progress_percent }}%;">
+        <div class="level-progress-fill"></div>
+      </div>
+
+      <div class="level-progress-bottom">
+        <div class="level-progress-xp">{{ xp_in_level }} / {{ xp_needed }} XP</div>
+        <div class="level-progress-percent">{{ level_progress_percent }}%</div>
+      </div>
     </div>
 
     {% if request.user.is_authenticated and request.user == profile.user %}

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/levels.css' %}">
     {% block extra_css %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
@@ -19,7 +20,6 @@
 
         <a href="{% url 'home' %}" class="header-logo">SHARE</a>
 
-        {# ===== КНОПКА НАЗАД ===== #}
         {% if show_back %}
         {% if header_back_url %}
         <a class="header-back" href="{{ header_back_url }}" aria-label="Назад">
@@ -32,22 +32,14 @@
         {% endif %}
         {% endif %}
 
-        {# ===== КОЛОКОЛЬЧИК (INBOX) ===== #}
         {% if request.user.is_authenticated %}
         <a class="header-inbox" href="{% url 'trades:activity' %}?next={{ request.path }}" aria-label="Уведомления">
-
             <img class="header-inbox-ico" src="{% static 'icons/bell.svg' %}" alt="">
-
             {% if inbox_badge_count|default:0 %}
             <span class="inbox-badge">
-                {% if inbox_badge_count > 9 %}
-                9+
-                {% else %}
-                {{ inbox_badge_count }}
-                {% endif %}
+                {% if inbox_badge_count > 9 %}9+{% else %}{{ inbox_badge_count }}{% endif %}
             </span>
             {% endif %}
-
         </a>
         {% endif %}
 
@@ -56,11 +48,14 @@
     <div style="padding-top: 72px; padding-bottom: 140px;">
 
         {% if messages %}
-        <div class="message-container" style="max-width:520px;margin:10px auto;padding:0 12px;">
+        <div class="toast-stack" id="toast-stack" aria-live="polite">
             {% for message in messages %}
-            <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}"
-                style="margin:8px 0;padding:10px 12px;border:1px solid #eee;border-radius:12px;">
-                {{ message }}
+            <div class="toast toast-{{ message.tags|default:'info' }}">
+                <div class="toast-left">
+                    <span class="toast-dot"></span>
+                    <div class="toast-text">{{ message }}</div>
+                </div>
+                <button class="toast-close" type="button">×</button>
             </div>
             {% endfor %}
         </div>
@@ -100,6 +95,31 @@
         </a>
 
     </div>
+
+    <script>
+        (function () {
+            const stack = document.getElementById("toast-stack");
+            if (!stack) return;
+
+            const toasts = Array.from(stack.querySelectorAll(".toast"));
+
+            toasts.forEach((toast) => {
+                const closeBtn = toast.querySelector(".toast-close");
+
+                const remove = () => {
+                    if (toast.classList.contains("toast-hide")) return;
+                    toast.classList.add("toast-hide");
+                    setTimeout(() => toast.remove(), 180);
+                };
+
+                if (closeBtn) closeBtn.addEventListener("click", remove);
+
+                setTimeout(remove, 2600);
+            });
+        })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
 
 </body>
 

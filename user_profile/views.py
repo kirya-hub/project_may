@@ -11,6 +11,7 @@ from friends.models import Follow
 from friends.services import friends_qs
 
 from .forms import ProfileEditForm
+from .levels import xp_needed_for_level
 from .models import Profile, PromoCode
 
 
@@ -62,6 +63,11 @@ def profile_detail(request, username=None, user_id=None):
     else:
         posts = posts.annotate(is_liked=models.Value(False, output_field=models.BooleanField()))
 
+    level = getattr(profile, 'level', 1) or 1
+    xp = getattr(profile, 'xp', 0) or 0
+    xp_needed = xp_needed_for_level(level)
+    level_progress_percent = int(min(100, (xp / xp_needed) * 100)) if xp_needed > 0 else 0
+
     context = {
         'profile': profile,
         'promocodes': promocodes,
@@ -72,6 +78,12 @@ def profile_detail(request, username=None, user_id=None):
         'can_trade': can_trade,
         'posts': posts,
         'show_back': request.user.is_authenticated and request.user != user,
+        'level': level,
+        'xp': xp,
+        'xp_needed': xp_needed,
+        'xp_in_level': xp,
+        'level_progress_percent': level_progress_percent,
+        'next_level': level + 1,
     }
 
     return render(request, 'user_profile/profile_detail.html', context)

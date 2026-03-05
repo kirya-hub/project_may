@@ -1,22 +1,60 @@
 {% extends "base.html" %}
-{% block title %}Активность обменов{% endblock %}
+{% load level_tags %}
+
+{% block title %}Активность{% endblock %}
 
 {% block content %}
-<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Активность</div>
+<div style="max-width:520px;margin:0 auto;padding:14px 12px;">
+    <div style="font-size:22px;font-weight:900;margin-bottom:14px;">
+        Активность
+    </div>
 
     {% if events %}
-    <div style="display:flex; flex-direction:column; gap:10px;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
         {% for e in events %}
-        <a href="{% url 'trades:detail' e.trade.id %}?next={{ request.path }}"
-            style="text-decoration:none; color:#000; border:1px solid #eee; border-radius:16px; padding:12px; display:block;">
-            <div style="display:flex; justify-content:space-between; gap:10px;">
-                <div><b>@{{ e.actor.username }}</b> — {{ e.get_kind_display }}</div>
-                <div style="opacity:.6; font-size:12px;">{{ e.created_at|date:"d.m.Y H:i" }}</div>
+        <a href="{% url 'trades:detail' e.trade.id %}?next={{ request.get_full_path|urlencode }}" style="
+                        text-decoration:none;
+                        color:#000;
+                        border:1px solid #eee;
+                        border-radius:16px;
+                        padding:14px;
+                        display:block;
+                        background:#fff;
+                   ">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-weight:900;">
+                    @{{ e.actor.username }}
+                    <span style="
+                                display:inline-flex;
+                                align-items:center;
+                                justify-content:center;
+                                height:18px;
+                                padding:0 8px;
+                                margin-left:6px;
+                                border-radius:999px;
+                                background:#000;
+                                color:#fff;
+                                font-size:11px;
+                                font-weight:900;
+                            ">
+                        LVL {{ e.actor|user_level }}
+                    </span>
+                    — {{ e.get_kind_display }}
+                </div>
+
+                <div style="opacity:.6;font-size:12px;">
+                    {{ e.created_at|date:"d.m H:i" }}
+                </div>
             </div>
-            <div style="opacity:.7; margin-top: 6px;">
-                @{{ e.trade.from_user.username }} → @{{ e.trade.to_user.username }} • {{ e.trade.get_status_display }}
+
+            <div style="margin-top:8px;opacity:.75;font-size:13px;">
+                @{{ e.trade.from_user.username }}
+                <span style="font-weight:900;">→</span>
+                @{{ e.trade.to_user.username }}
+                • {{ e.trade.get_status_display }}
             </div>
+
         </a>
         {% endfor %}
     </div>
