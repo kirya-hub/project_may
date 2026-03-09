@@ -6,6 +6,7 @@ from drops.services import try_complete_by_order
 from promo.services import accrue_points_for_order
 
 from .forms import OrderForm
+from .services.receipt_validator import process_order_receipt
 
 
 @login_required
@@ -17,6 +18,11 @@ def add_order_page(request):
             order = form.save(commit=False)
             order.user = request.user
             order.save()
+
+            try:
+                process_order_receipt(order)
+            except Exception as e:
+                messages.warning(request, f'Заказ сохранён, но чек не обработался: {e}')
 
             accrue_points_for_order(order)
 

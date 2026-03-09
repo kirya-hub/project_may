@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -9,8 +11,13 @@ from promo.models import CouponOffer
 
 
 def week_start_for(d: timezone.datetime | None = None):
-    day = timezone.localdate() if d is None else d.date()
-    return day - timezone.timedelta(days=day.weekday())
+    if d is None:
+        day = timezone.localdate()
+    elif timezone.is_aware(d):
+        day = timezone.localdate(d)
+    else:
+        day = d.date()
+    return day - timedelta(days=day.weekday())
 
 
 class DropWeek(models.Model):
@@ -43,7 +50,7 @@ class DropWeek(models.Model):
 
     @property
     def expires_at(self):
-        return self.week_start + timezone.timedelta(days=7)
+        return self.week_start + timedelta(days=7)
 
     @property
     def seconds_left(self) -> int:
@@ -55,10 +62,6 @@ class DropWeek(models.Model):
 
     @property
     def time_left_display(self) -> str:
-        """
-        Красивый таймер: дни + часы/минуты.
-        Примеры: "05:12", "2д 03:10", "00:00"
-        """
         total = self.seconds_left
         if total <= 0:
             return '00:00'

@@ -100,3 +100,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/profile/me/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

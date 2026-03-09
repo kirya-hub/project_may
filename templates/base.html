@@ -1,11 +1,12 @@
 {% load static %}
+{% load drop_tags %}
 
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/levels.css' %}">
@@ -16,37 +17,55 @@
 
 <body>
 
-    <div class="header">
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-side header-side-left">
+                {% if show_back %}
+                {% if header_back_url %}
+                <a class="header-back" href="{{ header_back_url }}" aria-label="Назад">
+                    <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
+                </a>
+                {% else %}
+                <button class="header-back" type="button" aria-label="Назад" onclick="window.history.back();">
+                    <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
+                </button>
+                {% endif %}
+                {% else %}
+                <span class="header-side-placeholder" aria-hidden="true"></span>
+                {% endif %}
+            </div>
 
-        <a href="{% url 'home' %}" class="header-logo">SHARE</a>
+            <a href="{% url 'home' %}" class="header-logo">SHARE</a>
 
-        {% if show_back %}
-        {% if header_back_url %}
-        <a class="header-back" href="{{ header_back_url }}" aria-label="Назад">
-            <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
-        </a>
-        {% else %}
-        <button class="header-back" type="button" aria-label="Назад" onclick="window.history.back();">
-            <span class="header-back-ico" style="--ico-url: url('{% static 'icons/back.svg' %}');"></span>
-        </button>
-        {% endif %}
-        {% endif %}
+            <div class="header-side header-side-right">
+                {% if request.user.is_authenticated %}
+                {% drop_has_new request.user as drop_new %}
+                <div class="header-actions">
+                    <a class="header-action" href="{% url 'drops:drops_page' %}" aria-label="Дропы">
+                        <span class="header-action-ico" style="--ico-url: url('{% static 'icons/gift.svg' %}');"></span>
+                        {% if drop_new %}
+                        <span class="drop-badge" aria-hidden="true"></span>
+                        {% endif %}
+                    </a>
 
-        {% if request.user.is_authenticated %}
-        <a class="header-inbox" href="{% url 'trades:activity' %}?next={{ request.path }}" aria-label="Уведомления">
-            <img class="header-inbox-ico" src="{% static 'icons/bell.svg' %}" alt="">
-            {% if inbox_badge_count|default:0 %}
-            <span class="inbox-badge">
-                {% if inbox_badge_count > 9 %}9+{% else %}{{ inbox_badge_count }}{% endif %}
-            </span>
-            {% endif %}
-        </a>
-        {% endif %}
+                    <a class="header-action" href="{% url 'trades:activity' %}?next={{ request.path|urlencode }}"
+                        aria-label="Уведомления">
+                        <span class="header-action-ico" style="--ico-url: url('{% static 'icons/bell.svg' %}');"></span>
+                        {% if inbox_badge_count|default:0 %}
+                        <span class="inbox-badge">
+                            {% if inbox_badge_count > 9 %}9+{% else %}{{ inbox_badge_count }}{% endif %}
+                        </span>
+                        {% endif %}
+                    </a>
+                </div>
+                {% else %}
+                <span class="header-side-placeholder header-side-placeholder-wide" aria-hidden="true"></span>
+                {% endif %}
+            </div>
+        </div>
+    </header>
 
-    </div>
-
-    <div style="padding-top: 72px; padding-bottom: 140px;">
-
+    <main class="page-shell">
         {% if messages %}
         <div class="toast-stack" id="toast-stack" aria-live="polite">
             {% for message in messages %}
@@ -62,39 +81,39 @@
         {% endif %}
 
         {% block content %}{% endblock %}
+    </main>
 
-    </div>
+    <nav class="nav-bar" aria-label="Основная навигация">
+        <div class="nav-bar-inner">
+            <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                <img src="{% static 'icons/feed.svg' %}" class="nav-icon" alt="">
+                <span>Лента</span>
+            </a>
 
-    <div class="nav-bar">
+            <a class="nav-item {% if request.path|slice:':9' == '/friends/' %}active{% endif %}"
+                href="{% url 'friends:friends_page' %}">
+                <img src="{% static 'icons/friends.svg' %}" class="nav-icon" alt="">
+                <span>Друзья</span>
+            </a>
 
-        <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
-            <img src="{% static 'icons/feed.svg' %}" class="nav-icon">
-            <span>Лента</span>
-        </a>
+            <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
+                href="{% url 'add_order' %}" aria-label="Добавить чек">
+                <img src="{% static 'icons/add.svg' %}" class="add-icon" alt="">
+            </a>
 
-        <a class="nav-item {% if request.path|slice:':9' == '/friends/' %}active{% endif %}"
-            href="{% url 'friends:friends_page' %}">
-            <img src="{% static 'icons/friends.svg' %}" class="nav-icon">
-            <span>Друзья</span>
-        </a>
+            <a class="nav-item {% if request.path|slice:':7' == '/promo/' %}active{% endif %}"
+                href="{% url 'promo:home' %}">
+                <img src="{% static 'icons/promo.svg' %}" class="nav-icon" alt="">
+                <span>Промо</span>
+            </a>
 
-        <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}" href="{% url 'add_order' %}">
-            <img src="{% static 'icons/add.svg' %}" class="add-icon">
-        </a>
-
-        <a class="nav-item {% if request.path|slice:':7' == '/promo/' %}active{% endif %}"
-            href="{% url 'promo:home' %}">
-            <img src="{% static 'icons/promo.svg' %}" class="nav-icon">
-            <span>Промо</span>
-        </a>
-
-        <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
-            href="{% url 'profile_home' %}">
-            <img src="{% static 'icons/profile.svg' %}" class="nav-icon">
-            <span>Профиль</span>
-        </a>
-
-    </div>
+            <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
+                href="{% url 'profile_home' %}">
+                <img src="{% static 'icons/profile.svg' %}" class="nav-icon" alt="">
+                <span>Профиль</span>
+            </a>
+        </div>
+    </nav>
 
     <script>
         (function () {
@@ -113,8 +132,337 @@
                 };
 
                 if (closeBtn) closeBtn.addEventListener("click", remove);
-
                 setTimeout(remove, 2600);
+            });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            function updateLikeButton(button, liked, count) {
+                if (!button) return;
+
+                button.classList.toggle('is-liked', liked);
+                button.classList.add('like-bump');
+                setTimeout(() => button.classList.remove('like-bump'), 220);
+
+                button.setAttribute('aria-pressed', liked ? 'true' : 'false');
+
+                const icon = button.querySelector('.btn-like-icon');
+                const countEl = button.querySelector('.btn-like-count');
+
+                if (icon) icon.textContent = liked ? '❤️' : '🤍';
+                if (countEl) countEl.textContent = String(count);
+            }
+
+            function updateCommentCount(orderId, count) {
+                document.querySelectorAll(`[data-target="comments-${orderId}"] .btn-comment-count`).forEach((el) => {
+                    el.textContent = String(count);
+                });
+            }
+
+            function refreshCommentsHeight(wrap) {
+                if (!wrap || !wrap.classList.contains('is-open')) return;
+                wrap.style.maxHeight = wrap.scrollHeight + 'px';
+            }
+
+            function autoResizeTextarea(input) {
+                if (!input) return;
+                input.style.height = '0px';
+                input.style.height = Math.min(Math.max(input.scrollHeight, 24), 110) + 'px';
+            }
+
+            function openComments(button, wrap) {
+                if (!wrap) return;
+
+                wrap.hidden = false;
+                wrap.classList.add('is-open');
+                wrap.style.maxHeight = '0px';
+
+                requestAnimationFrame(() => {
+                    wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                });
+
+                button.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeComments(button, wrap) {
+                if (!wrap) return;
+
+                wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                requestAnimationFrame(() => {
+                    wrap.classList.remove('is-open');
+                    wrap.style.maxHeight = '0px';
+                });
+
+                const finishClose = function (event) {
+                    if (event && event.target !== wrap) return;
+                    if (!wrap.classList.contains('is-open')) {
+                        wrap.hidden = true;
+                    }
+                    wrap.removeEventListener('transitionend', finishClose);
+                };
+
+                wrap.addEventListener('transitionend', finishClose);
+                button.setAttribute('aria-expanded', 'false');
+                closeAllCommentMenus();
+            }
+
+            function bindCommentToggle(button) {
+                if (!button || button.dataset.bound === '1') return;
+                button.dataset.bound = '1';
+
+                button.addEventListener('click', function () {
+                    const targetId = button.dataset.target;
+                    if (!targetId) return;
+
+                    const wrap = document.getElementById(targetId);
+                    if (!wrap) return;
+
+                    if (wrap.classList.contains('is-open')) {
+                        closeComments(button, wrap);
+                    } else {
+                        openComments(button, wrap);
+                    }
+                });
+            }
+
+            function closeAllCommentMenus(exceptMenu) {
+                document.querySelectorAll('.js-comment-menu').forEach((menu) => {
+                    if (exceptMenu && menu === exceptMenu) return;
+                    menu.hidden = true;
+                });
+
+                document.querySelectorAll('.js-comment-more').forEach((btn) => {
+                    const menu = btn.parentElement ? btn.parentElement.querySelector('.js-comment-menu') : null;
+                    if (exceptMenu && menu === exceptMenu) return;
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            async function handleLikeForm(form) {
+                const button = form.querySelector('.btn-like');
+                if (!button || button.dataset.loading === '1') return;
+
+                button.dataset.loading = '1';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                    });
+
+                    if (!response.ok) throw new Error('Like request failed');
+
+                    const data = await response.json();
+                    updateLikeButton(button, !!data.liked, data.likes_count ?? 0);
+                } catch (error) {
+                    form.submit();
+                } finally {
+                    button.disabled = false;
+                    button.dataset.loading = '0';
+                }
+            }
+
+            async function handleCommentForm(form) {
+                const input = form.querySelector('.comment-input');
+                const submit = form.querySelector('.comment-submit');
+                if (!input || !submit || submit.dataset.loading === '1') return;
+
+                const rawText = input.value.trim();
+                if (!rawText) return;
+
+                submit.dataset.loading = '1';
+                submit.disabled = true;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                    });
+
+                    if (!response.ok) throw new Error('Comment request failed');
+
+                    const data = await response.json();
+                    if (!data.ok) throw new Error('Comment not ok');
+
+                    const card = form.closest('.post-card');
+                    const list = card ? card.querySelector('.js-comments-list') : null;
+                    const empty = card ? card.querySelector('.js-comments-empty') : null;
+                    const wrap = card ? card.querySelector('.comments-wrap') : null;
+
+                    if (empty) empty.remove();
+                    if (list && data.comment_html) {
+                        list.insertAdjacentHTML('beforeend', data.comment_html);
+                    }
+
+                    updateCommentCount(data.order_id, data.comments_count ?? 0);
+                    input.value = '';
+                    autoResizeTextarea(input);
+                    refreshCommentsHeight(wrap);
+                } catch (error) {
+                    form.submit();
+                } finally {
+                    submit.disabled = false;
+                    submit.dataset.loading = '0';
+                }
+            }
+
+            async function handleDeleteComment(form) {
+                if (!form || form.dataset.loading === '1') return;
+
+                form.dataset.loading = '1';
+                const button = form.querySelector('button');
+                if (button) button.disabled = true;
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '',
+                        },
+                        credentials: 'same-origin',
+                    });
+
+                    if (!response.ok) throw new Error('Delete comment failed');
+
+                    const data = await response.json();
+                    if (!data.ok) throw new Error('Delete comment not ok');
+
+                    const item = form.closest('.comment-item');
+                    const wrap = form.closest('.comments-wrap');
+                    const list = wrap ? wrap.querySelector('.js-comments-list') : null;
+
+                    if (item) {
+                        item.classList.add('comment-removing');
+
+                        setTimeout(() => {
+                            item.remove();
+
+                            if (list && !list.querySelector('.comment-item')) {
+                                list.insertAdjacentHTML(
+                                    'beforeend',
+                                    '<div class="comments-empty js-comments-empty">Пока нет комментариев</div>'
+                                );
+                            }
+
+                            refreshCommentsHeight(wrap);
+                        }, 150);
+                    } else if (list && !list.querySelector('.comment-item')) {
+                        list.insertAdjacentHTML(
+                            'beforeend',
+                            '<div class="comments-empty js-comments-empty">Пока нет комментариев</div>'
+                        );
+                    }
+
+                    closeAllCommentMenus();
+                    updateCommentCount(data.order_id, data.comments_count ?? 0);
+                    refreshCommentsHeight(wrap);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    if (button) button.disabled = false;
+                    form.dataset.loading = '0';
+                }
+            }
+
+            document.querySelectorAll('.js-toggle-comments').forEach(bindCommentToggle);
+            document.querySelectorAll('.comment-input').forEach(autoResizeTextarea);
+
+            document.addEventListener('input', function (event) {
+                const input = event.target.closest('.comment-input');
+                if (!input) return;
+                autoResizeTextarea(input);
+                refreshCommentsHeight(input.closest('.comments-wrap'));
+            });
+
+            document.addEventListener('click', async function (event) {
+                const deleteBtn = event.target.closest('.comment-menu-delete');
+                if (deleteBtn) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const form = deleteBtn.closest('.js-comment-delete-form');
+                    if (form) {
+                        await handleDeleteComment(form);
+                    }
+                    return;
+                }
+
+                const moreBtn = event.target.closest('.js-comment-more');
+                if (moreBtn) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const actions = moreBtn.parentElement;
+                    const menu = actions ? actions.querySelector('.js-comment-menu') : null;
+                    if (!menu) return;
+
+                    const willOpen = menu.hidden;
+                    closeAllCommentMenus(willOpen ? menu : null);
+                    menu.hidden = !willOpen ? true : false;
+                    moreBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+                    return;
+                }
+
+                if (event.target.closest('.js-comment-menu')) {
+                    event.stopPropagation();
+                    return;
+                }
+
+                if (!event.target.closest('.comment-actions')) {
+                    closeAllCommentMenus();
+                }
+            });
+
+            document.addEventListener('keydown', async function (event) {
+                const input = event.target.closest('.comment-input');
+                if (!input) return;
+                if (event.key !== 'Enter' || event.shiftKey) return;
+
+                event.preventDefault();
+
+                const form = input.closest('.js-comment-form');
+                if (!form) return;
+
+                await handleCommentForm(form);
+            });
+
+            document.addEventListener('submit', async function (event) {
+                const likeForm = event.target.closest('.js-like-form');
+                if (likeForm) {
+                    event.preventDefault();
+                    await handleLikeForm(likeForm);
+                    return;
+                }
+
+                const commentForm = event.target.closest('.js-comment-form');
+                if (commentForm) {
+                    event.preventDefault();
+                    await handleCommentForm(commentForm);
+                    return;
+                }
+
+                const deleteForm = event.target.closest('.js-comment-delete-form');
+                if (deleteForm) {
+                    event.preventDefault();
+                    await handleDeleteComment(deleteForm);
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                document.querySelectorAll('.comments-wrap.is-open').forEach(refreshCommentsHeight);
             });
         })();
     </script>

@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from user_profile.models import Profile, PromoCode
 
-from .models import CouponOffer, PointsBalance, PointsTransaction, TransactionKind
+from .models import CouponOffer, PointsTransaction, TransactionKind
 
 PERCENT = Decimal('0.05')
 DAILY_ACCRUAL_LIMIT = 2
@@ -24,19 +24,12 @@ def _to_points10(total_sum: Decimal) -> int:
     return max(0, min(points10, MAX_POINTS10_PER_ORDER))
 
 
-def _get_or_create_balance(user) -> PointsBalance:
-    balance, _ = PointsBalance.objects.select_for_update().get_or_create(user=user)
-    return balance
-
-
-def _sync_profile_points(profile: Profile, points10: int) -> None:
-    profile.points10 = points10
-    profile.save(update_fields=['points10'])
+def _get_or_create_profile(user) -> Profile:
+    return Profile.objects.select_for_update().get_or_create(user=user)[0]
 
 
 @transaction.atomic
 def accrue_points_for_order(order) -> int:
-
     if getattr(order, 'pk', None):
         from add_order.models import Order as OrderModel
 
@@ -69,8 +62,7 @@ def accrue_points_for_order(order) -> int:
     if points10 <= 0:
         return 0
 
-    profile, _ = Profile.objects.select_for_update().get_or_create(user=order.user)
-    balance = _get_or_create_balance(order.user)
+    profile = _get_or_create_profile(order.user)
 
     try:
         PointsTransaction.objects.create(
@@ -84,9 +76,8 @@ def accrue_points_for_order(order) -> int:
         order.save(update_fields=['points_accrued'])
         return 0
 
-    balance.points10 = (balance.points10 or 0) + points10
-    balance.save(update_fields=['points10', 'updated_at'])
-    _sync_profile_points(profile, balance.points10)
+    profile.points10 = (profile.points10 or 0) + points10
+    profile.save(update_fields=['points10'])
 
     order.points_accrued = True
     order.save(update_fields=['points_accrued'])
@@ -123,24 +114,21 @@ def generate_unique_code(max_attempts: int = 10) -> str:
 
 @transaction.atomic
 def purchase_offer(user, offer: CouponOffer) -> PromoCode:
-
     if not offer.is_active:
         raise ValueError('Купон не продаётся')
 
-    profile, _ = Profile.objects.select_for_update().get_or_create(user=user)
-    balance = _get_or_create_balance(user)
+    profile = _get_or_create_profile(user)
 
     existing = PromoCode.objects.filter(profile=profile, source_offer=offer).first()
     if existing:
         return existing
 
     cost = int(offer.cost_points10 or 0)
-    if (balance.points10 or 0) < cost:
+    if (profile.points10 or 0) < cost:
         raise NotEnoughPoints
 
-    balance.points10 = (balance.points10 or 0) - cost
-    balance.save(update_fields=['points10', 'updated_at'])
-    _sync_profile_points(profile, balance.points10)
+    profile.points10 = (profile.points10 or 0) - cost
+    profile.save(update_fields=['points10'])
 
     PointsTransaction.objects.create(
         user=user,

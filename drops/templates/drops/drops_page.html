@@ -1,42 +1,293 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Drop{% endblock %}
 
 {% block content %}
-<div style="max-width:520px;margin:0 auto;padding:14px 12px 110px;">
-    <h2 style="margin:0 0 10px;">Drop недели</h2>
+<style>
+    .drop-wrap {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 14px 12px 110px;
+    }
 
-    <div style="opacity:.7;margin-bottom:12px;">
-        До конца: {{ drop_week.time_left_display }}
+    .drop-title {
+        margin: 0 0 10px;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+    }
+
+    .drop-subrow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .timer-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 0, 0, .08);
+        background: rgba(0, 0, 0, .02);
+        font-weight: 800;
+    }
+
+    .timer-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #111;
+        opacity: .75;
+    }
+
+    .drop-hint {
+        opacity: .7;
+        font-size: 13px;
+    }
+
+    .drop-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .drop-card {
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: 16px;
+        padding: 12px;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .04);
+    }
+
+    .drop-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .drop-cafe {
+        font-weight: 900;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 900;
+        border: 1px solid rgba(0, 0, 0, .08);
+        background: rgba(0, 0, 0, .03);
+        white-space: nowrap;
+    }
+
+    .rarity-rare {
+        background: rgba(70, 120, 255, .10);
+        border-color: rgba(70, 120, 255, .22);
+    }
+
+    .rarity-legendary {
+        background: rgba(255, 170, 0, .14);
+        border-color: rgba(255, 170, 0, .26);
+    }
+
+    .drop-meta {
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .meta-row {
+        display: flex;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    .meta-key {
+        opacity: .6;
+        min-width: 70px;
+    }
+
+    .meta-val {
+        font-weight: 700;
+        opacity: .9;
+    }
+
+    .drop-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 900;
+        border: 1px solid rgba(0, 0, 0, .12);
+        background: #111;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 900;
+        border: 1px solid rgba(0, 0, 0, .12);
+        background: rgba(0, 0, 0, .02);
+        color: #111;
+        text-decoration: none;
+    }
+
+    .state-card {
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(0, 0, 0, .02);
+    }
+
+    .state-title {
+        font-weight: 900;
+        font-size: 16px;
+        margin: 0 0 6px;
+    }
+
+    .state-text {
+        margin: 0;
+        opacity: .75;
+        font-size: 13px;
+        line-height: 1.35;
+    }
+</style>
+
+<div class="drop-wrap">
+    <div class="drop-subrow">
+        <h2 class="drop-title">Drop недели</h2>
+
+        <div class="timer-pill">
+            <span class="timer-dot"></span>
+            <span class="drop-hint">до конца</span>
+            <span id="dropTimer">—</span>
+        </div>
     </div>
 
     {% if drop_week.status == "CHOOSING" %}
-    <div style="margin-bottom:12px;">Выбери 1 из 3 вариантов:</div>
+    <div class="drop-hint" style="margin-bottom:12px;">Выбери 1 из 3 вариантов:</div>
 
-    {% for opt in options %}
-    <div style="border:1px solid #eee;border-radius:14px;padding:12px;margin-bottom:10px;">
-        <div style="font-weight:800;">{{ opt.cafe.name }}</div>
-        <div style="opacity:.7;">Редкость: {{ opt.get_rarity_display }}</div>
-        <div style="opacity:.7;">Награда: {% if opt.reward_offer %}{{ opt.reward_offer.title }}{% else %}—{% endif %}
+    <div class="drop-grid">
+        {% for opt in options %}
+        <div class="drop-card">
+            <div class="drop-topline">
+                <p class="drop-cafe">{{ opt.cafe.name }}</p>
+
+                <span class="badge
+              {% if opt.rarity == 'RARE' %}rarity-rare{% elif opt.rarity == 'LEGENDARY' %}rarity-legendary{% endif %}
+            ">
+                    {{ opt.get_rarity_display }}
+                </span>
+            </div>
+
+            <div class="drop-meta">
+                <div class="meta-row">
+                    <div class="meta-key">Награда</div>
+                    <div class="meta-val">
+                        {% if opt.reward_offer %}
+                        {{ opt.reward_offer.title }}
+                        {% else %}
+                        —
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="drop-actions">
+                <a class="btn-primary" href="{% url 'drops:choose_drop' opt.id %}">Выбрать</a>
+            </div>
         </div>
-        <a href="{% url 'choose_drop' opt.id %}"
-            style="display:inline-block;margin-top:8px;font-weight:800;">Выбрать</a>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     {% elif drop_week.status == "ACTIVE" %}
-    <div style="margin-bottom:12px; font-weight:800;">
-        Активно: {{ drop_week.chosen_option.cafe.name }} ({{ drop_week.chosen_option.get_rarity_display }})
+    <div class="state-card">
+        <p class="state-title">
+            Активно: {{ drop_week.chosen_option.cafe.name }}
+            <span class="badge" style="margin-left:8px;">
+                {{ drop_week.chosen_option.get_rarity_display }}
+            </span>
+        </p>
+        <p class="state-text">
+            Сделай чек в этом месте - и награда начислится автоматически.
+        </p>
     </div>
-    <div style="opacity:.7;">Сделай чек в этом месте — и получишь награду.</div>
 
     {% elif drop_week.status == "COMPLETED" %}
-    <div style="margin-bottom:12px; font-weight:900;">Миссия выполнена 🎉</div>
-    <div style="opacity:.7;">Награда уже в купонах профиля.</div>
+    <div class="state-card">
+        <p class="state-title">Миссия выполнена 🎉</p>
+        <p class="state-text">Если у дропа была награда-купон — он уже лежит в твоих купонах.</p>
+        <div class="drop-actions" style="margin-top:12px;">
+            <a class="btn-primary" href="/promo/my/">Мои купоны</a>
+            <a class="btn-ghost" href="/promo/">Промо</a>
+        </div>
+    </div>
 
     {% elif drop_week.status == "EXPIRED" %}
-    <div style="margin-bottom:12px; font-weight:900;">Drop истёк</div>
-    <div style="opacity:.7;">Неделя закончилась — заходи, чтобы получить новый Drop.</div>
+    <div class="state-card">
+        <p class="state-title">Drop истёк</p>
+        <p class="state-text">
+            Неделя закончилась. Нажми обновить — и мы пересоберём Drop для текущей недели.
+        </p>
+        <div class="drop-actions" style="margin-top:12px;">
+            <a class="btn-primary" href="/drops/?refresh=1">Обновить</a>
+        </div>
+    </div>
     {% endif %}
 </div>
+
+<script>
+    (function () {
+        let left = Number("{{ drop_week.seconds_left|default:'0' }}") || 0;
+        const el = document.getElementById("dropTimer");
+        if (!el) return;
+
+        function fmt(sec) {
+            sec = Math.max(0, sec);
+            const d = Math.floor(sec / 86400);
+            sec = sec % 86400;
+            const h = Math.floor(sec / 3600);
+            sec = sec % 3600;
+            const m = Math.floor(sec / 60);
+
+            const hh = String(h).padStart(2, "0");
+            const mm = String(m).padStart(2, "0");
+            if (d > 0) return `${d}д ${hh}:${mm}`;
+            return `${hh}:${mm}`;
+        }
+
+        function tick() {
+            el.textContent = fmt(left);
+            left -= 1;
+            if (left < 0) left = 0;
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    })();
+</script>
 {% endblock %}

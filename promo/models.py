@@ -13,8 +13,6 @@ class TransactionKind(models.TextChoices):
 
 
 class PointsBalance(models.Model):
-    """Текущий баланс пользователя (в баллах x10, чтобы хранить без float)."""
-
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -49,7 +47,6 @@ class PointsTransaction(models.Model):
         related_name='points_transactions',
     )
 
-    # положительное = начисление/корректировка, отрицательное = списание
     amount10 = models.IntegerField()
     kind = models.CharField(
         max_length=20,

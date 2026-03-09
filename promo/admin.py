@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from .models import CouponOffer, PointsBalance, PointsTransaction
-
-
-@admin.register(PointsBalance)
-class PointsBalanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'points10', 'updated_at')
-    search_fields = ('user__username', 'user__email')
-    readonly_fields = ('updated_at',)
+from .models import CouponOffer, PointsTransaction
 
 
 @admin.register(CouponOffer)

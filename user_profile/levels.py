@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.db import transaction
 from django.utils import timezone
 
 from .models import Profile
@@ -31,23 +32,24 @@ def add_xp(user, amount: int) -> Profile:
     if amount <= 0:
         return get_or_create_profile(user)
 
-    profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
+    with transaction.atomic():
+        profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
 
-    profile.xp = (profile.xp or 0) + amount
+        profile.xp = (profile.xp or 0) + amount
 
-    if profile.level >= MAX_LEVEL:
-        profile.save(update_fields=['xp'])
+        if profile.level >= MAX_LEVEL:
+            profile.save(update_fields=['xp'])
+            return profile
+
+        while profile.level < MAX_LEVEL:
+            need = xp_needed_for_level(profile.level)
+            if profile.xp < need:
+                break
+            profile.xp -= need
+            profile.level += 1
+
+        profile.save(update_fields=['xp', 'level'])
         return profile
-
-    while profile.level < MAX_LEVEL:
-        need = xp_needed_for_level(profile.level)
-        if profile.xp < need:
-            break
-        profile.xp -= need
-        profile.level += 1
-
-    profile.save(update_fields=['xp', 'level'])
-    return profile
 
 
 def grant_trade_xp_once_per_day(user, amount: int) -> bool:
@@ -55,13 +57,15 @@ def grant_trade_xp_once_per_day(user, amount: int) -> bool:
         return False
 
     today = timezone.localdate()
-    profile = get_or_create_profile(user)
 
-    if profile.last_trade_xp_date == today:
-        return False
+    with transaction.atomic():
+        profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
 
-    profile.last_trade_xp_date = today
-    profile.save(update_fields=['last_trade_xp_date'])
+        if profile.last_trade_xp_date == today:
+            return False
+
+        profile.last_trade_xp_date = today
+        profile.save(update_fields=['last_trade_xp_date'])
 
     add_xp(user, amount)
     return True

@@ -8,8 +8,10 @@ from django.utils import timezone
 
 from add_order.models import Order
 from cafes.models import Cafe
+from feed.models import FeedEvent
 from promo.models import CouponOffer
-from user_profile.models import Profile
+from user_profile.levels import add_xp
+from user_profile.models import Profile, PromoCode
 
 from .models import DropOption, DropWeek, week_start_for
 
@@ -20,11 +22,10 @@ RARITY_WEIGHTS_BASE: list[tuple[str, int]] = [
 ]
 
 
-def weighted_choice(items: list[tuple[str, int]]) -> str:
-    total = 0
-    for _, w in items:
-        total += w
-    r = random.randint(1, total)
+def _weighted_choice(items: list[tuple[str, int]], rng: random.Random | None = None) -> str:
+    rng_obj = rng if rng is not None else random.Random()
+    total = sum(w for _, w in items)
+    r = rng_obj.randint(1, max(1, total))
     acc = 0
     for value, weight in items:
         acc += weight
@@ -33,11 +34,11 @@ def weighted_choice(items: list[tuple[str, int]]) -> str:
     return items[-1][0]
 
 
-def get_rarity_weights_for_user(profile: Profile | None) -> list[tuple[str, int]]:
+def _rarity_weights_for_profile(profile: Profile | None) -> list[tuple[str, int]]:
     if profile is None:
         return RARITY_WEIGHTS_BASE
 
-    level = getattr(profile, 'level', 1) or 1
+    level = int(getattr(profile, 'level', 1) or 1)
     bump = min(level // 5, 10)
 
     common = max(55, 75 - bump * 2)
@@ -55,154 +56,185 @@ def get_rarity_weights_for_user(profile: Profile | None) -> list[tuple[str, int]
     ]
 
 
-def pick_rarity_for_profile(profile: Profile | None) -> str:
-    weights = get_rarity_weights_for_user(profile)
-    return weighted_choice(weights)
+def _pick_rarity(profile: Profile | None, rng: random.Random | None = None) -> str:
+    return _weighted_choice(_rarity_weights_for_profile(profile), rng=rng)
 
 
-def pick_offer_for_rarity(rarity: str) -> CouponOffer:
-    qs = CouponOffer.objects.filter(is_active=True, rarity=rarity)
-    if not qs.exists():
-        qs = CouponOffer.objects.filter(is_active=True)
-    offers = list(qs)
-    return random.choice(offers)
+def _pick_reward_offer(cafe: Cafe | None, rng: random.Random | None = None) -> CouponOffer | None:
+    rng_obj = rng if rng is not None else random.Random()
+    qs = CouponOffer.objects.filter(is_active=True)
+
+    if cafe is not None:
+        cafe_qs = qs.filter(cafe=cafe)
+        if cafe_qs.exists():
+            qs = cafe_qs
+
+    offers = list(qs[:200])
+    if not offers:
+        return None
+    return rng_obj.choice(offers)
 
 
-def get_or_create_current_week(profile: Profile) -> DropWeek:
-    start = week_start_for(timezone.now())
-    week, _ = DropWeek.objects.get_or_create(
-        profile=profile,
-        week_start=start,
-        defaults={'expires_at': start + timedelta(days=7)},
-    )
-    return week
-
-
-def get_or_create_week(user_or_profile):
-    if isinstance(user_or_profile, Profile):
-        return get_or_create_current_week(user_or_profile)
-    profile = Profile.objects.get(user=user_or_profile)
-    return get_or_create_current_week(profile)
-
-
-def _seen_cafe_ids(profile: Profile) -> set[int]:
+def _seen_cafe_ids(user) -> set[int]:
     return set(
-        Order.objects.filter(user=profile.user, status=Order.Status.CONFIRMED)
+        Order.objects.filter(user=user)
+        .exclude(cafe__isnull=True)
         .values_list('cafe_id', flat=True)
         .distinct()
     )
 
 
-def _candidate_cafes(profile: Profile) -> tuple[list[Cafe], list[Cafe]]:
-    seen = _seen_cafe_ids(profile)
+def _pick_3_cafes_for_user(user, rng: random.Random | None = None) -> list[Cafe]:
+    rng_obj = rng if rng is not None else random.Random()
     all_cafes = list(Cafe.objects.all())
+    if not all_cafes:
+        return []
+
+    seen = _seen_cafe_ids(user)
     new_cafes = [c for c in all_cafes if c.id not in seen]
     old_cafes = [c for c in all_cafes if c.id in seen]
-    return new_cafes, old_cafes
 
-
-def _pick_cafe_for_drop(profile: Profile, prefer_new: bool) -> Cafe | None:
-    new_cafes, old_cafes = _candidate_cafes(profile)
-
-    if prefer_new and new_cafes:
-        return random.choice(new_cafes)
-
-    pool = old_cafes or new_cafes
-    if not pool:
-        return None
-    return random.choice(pool)
-
-
-def generate_options_for_week(week: DropWeek) -> list[DropOption]:
-    profile = week.profile
-
-    new_cafes, _ = _candidate_cafes(profile)
+    picks: list[Cafe] = []
 
     if len(new_cafes) >= 2:
-        prefer_flags = [True, True, False]
+        picks.extend(rng_obj.sample(new_cafes, 2))
     elif len(new_cafes) == 1:
-        prefer_flags = [True, False, False]
-    else:
-        prefer_flags = [False, False, False]
+        picks.append(new_cafes[0])
 
-    random.shuffle(prefer_flags)
+    if old_cafes and len(picks) < 3:
+        pool = [c for c in old_cafes if c.id not in {p.id for p in picks}]
+        if pool:
+            picks.append(rng_obj.choice(pool))
 
-    options: list[DropOption] = []
-    used_cafe_ids: set[int] = set()
+    remaining = [c for c in all_cafes if c.id not in {p.id for p in picks}]
+    while remaining and len(picks) < 3:
+        c = rng_obj.choice(remaining)
+        picks.append(c)
+        remaining = [x for x in remaining if x.id != c.id]
 
-    for prefer_new in prefer_flags:
-        cafe = _pick_cafe_for_drop(profile, prefer_new=prefer_new)
-
-        if cafe and cafe.id in used_cafe_ids:
-            for _ in range(5):
-                alt = _pick_cafe_for_drop(profile, prefer_new=prefer_new)
-                if alt and alt.id not in used_cafe_ids:
-                    cafe = alt
-                    break
-
-        if cafe is None:
-            continue
-
-        used_cafe_ids.add(cafe.id)
-
-        rarity = pick_rarity_for_profile(profile)
-        offer = pick_offer_for_rarity(rarity)
-
-        options.append(
-            DropOption(
-                week=week,
-                cafe=cafe,
-                offer=offer,
-                rarity=rarity,
-            )
-        )
-
-    DropOption.objects.bulk_create(options)
-    return options
+    return picks[:3]
 
 
-def ensure_week_options(profile: Profile) -> DropWeek:
-    week = get_or_create_current_week(profile)
+def _get_or_create_week(user) -> DropWeek:
+    start = week_start_for(timezone.now())
+    week, _ = DropWeek.objects.get_or_create(user=user, week_start=start)
+    return week
+
+
+def _expire_if_needed(week: DropWeek) -> DropWeek:
+    if week.status in (DropWeek.Status.COMPLETED, DropWeek.Status.EXPIRED):
+        return week
+
+    if timezone.localdate() >= week.expires_at:
+        week.status = DropWeek.Status.EXPIRED
+        week.save(update_fields=['status'])
+    return week
+
+
+@transaction.atomic
+def ensure_week_options(user) -> DropWeek:
+    week = DropWeek.objects.select_for_update().get(pk=_get_or_create_week(user).pk)
+    week = _expire_if_needed(week)
 
     if week.status in (DropWeek.Status.COMPLETED, DropWeek.Status.EXPIRED):
         return week
 
     if not week.options.exists():
-        generate_options_for_week(week)
+        profile, _ = Profile.objects.get_or_create(user=user)
+        rng = random.Random(f'{user.pk}:{week.week_start.isoformat()}')
+        cafes = _pick_3_cafes_for_user(user, rng=rng)
+
+        options: list[DropOption] = []
+        for cafe in cafes:
+            rarity = _pick_rarity(profile, rng=rng)
+            reward_offer = _pick_reward_offer(cafe, rng=rng)
+            options.append(
+                DropOption(
+                    drop_week=week,
+                    cafe=cafe,
+                    rarity=rarity,
+                    reward_offer=reward_offer,
+                )
+            )
+
+        DropOption.objects.bulk_create(options)
 
     return week
 
 
 @transaction.atomic
-def choose_option(profile: Profile, option_id: int) -> DropWeek:
-    week = ensure_week_options(profile)
+def choose_option(user, option_id: int) -> DropWeek:
+    week = ensure_week_options(user)
+    week = DropWeek.objects.select_for_update().get(pk=week.pk)
 
-    option = DropOption.objects.select_for_update().get(id=option_id, week=week)
+    if week.status != DropWeek.Status.CHOOSING:
+        return week
+
+    option = DropOption.objects.select_for_update().get(pk=option_id, drop_week=week)
+
     week.chosen_option = option
-    week.status = DropWeek.Status.CHOOSEN
+    week.status = DropWeek.Status.ACTIVE
     week.save(update_fields=['chosen_option', 'status'])
+
+    FeedEvent.objects.create(
+        user=user,
+        kind=FeedEvent.Kind.DROP_CHOSEN,
+        cafe=option.cafe,
+        text=f'выбрал Drop: {option.cafe.name}',
+    )
+
     return week
 
 
 @transaction.atomic
 def try_complete_by_order(order: Order) -> bool:
-    if order.status != Order.Status.CONFIRMED:
+    if order.cafe_id is None:
         return False
 
-    profile = Profile.objects.select_for_update().get(user=order.user)
-    week = ensure_week_options(profile)
+    week = _get_or_create_week(order.user)
+    week = DropWeek.objects.select_for_update().get(pk=week.pk)
+    week = _expire_if_needed(week)
 
-    if week.status != DropWeek.Status.CHOOSEN:
+    if week.status != DropWeek.Status.ACTIVE:
+        return False
+    if not week.chosen_option_id:
         return False
 
-    if not week.chosen_option:
+    chosen = DropOption.objects.select_for_update().get(pk=week.chosen_option_id)
+    if chosen.cafe_id != order.cafe_id:
         return False
 
-    if week.chosen_option.cafe_id != order.cafe_id:
-        return False
+    profile, _ = Profile.objects.select_for_update().get_or_create(user=order.user)
+
+    if chosen.reward_offer_id:
+        already = PromoCode.objects.filter(
+            profile=profile,
+            source_offer_id=chosen.reward_offer_id,
+            acquired_at__date__gte=week.week_start,
+        ).exists()
+
+        if not already:
+            from promo.services import generate_unique_code
+
+            PromoCode.objects.create(
+                profile=profile,
+                source_offer_id=chosen.reward_offer_id,
+                code=generate_unique_code(),
+                description=chosen.reward_offer.description if chosen.reward_offer else '',
+                expires_at=(
+                    timezone.localdate() + timedelta(days=int(chosen.reward_offer.expires_in_days))
+                    if chosen.reward_offer and chosen.reward_offer.expires_in_days
+                    else None
+                ),
+                status=PromoCode.Status.ACTIVE,
+            )
 
     week.status = DropWeek.Status.COMPLETED
-    week.completed_at = timezone.now()
-    week.completed_order = order
-    week.save(update_fields=['status', 'completed_at', 'completed_order'])
+    week.save(update_fields=['status'])
+
+    try:
+        add_xp(order.user, 15)
+    except Exception:
+        pass
+
     return True

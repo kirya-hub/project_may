@@ -1,0 +1,35 @@
+{% load level_tags %}
+{% load feed_extras %}
+
+<div class="comment-item" data-comment-id="{{ comment.id }}">
+    <div class="comment-top">
+        <div class="comment-meta">
+            <a class="comment-user"
+                href="{% url 'profile_by_username' comment.user.username %}?next={{ request.get_full_path|urlencode }}">
+                {{ comment.user.username }}
+            </a>
+            <span class="level-badge">{{ comment.user|user_level }}</span>
+            <span class="comment-sep">·</span>
+            <span class="comment-time">{{ comment.created_at|smart_time }}</span>
+        </div>
+
+        {% if request.user.is_authenticated and request.user.id == comment.user_id %}
+        <div class="comment-actions">
+            <button class="comment-more-btn js-comment-more" type="button" aria-label="Действия с комментарием"
+                aria-expanded="false">
+                <span>⋯</span>
+            </button>
+
+            <div class="comment-menu js-comment-menu" hidden>
+                <form class="js-comment-delete-form" action="{% url 'delete_comment' comment.id %}" method="post"
+                    data-comment-id="{{ comment.id }}">
+                    {% csrf_token %}
+                    <button class="comment-menu-delete" type="submit">Удалить комментарий</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="comment-text">{{ comment.text }}</div>
+</div>

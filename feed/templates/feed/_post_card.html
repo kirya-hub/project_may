@@ -3,12 +3,13 @@
 {% load tz %}
 {% load level_tags %}
 
-<div class="post-card">
+<div class="post-card" id="post-{{ o.id }}">
 
   <div class="post-head">
     <div class="post-left">
 
-      <a class="post-avatar-link" href="{% url 'profile_by_username' o.user.username %}">
+      <a class="post-avatar-link"
+        href="{% url 'profile_by_username' o.user.username %}?next={{ request.get_full_path|urlencode }}">
         {% if o.user.profile.avatar %}
         <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
         {% else %}
@@ -18,7 +19,8 @@
 
       <div class="post-userblock">
         <div class="post-userline">
-          <a class="post-user-link" href="{% url 'profile_by_username' o.user.username %}">
+          <a class="post-user-link"
+            href="{% url 'profile_by_username' o.user.username %}?next={{ request.get_full_path|urlencode }}">
             {{ o.user.username }}
             <span class="level-badge">{{ o.user|user_level }}</span>
           </a>
@@ -49,22 +51,51 @@
   <div class="post-actions">
     <div class="post-actions-left">
       {% if user.is_authenticated %}
-      <form action="{% url 'toggle_like' o.id %}" method="post">
+      <form class="js-like-form" action="{% url 'toggle_like' o.id %}" method="post" data-order-id="{{ o.id }}">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
-        <button class="btn-like" type="submit">
-          {% if o.is_liked %}❤️{% else %}🤍{% endif %}
-          {{ o.likes_count }}
+        <button class="btn-like{% if o.is_liked %} is-liked{% endif %}" type="submit"
+          aria-pressed="{% if o.is_liked %}true{% else %}false{% endif %}">
+          <span class="btn-like-icon">{% if o.is_liked %}❤️{% else %}🤍{% endif %}</span>
+          <span class="btn-like-count">{{ o.likes_count }}</span>
         </button>
       </form>
       {% else %}
       <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
       {% endif %}
 
-      <button class="btn-comment" type="button" disabled>💬 Комментарии позже</button>
+      <button class="btn-comment js-toggle-comments" type="button" data-target="comments-{{ o.id }}"
+        aria-expanded="false">
+        <span>💬</span>
+        <span class="btn-comment-count">{{ o.comments_count|default:0 }}</span>
+      </button>
     </div>
 
     <div class="post-time-inline">{{ o.created_at|smart_time }}</div>
+  </div>
+
+  <div class="comments-wrap" id="comments-{{ o.id }}" hidden>
+    <div class="comments-list js-comments-list">
+      {% for comment in o.comments.all %}
+      {% include "feed/_comment_item.html" with comment=comment %}
+      {% empty %}
+      <div class="comments-empty js-comments-empty">Пока нет комментариев</div>
+      {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <form class="comment-form js-comment-form" action="{% url 'add_comment' o.id %}" method="post"
+      data-order-id="{{ o.id }}">
+      {% csrf_token %}
+      <div class="comment-input-wrap">
+        <textarea class="comment-input" name="text" maxlength="300" placeholder="Написать комментарий..." rows="1"
+          enterkeyhint="send"></textarea>
+        <button class="comment-submit" type="submit">Отправить</button>
+      </div>
+    </form>
+    {% else %}
+    <div class="comments-login-note">Войди в аккаунт, чтобы комментировать</div>
+    {% endif %}
   </div>
 
 </div>

@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count, Exists, OuterRef
+from django.db.models import Count, Exists, OuterRef, Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from add_order.models import Order
-from feed.models import Like
+from feed.models import Comment, Like
 from friends.models import Follow
 from friends.services import friends_qs
 
@@ -27,6 +27,7 @@ def profile_detail(request, username=None, user_id=None):
         user = get_object_or_404(User, id=user_id)
 
     profile = get_object_or_404(Profile, user=user)
+    back_url = request.GET.get('next', '').strip()
 
     today = timezone.localdate()
     promocodes = profile.promocodes.filter(status=PromoCode.Status.ACTIVE).filter(
@@ -52,8 +53,19 @@ def profile_detail(request, username=None, user_id=None):
     posts = (
         Order.objects.filter(user=user)
         .select_related('user', 'user__profile', 'cafe')
+        .prefetch_related(
+            Prefetch(
+                'comments',
+                queryset=Comment.objects.select_related('user', 'user__profile').order_by(
+                    'created_at'
+                ),
+            )
+        )
         .order_by('-created_at')
-        .annotate(likes_count=Count('likes', distinct=True))
+        .annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True),
+        )
     )
 
     if request.user.is_authenticated:
@@ -77,7 +89,8 @@ def profile_detail(request, username=None, user_id=None):
         'is_friend': is_friend,
         'can_trade': can_trade,
         'posts': posts,
-        'show_back': request.user.is_authenticated and request.user != user,
+        'show_back': bool(back_url) or (request.user.is_authenticated and request.user != user),
+        'header_back_url': back_url or None,
         'level': level,
         'xp': xp,
         'xp_needed': xp_needed,
