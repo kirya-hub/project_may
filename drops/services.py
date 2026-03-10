@@ -188,6 +188,8 @@ def choose_option(user, option_id: int) -> DropWeek:
 
 @transaction.atomic
 def try_complete_by_order(order: Order) -> bool:
+    if getattr(order, 'is_duplicate', False):
+        return False
     if order.cafe_id is None:
         return False
 

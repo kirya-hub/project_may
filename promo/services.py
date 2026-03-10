@@ -37,10 +37,14 @@ def accrue_points_for_order(order) -> int:
 
     if order.points_accrued:
         return 0
+
+    if getattr(order, 'is_duplicate', False):
+        return 0
+
     if order.total_sum is None:
         return 0
 
-    total_sum = Decimal(order.total_sum)
+    total_sum = Decimal(str(order.total_sum))
     if total_sum < MIN_TOTAL_SUM:
         return 0
 

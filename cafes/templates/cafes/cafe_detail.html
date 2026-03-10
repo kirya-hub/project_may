@@ -11,29 +11,176 @@
 
 <div class="cafe-container">
 
+    <!-- HEADER -->
     <div class="cafe-header">
+
         {% if cafe.avatar %}
-            <img src="{{ cafe.avatar.url }}" class="cafe-avatar">
+        <img src="{{ cafe.avatar.url }}" class="cafe-avatar">
         {% endif %}
-        <h1 class="cafe-name">{{ cafe.name }}</h1>
-        <p class="cafe-address">{{ cafe.address }}</p>
+
+        <div class="cafe-header-info">
+            <h1 class="cafe-name">{{ cafe.name }}</h1>
+
+            {% if cafe.address %}
+            <p class="cafe-address">📍 {{ cafe.address }}</p>
+            {% endif %}
+
+            <div class="cafe-rating">
+                ⭐ 4.6
+            </div>
+        </div>
+
     </div>
 
-    <div class="divider"></div>
 
-    <h2 class="menu-section-title">Меню</h2>
+    <!-- REWARD BLOCK -->
+    <div class="reward-block">
 
-    <div class="menu-grid">
-        {% for category in cafe.categories.all %}
+        <div class="reward-title">
+            🎁 Сегодня в Share
+        </div>
+
+        <div class="reward-content">
+            +120 баллов за чек
+        </div>
+
+        <button class="reward-btn">
+            Получить награду
+        </button>
+
+    </div>
+
+
+    <!-- VISIT PROGRESS -->
+    <div class="progress-block">
+
+        <div class="progress-title">
+            🔥 Прогресс посещений
+        </div>
+
+        <div class="progress-bar">
+
+            <span class="dot filled"></span>
+            <span class="dot filled"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+        </div>
+
+        <div class="progress-text">
+            2 / 5 визитов
+        </div>
+
+    </div>
+
+
+    <!-- DROP -->
+    <div class="drop-block">
+
+        <div class="drop-title">
+            🎲 Drop этого кафе
+        </div>
+
+        <div class="drop-types">
+
+            <span class="drop common">Обычный</span>
+            <span class="drop rare">Редкий</span>
+            <span class="drop legendary">Легендарный</span>
+
+        </div>
+
+        <button class="drop-btn">
+            Открыть Drop
+        </button>
+
+    </div>
+
+
+    <!-- PHOTOS -->
+    <div class="photo-section">
+
+        <h2>Фото</h2>
+
+        <div class="photo-grid">
+
+            <div class="photo"></div>
+            <div class="photo"></div>
+            <div class="photo"></div>
+            <div class="photo"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- REVIEWS -->
+    <div class="review-section">
+
+        <h2>Отзывы</h2>
+
+        <div class="review-card">
+
+            <div class="review-rating">
+                ⭐ 4.6
+            </div>
+
+            <p class="review-text">
+                Очень вкусные бургеры и быстрое обслуживание.
+            </p>
+
+            <span class="review-author">
+                — Артем
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENU -->
+    <div class="menu-section">
+
+        <h2 class="menu-section-title">Меню</h2>
+
+        <div class="menu-grid">
+
+            {% for category in cafe.categories.all %}
             {% if category.slug %}
             <a href="{% url 'category_detail' cafe.slug category.slug %}" class="menu-item">
+
                 {% if category.icon %}
-                    <img src="{{ category.icon.url }}" class="menu-icon">
+                <img src="{{ category.icon.url }}" class="menu-icon">
                 {% endif %}
+
                 <p class="menu-title">{{ category.title }}</p>
+
             </a>
             {% endif %}
-        {% endfor %}
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- INFO -->
+    <div class="cafe-info">
+
+        <h2>Информация</h2>
+
+        <div class="info-row">
+            📍 {{ cafe.address }}
+        </div>
+
+        <div class="info-row">
+            🕒 09:00 – 22:00
+        </div>
+
+        <button class="map-btn">
+            Открыть на карте
+        </button>
+
     </div>
 
 </div>

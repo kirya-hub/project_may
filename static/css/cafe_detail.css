@@ -1,88 +1,407 @@
+:root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --text: #121212;
+    --muted: #6f7280;
+    --line: #ececf3;
+    --accent: #111111;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+    --radius-md: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+}
+
 .cafe-container {
     width: 100%;
-    max-width: 380px;
+    max-width: 760px;
     margin: 0 auto;
-    padding: 16px 12px 60px;
+    padding: 18px 14px 110px;
 }
+
+/* HEADER */
 
 .cafe-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    margin-bottom: 24px;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
 }
 
 .cafe-avatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
     object-fit: cover;
-    object-position: center;
-    display: block;
-    flex: 0 0 110px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin: 0 auto 12px;
+    flex-shrink: 0;
+    border: 1px solid var(--line);
+    background: #f0f1f6;
+}
+
+.cafe-header-info {
+    min-width: 0;
+    flex: 1;
 }
 
 .cafe-name {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0;
+    margin: 0 0 6px;
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--text);
+    word-break: break-word;
 }
 
 .cafe-address {
+    margin: 0 0 8px;
     font-size: 14px;
-    color: #777;
-    margin-top: 4px;
+    line-height: 1.35;
+    color: var(--muted);
 }
 
-.divider {
-    width: 100%;
-    height: 1px;
-    background: #ececec;
-    margin: 14px 0 18px;
+.cafe-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #f3f4f8;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
 }
 
-.menu-section-title {
+/* GENERIC CARD */
+
+.reward-block,
+.progress-block,
+.drop-block,
+.photo-section,
+.review-section,
+.menu-section,
+.cafe-info {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.reward-title,
+.progress-title,
+.drop-title,
+.photo-section h2,
+.review-section h2,
+.menu-section-title,
+.cafe-info h2 {
+    margin: 0 0 12px;
     font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
+    line-height: 1.2;
+    font-weight: 900;
+    color: var(--text);
 }
+
+/* REWARD */
+
+.reward-block {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(255, 214, 102, 0.22), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
+}
+
+.reward-content {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 14px;
+}
+
+.reward-btn,
+.drop-btn,
+.map-btn {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.reward-btn:hover,
+.drop-btn:hover,
+.map-btn:hover {
+    opacity: 0.94;
+}
+
+.reward-btn:active,
+.drop-btn:active,
+.map-btn:active {
+    transform: scale(0.99);
+}
+
+/* PROGRESS */
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #e3e5ec;
+    border: 1px solid #d9dce5;
+}
+
+.dot.filled {
+    background: #111111;
+    border-color: #111111;
+}
+
+.progress-text {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+/* DROP */
+
+.drop-types {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.drop {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    border: 1px solid var(--line);
+}
+
+.drop.common {
+    background: #f4f5f8;
+    color: #4b5563;
+}
+
+.drop.rare {
+    background: #eef3ff;
+    color: #3457d5;
+    border-color: #dbe5ff;
+}
+
+.drop.legendary {
+    background: #fff5df;
+    color: #a16207;
+    border-color: #fde7b2;
+}
+
+/* PHOTOS */
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.photo {
+    aspect-ratio: 1 / 1;
+    border-radius: 18px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08)),
+        linear-gradient(135deg, #dfe3eb, #f3f5f9);
+    border: 1px solid var(--line);
+}
+
+/* REVIEW */
+
+.review-card {
+    border-radius: 18px;
+    background: #f8f9fc;
+    border: 1px solid var(--line);
+    padding: 14px;
+}
+
+.review-rating {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.review-text {
+    margin: 0 0 8px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.review-author {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+/* MENU */
 
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }
 
 .menu-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 132px;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%);
     text-decoration: none;
-    color: #222;
-    transition: 0.2s ease;
+    color: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
 }
 
 .menu-item:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .menu-icon {
-    width: 100%;
-    max-width: 130px;
-    aspect-ratio: 1 / 1;
-    border-radius: 16px;
-    object-fit: cover;
-    background: #fafafa;
-    padding: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    margin-bottom: 14px;
 }
 
 .menu-title {
-    margin-top: 10px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 900;
+    color: var(--text);
+    word-break: break-word;
+}
+
+/* INFO */
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
     font-size: 15px;
-    font-weight: 500;
-    text-align: center;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.info-row:last-of-type {
+    margin-bottom: 14px;
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+    .cafe-container {
+        padding: 12px 12px 110px;
+    }
+
+    .cafe-header,
+    .reward-block,
+    .progress-block,
+    .drop-block,
+    .photo-section,
+    .review-section,
+    .menu-section,
+    .cafe-info {
+        border-radius: 22px;
+        padding: 14px;
+    }
+
+    .cafe-avatar {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+    }
+
+    .cafe-name {
+        font-size: 21px;
+    }
+
+    .reward-content {
+        font-size: 24px;
+    }
+
+    .menu-grid,
+    .photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .menu-item {
+        min-height: 118px;
+        border-radius: 18px;
+    }
+}
+
+/* VERY SMALL */
+
+@media (max-width: 390px) {
+    .cafe-header {
+        align-items: flex-start;
+    }
+
+    .menu-grid,
+    .photo-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .reward-content {
+        font-size: 22px;
+    }
+
+    .reward-title,
+    .progress-title,
+    .drop-title,
+    .photo-section h2,
+    .review-section h2,
+    .menu-section-title,
+    .cafe-info h2 {
+        font-size: 17px;
+    }
 }
