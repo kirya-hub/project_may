@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
-from cafes.models import Cafe
 
 User = get_user_model()
 
@@ -20,9 +19,15 @@ class Order(models.Model):
     dish_photo = models.ImageField(upload_to='orders/photos/', blank=True, null=True)
 
     comment = models.TextField(blank=True, null=True)
+    rating = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Оценка',
+    )
 
     cafe = models.ForeignKey(
-        Cafe,
+        'cafes.Cafe',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

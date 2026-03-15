@@ -9,7 +9,6 @@ register = template.Library()
 
 @register.filter(name='user_level')
 def user_level(user) -> int:
-
     if not user:
         return 1
 
@@ -20,7 +19,22 @@ def user_level(user) -> int:
     return int(getattr(profile, 'level', 1) or 1)
 
 
+@register.filter(name='level_tier')
+def level_tier(value) -> str:
+    try:
+        level = int(value or 1)
+    except (TypeError, ValueError):
+        level = 1
+
+    if level >= 15:
+        return 'max'
+    if level >= 10:
+        return 'high'
+    if level >= 5:
+        return 'mid'
+    return 'base'
+
+
 @register.simple_tag(name='user_level')
 def user_level_tag(user) -> int:
-
     return user_level(user)

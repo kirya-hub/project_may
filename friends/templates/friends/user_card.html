@@ -1,5 +1,4 @@
 {% load static %}
-{% load level_tags %}
 
 <div class="user-card">
   <a class="user-left" href="{% url 'profile_by_username' u.username %}">
@@ -11,20 +10,22 @@
     {% endif %}
 
     <div class="user-text">
-
-      <div class="user-name">
-        {% if u.profile.name %}
-        {{ u.profile.name }}
-        {% else %}
-        {{ u.username }}
-        {% endif %}
-        <span class="level-badge">{{ u|user_level }}</span>
+      <div class="user-name-row">
+        <div class="user-name-main">
+          <div class="user-name">
+            {% if u.profile.name %}
+            {{ u.profile.name }}
+            {% else %}
+            {{ u.username }}
+            {% endif %}
+          </div>
+        </div>
+        {% include "includes/level_badge.html" with user=u size="compact" %}
       </div>
 
       <div class="user-username">
         @{{ u.username }}
       </div>
-
     </div>
   </a>
 

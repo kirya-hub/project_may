@@ -1,13 +1,12 @@
 {% load static %}
-{% load level_tags %}
 
-<div class="post-card event-card event-card-drop">
+<div class="post-card event-card event-card-drop event-card-{{ e.rarity|lower }}">
     <div class="event-head">
         <div class="post-left">
             <a href="{% url 'profile_by_username' e.user.username %}?next={{ request.get_full_path|urlencode }}"
                 class="post-avatar-link">
                 {% if e.user.profile.avatar %}
-                <img class="post-avatar-img" src="{{ e.user.profile.avatar.url }}" alt="ava">
+                <img class="post-avatar-img" src="{{ e.user.profile.avatar.url }}" alt="ava" draggable="false">
                 {% else %}
                 <div class="post-avatar-fallback">{{ e.user.username|first|upper }}</div>
                 {% endif %}
@@ -16,14 +15,15 @@
             <div class="post-userblock">
                 <div class="event-user-meta">
                     <a href="{% url 'profile_by_username' e.user.username %}?next={{ request.get_full_path|urlencode }}"
-                        class="post-user-link">{{ e.user.username}}</a>
-                    <span class="level-badge">{{ e.user|user_level }}</span>
-                    {% if e.cafe %}
-                    <span class="post-sep">·</span>
-                    <a href="{% url 'cafe_detail' e.cafe.slug %}" class="post-cafe-link">{{ e.cafe.name }}</a>
-                    {% endif %}
+                        class="post-user-link"><span class="post-user-link-text">{{ e.user.username }}</span></a>
+                    {% include "includes/level_badge.html" with user=e.user size="compact" %}
                 </div>
-                <div class="post-time-inline">{{ e.created_at|date:"d M" }}</div>
+
+                {% if e.cafe %}
+                <a href="{% url 'cafe_detail' e.cafe.slug %}" class="post-cafe-link post-cafe-link-row">
+                    {{ e.cafe.name }}
+                </a>
+                {% endif %}
             </div>
         </div>
 
@@ -33,8 +33,16 @@
     </div>
 
     <div class="event-body">
-        <div class="event-kicker">Новый Drop</div>
-        <div class="event-title">{{ e.user.profile.name|default:e.user.username }} выбрал новый дроп</div>
+        <div class="event-topline">
+            <div class="event-kicker">Drop</div>
+            <div class="event-rarity event-rarity-{{ e.rarity|lower }}">{{ e.get_rarity_display }}</div>
+        </div>
+
+        <div class="event-title">{{ e.user.username }} выбрал новый drop</div>
         <div class="event-text">{{ e.text }}</div>
+
+        <div class="event-footer">
+            <div class="post-time-inline">{{ e.created_at|date:"j M" }}</div>
+        </div>
     </div>
 </div>

@@ -7,6 +7,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#111111">
+
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'favicon/favicon-96x96.png' %}">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/levels.css' %}">
@@ -86,31 +93,40 @@
     <nav class="nav-bar" aria-label="Основная навигация">
         <div class="nav-bar-inner">
             <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
-                <img src="{% static 'icons/feed.svg' %}" class="nav-icon" alt="">
-                <span>Лента</span>
+                <img class="nav-icon"
+                    src="{% if request.path == '/' %}{% static 'icons/feed_fill.svg' %}{% else %}{% static 'icons/feed.svg' %}{% endif %}"
+                    alt="">
+                <span class="nav-label">Лента</span>
             </a>
 
             <a class="nav-item {% if request.path|slice:':9' == '/friends/' %}active{% endif %}"
                 href="{% url 'friends:friends_page' %}">
-                <img src="{% static 'icons/friends.svg' %}" class="nav-icon" alt="">
-                <span>Друзья</span>
+                <img class="nav-icon"
+                    src="{% if request.path|slice:':9' == '/friends/' %}{% static 'icons/friends_fill.svg' %}{% else %}{% static 'icons/friends.svg' %}{% endif %}"
+                    alt="">
+                <span class="nav-label">Друзья</span>
             </a>
 
-            <a class="add-button {% if request.path|slice:':5' == '/add/' %}active{% endif %}"
-                href="{% url 'add_order' %}" aria-label="Добавить чек">
-                <img src="{% static 'icons/add.svg' %}" class="add-icon" alt="">
+            <a class="nav-item nav-item-add" href="{% url 'add_order' %}">
+                <span class="add-button">
+                    <img src="{% static 'icons/add.svg' %}" class="add-icon">
+                </span>
             </a>
 
             <a class="nav-item {% if request.path|slice:':7' == '/promo/' %}active{% endif %}"
                 href="{% url 'promo:home' %}">
-                <img src="{% static 'icons/promo.svg' %}" class="nav-icon" alt="">
-                <span>Промо</span>
+                <img class="nav-icon"
+                    src="{% if request.path|slice:':7' == '/promo/' %}{% static 'icons/promo_fill.svg' %}{% else %}{% static 'icons/promo.svg' %}{% endif %}"
+                    alt="">
+                <span class="nav-label">Промо</span>
             </a>
 
             <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
                 href="{% url 'profile_home' %}">
-                <img src="{% static 'icons/profile.svg' %}" class="nav-icon" alt="">
-                <span>Профиль</span>
+                <img class="nav-icon"
+                    src="{% if request.path|slice:':9' == '/profile/' %}{% static 'icons/profile_fill.svg' %}{% else %}{% static 'icons/profile.svg' %}{% endif %}"
+                    alt="">
+                <span class="nav-label">Профиль</span>
             </a>
         </div>
     </nav>
@@ -148,22 +164,35 @@
 
                 button.setAttribute('aria-pressed', liked ? 'true' : 'false');
 
-                const icon = button.querySelector('.btn-like-icon');
-                const countEl = button.querySelector('.btn-like-count');
+                const iconEl = button.querySelector('.btn-like-icon');
+                if (iconEl) {
+                    const likedIcon = button.dataset.likedIcon || '❤️';
+                    const unlikedIcon = button.dataset.unlikedIcon || '🤍';
+                    iconEl.textContent = liked ? likedIcon : unlikedIcon;
+                }
 
-                if (icon) icon.textContent = liked ? '❤️' : '🤍';
+                const countEl = button.querySelector('.btn-like-count');
                 if (countEl) countEl.textContent = String(count);
             }
 
             function updateCommentCount(orderId, count) {
-                document.querySelectorAll(`[data-target="comments-${orderId}"] .btn-comment-count`).forEach((el) => {
-                    el.textContent = String(count);
+                document.querySelectorAll(`[data-target="comments-${orderId}"]`).forEach((button) => {
+                    const countEl = button.querySelector('.btn-comment-count');
+                    if (countEl) countEl.textContent = String(count);
+
+                    button.classList.add('comment-bump');
+                    setTimeout(() => button.classList.remove('comment-bump'), 260);
                 });
+            }
+
+            function getCommentsOpenHeight(wrap) {
+                if (!wrap) return 0;
+                return wrap.scrollHeight + 140;
             }
 
             function refreshCommentsHeight(wrap) {
                 if (!wrap || !wrap.classList.contains('is-open')) return;
-                wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                wrap.style.maxHeight = getCommentsOpenHeight(wrap) + 'px';
             }
 
             function autoResizeTextarea(input) {
@@ -180,7 +209,7 @@
                 wrap.style.maxHeight = '0px';
 
                 requestAnimationFrame(() => {
-                    wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                    wrap.style.maxHeight = getCommentsOpenHeight(wrap) + 'px';
                 });
 
                 button.setAttribute('aria-expanded', 'true');
@@ -189,7 +218,7 @@
             function closeComments(button, wrap) {
                 if (!wrap) return;
 
-                wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                wrap.style.maxHeight = getCommentsOpenHeight(wrap) + 'px';
                 requestAnimationFrame(() => {
                     wrap.classList.remove('is-open');
                     wrap.style.maxHeight = '0px';
@@ -260,25 +289,34 @@
                     if (!response.ok) throw new Error('Like request failed');
 
                     const data = await response.json();
-                    updateLikeButton(button, !!data.liked, data.likes_count ?? 0);
+                    updateLikeButton(button, data.liked, data.likes_count);
                 } catch (error) {
-                    form.submit();
+                    console.error(error);
                 } finally {
-                    button.disabled = false;
                     button.dataset.loading = '0';
+                    button.disabled = false;
                 }
             }
 
             async function handleCommentForm(form) {
-                const input = form.querySelector('.comment-input');
-                const submit = form.querySelector('.comment-submit');
-                if (!input || !submit || submit.dataset.loading === '1') return;
+                const wrap = form.closest('.comments-wrap');
+                const list = wrap ? wrap.querySelector('.comments-list') : null;
+                const input = form.querySelector('.comment-form-input, .comment-input');
+                const submit = form.querySelector('.comment-form-submit, .comment-submit');
+                const orderId = form.dataset.orderId;
 
-                const rawText = input.value.trim();
-                if (!rawText) return;
+                if (!wrap || !list || !input || !orderId) return;
+                if (form.dataset.loading === '1') return;
 
-                submit.dataset.loading = '1';
-                submit.disabled = true;
+                const text = input.value.trim();
+                if (!text) return;
+
+                form.dataset.loading = '1';
+                if (submit) {
+                    submit.dataset.loading = '1';
+                    submit.disabled = true;
+                    submit.classList.add('is-sending');
+                }
 
                 try {
                     const response = await fetch(form.action, {
@@ -293,36 +331,48 @@
                     if (!response.ok) throw new Error('Comment request failed');
 
                     const data = await response.json();
-                    if (!data.ok) throw new Error('Comment not ok');
+                    if (!data.ok || !data.comment_html) throw new Error('Invalid comment response');
 
-                    const card = form.closest('.post-card');
-                    const list = card ? card.querySelector('.js-comments-list') : null;
-                    const empty = card ? card.querySelector('.js-comments-empty') : null;
-                    const wrap = card ? card.querySelector('.comments-wrap') : null;
-
+                    const empty = list.querySelector('.js-comments-empty');
                     if (empty) empty.remove();
-                    if (list && data.comment_html) {
-                        list.insertAdjacentHTML('beforeend', data.comment_html);
-                    }
 
-                    updateCommentCount(data.order_id, data.comments_count ?? 0);
+                    list.insertAdjacentHTML('beforeend', data.comment_html);
+                    updateCommentCount(orderId, data.comments_count);
+
                     input.value = '';
                     autoResizeTextarea(input);
                     refreshCommentsHeight(wrap);
+
+                    const newItem = list.lastElementChild;
+                    if (newItem) {
+                        newItem.classList.add('comment-entering');
+                        setTimeout(() => newItem.classList.remove('comment-entering'), 260);
+
+                        const moreBtn = newItem.querySelector('.js-comment-more');
+                        if (moreBtn) bindCommentMenu(moreBtn);
+                    }
                 } catch (error) {
-                    form.submit();
+                    console.error(error);
                 } finally {
-                    submit.disabled = false;
-                    submit.dataset.loading = '0';
+                    form.dataset.loading = '0';
+                    if (submit) {
+                        submit.dataset.loading = '0';
+                        submit.disabled = false;
+                        submit.classList.remove('is-sending');
+                    }
                 }
             }
 
-            async function handleDeleteComment(form) {
-                if (!form || form.dataset.loading === '1') return;
+            async function handleDeleteComment(button) {
+                const form = button.closest('.js-comment-delete-form');
+                if (!form || button.dataset.loading === '1') return;
 
-                form.dataset.loading = '1';
-                const button = form.querySelector('button');
-                if (button) button.disabled = true;
+                const item = form.closest('.comment-item');
+                const orderId = form.dataset.orderId;
+                if (!item || !orderId) return;
+
+                button.dataset.loading = '1';
+                button.disabled = true;
 
                 try {
                     const response = await fetch(form.action, {
@@ -330,144 +380,122 @@
                         body: new FormData(form),
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '',
                         },
                         credentials: 'same-origin',
                     });
 
-                    if (!response.ok) throw new Error('Delete comment failed');
+                    if (!response.ok) throw new Error('Delete comment request failed');
 
                     const data = await response.json();
-                    if (!data.ok) throw new Error('Delete comment not ok');
+                    if (!data.ok) throw new Error('Invalid delete response');
 
-                    const item = form.closest('.comment-item');
-                    const wrap = form.closest('.comments-wrap');
-                    const list = wrap ? wrap.querySelector('.js-comments-list') : null;
+                    item.classList.add('comment-removing');
+                    updateCommentCount(orderId, data.comments_count);
 
-                    if (item) {
-                        item.classList.add('comment-removing');
+                    setTimeout(() => {
+                        item.remove();
 
-                        setTimeout(() => {
-                            item.remove();
-
+                        const wrap = document.getElementById(`comments-${orderId}`);
+                        if (wrap) {
+                            const list = wrap.querySelector('.comments-list');
                             if (list && !list.querySelector('.comment-item')) {
-                                list.insertAdjacentHTML(
-                                    'beforeend',
-                                    '<div class="comments-empty js-comments-empty">Пока нет комментариев</div>'
-                                );
+                                list.insertAdjacentHTML('beforeend', '<div class="comments-empty js-comments-empty">Пока нет комментариев</div>');
                             }
-
                             refreshCommentsHeight(wrap);
-                        }, 150);
-                    } else if (list && !list.querySelector('.comment-item')) {
-                        list.insertAdjacentHTML(
-                            'beforeend',
-                            '<div class="comments-empty js-comments-empty">Пока нет комментариев</div>'
-                        );
-                    }
-
-                    closeAllCommentMenus();
-                    updateCommentCount(data.order_id, data.comments_count ?? 0);
-                    refreshCommentsHeight(wrap);
+                        }
+                    }, 170);
                 } catch (error) {
                     console.error(error);
-                } finally {
-                    if (button) button.disabled = false;
-                    form.dataset.loading = '0';
+                    button.dataset.loading = '0';
+                    button.disabled = false;
                 }
             }
 
-            document.querySelectorAll('.js-toggle-comments').forEach(bindCommentToggle);
-            document.querySelectorAll('.comment-input').forEach(autoResizeTextarea);
+            function bindCommentMenu(button) {
+                if (!button || button.dataset.bound === '1') return;
+                button.dataset.bound = '1';
 
-            document.addEventListener('input', function (event) {
-                const input = event.target.closest('.comment-input');
-                if (!input) return;
-                autoResizeTextarea(input);
-                refreshCommentsHeight(input.closest('.comments-wrap'));
-            });
-
-            document.addEventListener('click', async function (event) {
-                const deleteBtn = event.target.closest('.comment-menu-delete');
-                if (deleteBtn) {
-                    event.preventDefault();
+                button.addEventListener('click', function (event) {
                     event.stopPropagation();
 
-                    const form = deleteBtn.closest('.js-comment-delete-form');
-                    if (form) {
-                        await handleDeleteComment(form);
-                    }
-                    return;
-                }
-
-                const moreBtn = event.target.closest('.js-comment-more');
-                if (moreBtn) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    const actions = moreBtn.parentElement;
-                    const menu = actions ? actions.querySelector('.js-comment-menu') : null;
+                    const menu = button.parentElement ? button.parentElement.querySelector('.js-comment-menu') : null;
                     if (!menu) return;
 
-                    const willOpen = menu.hidden;
-                    closeAllCommentMenus(willOpen ? menu : null);
-                    menu.hidden = !willOpen ? true : false;
-                    moreBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-                    return;
-                }
-
-                if (event.target.closest('.js-comment-menu')) {
-                    event.stopPropagation();
-                    return;
-                }
-
-                if (!event.target.closest('.comment-actions')) {
+                    const isOpen = !menu.hidden;
                     closeAllCommentMenus();
-                }
+
+                    if (isOpen) {
+                        menu.hidden = true;
+                        button.setAttribute('aria-expanded', 'false');
+                    } else {
+                        menu.hidden = false;
+                        button.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.js-like-form').forEach((form) => {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    handleLikeForm(form);
+                });
             });
 
-            document.addEventListener('keydown', async function (event) {
-                const input = event.target.closest('.comment-input');
-                if (!input) return;
-                if (event.key !== 'Enter' || event.shiftKey) return;
+            document.querySelectorAll('.js-comment-toggle').forEach(bindCommentToggle);
+
+            document.querySelectorAll('.comment-form-input').forEach((input) => {
+                autoResizeTextarea(input);
+                input.addEventListener('input', function () {
+                    autoResizeTextarea(input);
+                    const wrap = input.closest('.comments-wrap');
+                    if (wrap) refreshCommentsHeight(wrap);
+                });
+            });
+
+            document.querySelectorAll('.js-comment-form').forEach((form) => {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    handleCommentForm(form);
+                });
+            });
+
+            document.querySelectorAll('.js-comment-more').forEach(bindCommentMenu);
+
+            document.addEventListener('click', function () {
+                closeAllCommentMenus();
+            });
+
+            document.addEventListener('submit', function (event) {
+                const form = event.target;
+                if (!form.classList.contains('js-comment-delete-form')) return;
 
                 event.preventDefault();
-
-                const form = input.closest('.js-comment-form');
-                if (!form) return;
-
-                await handleCommentForm(form);
-            });
-
-            document.addEventListener('submit', async function (event) {
-                const likeForm = event.target.closest('.js-like-form');
-                if (likeForm) {
-                    event.preventDefault();
-                    await handleLikeForm(likeForm);
-                    return;
-                }
-
-                const commentForm = event.target.closest('.js-comment-form');
-                if (commentForm) {
-                    event.preventDefault();
-                    await handleCommentForm(commentForm);
-                    return;
-                }
-
-                const deleteForm = event.target.closest('.js-comment-delete-form');
-                if (deleteForm) {
-                    event.preventDefault();
-                    await handleDeleteComment(deleteForm);
-                }
-            });
-
-            window.addEventListener('resize', function () {
-                document.querySelectorAll('.comments-wrap.is-open').forEach(refreshCommentsHeight);
+                const button = form.querySelector('.js-comment-delete-btn');
+                if (button) handleDeleteComment(button);
             });
         })();
     </script>
 
-    {% block extra_js %}{% endblock %}
+    <script>
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+
+            const input = event.target;
+            if (!(input instanceof HTMLTextAreaElement)) return;
+            if (!input.classList.contains('comment-input')) return;
+
+            event.preventDefault();
+
+            const form = input.closest('form');
+            if (!form) return;
+
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();
+            } else {
+                form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            }
+        });
+    </script>
 
 </body>
 

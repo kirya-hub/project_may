@@ -2,9 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
-from add_order.models import Order
-from cafes.models import Cafe
-
 
 class TransactionKind(models.TextChoices):
     ACCRUAL = 'ACCRUAL', 'Начисление'
@@ -40,7 +37,7 @@ class PointsTransaction(models.Model):
         related_name='points_transactions',
     )
     order = models.ForeignKey(
-        Order,
+        'add_order.Order',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -83,7 +80,7 @@ class CouponOffer(models.Model):
     description = models.TextField('Описание', blank=True)
 
     cafe = models.ForeignKey(
-        Cafe,
+        'cafes.Cafe',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

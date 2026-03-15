@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cafe, MenuCategory, MenuItem
+from .models import Cafe, CafeStaff, MenuCategory, MenuItem
 
 
 class MenuItemInline(admin.TabularInline):
@@ -19,10 +19,24 @@ class MenuCategoryInline(admin.TabularInline):
     extra = 1
 
 
+class CafeStaffInline(admin.TabularInline):
+    model = CafeStaff
+    extra = 1
+    autocomplete_fields = ('user',)
+
+
 @admin.register(Cafe)
 class CafeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address')
-    inlines = [MenuCategoryInline]
+    list_display = ('name', 'address', 'working_hours')
+    search_fields = ('name', 'address')
+    inlines = [MenuCategoryInline, CafeStaffInline]
+
+
+@admin.register(CafeStaff)
+class CafeStaffAdmin(admin.ModelAdmin):
+    list_display = ('cafe', 'user', 'created_at')
+    search_fields = ('cafe__name', 'user__username', 'user__email')
+    autocomplete_fields = ('cafe', 'user')
 
 
 @admin.register(MenuItem)

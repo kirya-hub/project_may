@@ -1,44 +1,54 @@
 {% extends "base.html" %}
+{% load static %}
 {% load level_tags %}
 {% block title %}Обмен{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/trades.css' %}">
+{% endblock %}
+
 {% block content %}
-<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
-    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom: 10px;">
-        <div style="font-size: 22px; font-weight: 800;">Обмен</div>
-        <a href="{% url 'trades:activity' %}" style="text-decoration:none; font-weight:900;">Активность</a>
+<div class="trades-page">
+    <div class="trades-title-row">
+        <div class="trades-title">Обмен</div>
+        <a href="{% url 'trades:activity' %}" class="trade-btn-outline"
+            style="text-decoration: none; display: inline-flex; align-items: center;">Активность</a>
     </div>
 
-    <div style="font-weight:900; margin: 12px 0 8px;">Входящие</div>
-    {% for t in incoming %}
-    <a href="{% url 'trades:detail' t.id %}" style="text-decoration:none; color:inherit;">
-        <div style="border:1px solid #eee; border-radius:14px; padding:12px; margin-bottom:10px;">
-            <div style="font-weight:900;">
-                От @{{ t.from_user.username }} <span class="level-badge">LVL {% user_level t.from_user %}</span>
-            </div>
-            <div style="opacity:.7; margin-top:6px;">
-                {{ t.get_status_display }}
-            </div>
+    <div class="trade-section" style="margin-top: 0;">
+        <div class="trade-section-title">Входящие</div>
+        <div class="trade-card-list">
+            {% for t in incoming %}
+            <a href="{% url 'trades:detail' t.id %}" class="trade-card">
+                <div class="trade-card-top">
+                    <div class="trade-card-title">
+                        От @{{ t.from_user.username }} <span class="level-badge">LVL {% user_level t.from_user %}</span>
+                    </div>
+                    <div class="trade-pill">{{ t.get_status_display }}</div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="trade-empty">Нет входящих обменов</div>
+            {% endfor %}
         </div>
-    </a>
-    {% empty %}
-    <div style="opacity:.7;">Нет</div>
-    {% endfor %}
+    </div>
 
-    <div style="font-weight:900; margin: 14px 0 8px;">Исходящие</div>
-    {% for t in outgoing %}
-    <a href="{% url 'trades:detail' t.id %}" style="text-decoration:none; color:inherit;">
-        <div style="border:1px solid #eee; border-radius:14px; padding:12px; margin-bottom:10px;">
-            <div style="font-weight:900;">
-                Кому @{{ t.to_user.username }} <span class="level-badge">LVL {% user_level t.to_user %}</span>
-            </div>
-            <div style="opacity:.7; margin-top:6px;">
-                {{ t.get_status_display }}
-            </div>
+    <div class="trade-section">
+        <div class="trade-section-title">Исходящие</div>
+        <div class="trade-card-list">
+            {% for t in outgoing %}
+            <a href="{% url 'trades:detail' t.id %}" class="trade-card">
+                <div class="trade-card-top">
+                    <div class="trade-card-title">
+                        Кому @{{ t.to_user.username }} <span class="level-badge">LVL {% user_level t.to_user %}</span>
+                    </div>
+                    <div class="trade-pill">{{ t.get_status_display }}</div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="trade-empty">Нет исходящих обменов</div>
+            {% endfor %}
         </div>
-    </a>
-    {% empty %}
-    <div style="opacity:.7;">Нет</div>
-    {% endfor %}
+    </div>
 </div>
 {% endblock %}

@@ -5,17 +5,17 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/cafe_detail.css' %}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 {% endblock %}
 
 {% block content %}
-
 <div class="cafe-container">
-
-    <!-- HEADER -->
     <div class="cafe-header">
-
         {% if cafe.avatar %}
-        <img src="{{ cafe.avatar.url }}" class="cafe-avatar">
+        <img src="{{ cafe.avatar.url }}" class="cafe-avatar" alt="{{ cafe.name }}">
+        {% else %}
+        <div class="cafe-avatar cafe-avatar-placeholder"></div>
         {% endif %}
 
         <div class="cafe-header-info">
@@ -25,164 +25,233 @@
             <p class="cafe-address">📍 {{ cafe.address }}</p>
             {% endif %}
 
+            {% if rating_value %}
             <div class="cafe-rating">
-                ⭐ 4.6
+                ⭐ {{ rating_value }}
+                <span class="cafe-rating-count">({{ rating_count }})</span>
+            </div>
+            {% else %}
+            <div class="cafe-rating cafe-rating-empty">Пока нет оценок</div>
+            {% endif %}
+
+            {% if can_edit %}
+            <a href="{% url 'cafe_edit' cafe.slug %}" class="edit-cafe-btn">
+                Редактировать
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="share-stats-block">
+        <div class="share-stats-title">Сообщество кафе</div>
+
+        <div class="share-stats-grid share-stats-grid-wide">
+            <div class="share-stat-card">
+                <div class="share-stat-value">{{ checks_count }}</div>
+                <div class="share-stat-label">всего чеков</div>
+            </div>
+
+            <div class="share-stat-card">
+                <div class="share-stat-value">{{ visitors_count }}</div>
+                <div class="share-stat-label">всего посетителей</div>
+            </div>
+
+            <div class="share-stat-card">
+                <div class="share-stat-value">{{ week_checks_count }}</div>
+                <div class="share-stat-label">чеков за 7 дней</div>
+            </div>
+
+            <div class="share-stat-card">
+                <div class="share-stat-value">{{ month_visitors_count }}</div>
+                <div class="share-stat-label">людей за 30 дней</div>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated and friend_visitors %}
+    <div class="friends-here-block">
+        <div class="friends-here-title">Друзья были здесь</div>
+
+        <div class="friends-here-list">
+            {% for friend in friend_visitors %}
+            <a href="{% url 'profile_by_username' friend.username %}?next={{ request.get_full_path|urlencode }}"
+                class="friend-here-item">
+                {% if friend.profile.avatar %}
+                <img src="{{ friend.profile.avatar.url }}" alt="{{ friend.username }}" class="friend-here-avatar">
+                {% else %}
+                <div class="friend-here-avatar friend-here-avatar-placeholder">
+                    {{ friend.username|slice:":1"|upper }}
+                </div>
+                {% endif %}
+                <span class="friend-here-name">{{ friend.username }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if recent_visits %}
+    <div class="social-block">
+        <div class="social-block-title">Недавно были здесь</div>
+        <div class="visit-list">
+            {% for visit in recent_visits %}
+            <a href="{% url 'profile_by_username' visit.user.username %}?next={{ request.get_full_path|urlencode }}"
+                class="visit-item">
+                <div class="visit-user">
+                    {% if visit.user.profile.avatar %}
+                    <img src="{{ visit.user.profile.avatar.url }}" alt="{{ visit.user.username }}" class="visit-avatar">
+                    {% else %}
+                    <div class="visit-avatar visit-avatar-placeholder">{{ visit.user.username|slice:":1"|upper }}</div>
+                    {% endif %}
+
+                    <div class="visit-user-text">
+                        <div class="visit-username">@{{ visit.user.username }}</div>
+                        <div class="visit-date">{{ visit.created_at|date:"d.m.Y H:i" }}</div>
+                    </div>
+                </div>
+
+                <div class="visit-status">Чек</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if recent_posts %}
+    <div class="social-block">
+        <div class="social-block-title">Последние публикации</div>
+        <div class="post-preview-list">
+            {% for post in recent_posts %}
+            <a href="{% url 'profile_by_username' post.user.username %}?next={{ request.get_full_path|urlencode }}"
+                class="post-preview-card">
+                <div class="post-preview-top">
+                    <div class="post-preview-user">@{{ post.user.username }}</div>
+                    <div class="post-preview-date">{{ post.created_at|date:"d.m H:i" }}</div>
+                </div>
+
+                <div class="post-preview-text">
+                    {% if post.comment %}
+                    {{ post.comment|truncatechars:120 }}
+                    {% else %}
+                    Загрузил чек из этого кафе
+                    {% endif %}
+                </div>
+
+                <div class="post-preview-meta">
+                    <span>{{ post.likes_count }} лайков</span>
+                    <span>•</span>
+                    <span>{{ post.comments_count }} комментариев</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if recent_events %}
+    <div class="social-block">
+        <div class="social-block-title">Активность вокруг кафе</div>
+        <div class="event-list">
+            {% for event in recent_events %}
+            <div class="event-item">
+                <div class="event-user">@{{ event.user.username }}</div>
+                <div class="event-text">{{ event.text }}</div>
+                <div class="event-date">{{ event.created_at|date:"d.m.Y H:i" }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if has_map_coordinates %}
+    <div class="cafe-map-block">
+        <div class="cafe-map-top">
+            <div>
+                <div class="cafe-map-title">Где находится</div>
+                {% if cafe.address %}
+                <div class="cafe-map-address">{{ cafe.address }}</div>
+                {% endif %}
             </div>
         </div>
 
+        <div id="cafe-map" class="cafe-map-canvas" data-lat="{{ cafe.latitude }}" data-lng="{{ cafe.longitude }}"
+            data-name="{{ cafe.name|escapejs }}" data-address="{{ cafe.address|default:''|escapejs }}"></div>
+
+        <a href="{{ osm_map_url }}" target="_blank" rel="noopener" class="cafe-map-open-link">
+            Открыть карту
+        </a>
     </div>
+    {% endif %}
 
-
-    <!-- REWARD BLOCK -->
-    <div class="reward-block">
-
-        <div class="reward-title">
-            🎁 Сегодня в Share
-        </div>
-
-        <div class="reward-content">
-            +120 баллов за чек
-        </div>
-
-        <button class="reward-btn">
-            Получить награду
-        </button>
-
-    </div>
-
-
-    <!-- VISIT PROGRESS -->
-    <div class="progress-block">
-
-        <div class="progress-title">
-            🔥 Прогресс посещений
-        </div>
-
-        <div class="progress-bar">
-
-            <span class="dot filled"></span>
-            <span class="dot filled"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-
-        </div>
-
-        <div class="progress-text">
-            2 / 5 визитов
-        </div>
-
-    </div>
-
-
-    <!-- DROP -->
-    <div class="drop-block">
-
-        <div class="drop-title">
-            🎲 Drop этого кафе
-        </div>
-
-        <div class="drop-types">
-
-            <span class="drop common">Обычный</span>
-            <span class="drop rare">Редкий</span>
-            <span class="drop legendary">Легендарный</span>
-
-        </div>
-
-        <button class="drop-btn">
-            Открыть Drop
-        </button>
-
-    </div>
-
-
-    <!-- PHOTOS -->
-    <div class="photo-section">
-
-        <h2>Фото</h2>
-
-        <div class="photo-grid">
-
-            <div class="photo"></div>
-            <div class="photo"></div>
-            <div class="photo"></div>
-            <div class="photo"></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- REVIEWS -->
-    <div class="review-section">
-
-        <h2>Отзывы</h2>
-
-        <div class="review-card">
-
-            <div class="review-rating">
-                ⭐ 4.6
-            </div>
-
-            <p class="review-text">
-                Очень вкусные бургеры и быстрое обслуживание.
-            </p>
-
-            <span class="review-author">
-                — Артем
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- MENU -->
     <div class="menu-section">
-
         <h2 class="menu-section-title">Меню</h2>
 
         <div class="menu-grid">
-
             {% for category in cafe.categories.all %}
             {% if category.slug %}
             <a href="{% url 'category_detail' cafe.slug category.slug %}" class="menu-item">
-
                 {% if category.icon %}
-                <img src="{{ category.icon.url }}" class="menu-icon">
+                <img src="{{ category.icon.url }}" class="menu-icon" alt="{{ category.title }}">
                 {% endif %}
-
                 <p class="menu-title">{{ category.title }}</p>
-
             </a>
             {% endif %}
+            {% empty %}
+            <div class="empty-inline">Категории меню пока не добавлены</div>
             {% endfor %}
-
         </div>
-
     </div>
 
-
-    <!-- INFO -->
     <div class="cafe-info">
-
         <h2>Информация</h2>
 
-        <div class="info-row">
-            📍 {{ cafe.address }}
+        {% if cafe.address %}
+        <div class="info-row">📍 {{ cafe.address }}</div>
+        {% endif %}
+
+        {% if cafe.working_hours %}
+        <div class="info-row">🕒 {{ cafe.working_hours }}</div>
+        {% endif %}
+
+        {% if cafe.description %}
+        <div class="info-description">
+            {{ cafe.description|linebreaksbr }}
         </div>
-
-        <div class="info-row">
-            🕒 09:00 – 22:00
-        </div>
-
-        <button class="map-btn">
-            Открыть на карте
-        </button>
-
+        {% endif %}
     </div>
-
 </div>
 
+{% if has_map_coordinates %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    (function () {
+        const mapNode = document.getElementById('cafe-map');
+        if (!mapNode || typeof L === 'undefined') return;
+
+        const lat = parseFloat(mapNode.dataset.lat);
+        const lng = parseFloat(mapNode.dataset.lng);
+        const name = mapNode.dataset.name || 'Кафе';
+        const address = mapNode.dataset.address || '';
+
+        const map = L.map(mapNode, {
+            scrollWheelZoom: false,
+            zoomControl: true,
+        }).setView([lat, lng], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap',
+        }).addTo(map);
+
+        const marker = L.marker([lat, lng]).addTo(map);
+
+        if (address) {
+            marker.bindPopup('<b>' + name + '</b><br>' + address);
+        } else {
+            marker.bindPopup('<b>' + name + '</b>');
+        }
+    })();
+</script>
+{% endif %}
 {% endblock %}

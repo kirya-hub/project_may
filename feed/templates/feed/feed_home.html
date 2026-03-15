@@ -10,6 +10,22 @@
 {% block content %}
 
 <div class="feed">
+  <section class="feed-hero">
+    <div class="feed-hero-top">
+      <div>
+        <div class="feed-hero-kicker">Главная</div>
+        <h1 class="feed-hero-title">Свежие отзывы, чеки и drop-события</h1>
+        <p class="feed-hero-text">Следи за друзьями, новыми кафе и активностью в одном месте</p>
+      </div>
+      <div class="feed-hero-pill">{{ items|length }} постов</div>
+    </div>
+
+    <a href="{% url 'cafes_list' %}" class="feed-cafes-search">
+      <span class="feed-cafes-search-icon">⌕</span>
+      <span class="feed-cafes-search-text">Найти кафе</span>
+    </a>
+  </section>
+
   {% for item in items %}
   {% if item.type == "order" %}
   {% include "feed/_post_card.html" with o=item.obj %}
@@ -17,7 +33,11 @@
   {% include "feed/_event_card.html" with e=item.obj %}
   {% endif %}
   {% empty %}
-  <div class="empty">Пока нет публикаций. Добавь первый заказ 🙂</div>
+  <div class="feed-empty-card">
+    <div class="feed-empty-emoji">☕</div>
+    <div class="feed-empty-title">Пока нет публикаций</div>
+    <div class="feed-empty-text">Добавь первый чек или отзыв и лента оживёт.</div>
+  </div>
   {% endfor %}
 </div>
 

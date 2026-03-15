@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Кафе{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cafes_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cafes-page">
+    <div class="cafes-top">
+        <h1 class="cafes-title">Кафе</h1>
+
+        <form method="get" class="cafes-search-form" id="cafes-search-form">
+            <div class="cafes-search-field">
+                <input type="text" name="q" value="{{ q }}" class="cafes-search-input" id="cafes-q"
+                    placeholder="Поиск кафе" autocomplete="off">
+                <button type="button" class="cafes-search-clear" id="cafes-clear" aria-label="Очистить">
+                    ×
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="cafes-list">
+        {% for cafe in cafes %}
+        <a href="{% url 'cafe_detail' cafe.slug %}?next={{ request.get_full_path|urlencode }}" class="cafe-list-card">
+            <div class="cafe-list-left">
+                {% if cafe.avatar %}
+                <img src="{{ cafe.avatar.url }}" alt="{{ cafe.name }}" class="cafe-list-avatar">
+                {% else %}
+                <div class="cafe-list-avatar cafe-list-avatar-placeholder">
+                    {{ cafe.name|slice:":1"|upper }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="cafe-list-main">
+                <div class="cafe-list-name-row">
+                    <div class="cafe-list-name">{{ cafe.name }}</div>
+                </div>
+
+                {% if cafe.address %}
+                <div class="cafe-list-address">
+                    <span class="cafe-list-pin">📍</span>
+                    <span class="cafe-list-address-text">{{ cafe.address }}</span>
+                </div>
+                {% endif %}
+
+                <div class="cafe-list-stats">
+                    <span>{{ cafe.checks_count }} чеков</span>
+                    <span class="cafe-list-dot">•</span>
+                    <span>{{ cafe.visitors_count }} посетителей</span>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="cafes-empty">
+            <div class="cafes-empty-title">Ничего не найдено</div>
+            <div class="cafes-empty-text">Попробуй другой запрос</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    (function () {
+        const form = document.getElementById('cafes-search-form');
+        const input = document.getElementById('cafes-q');
+        const clearBtn = document.getElementById('cafes-clear');
+
+        function sync() {
+            if (input.value.trim().length) {
+                clearBtn.classList.add('show');
+            } else {
+                clearBtn.classList.remove('show');
+            }
+        }
+
+        input.addEventListener('input', function () {
+            sync();
+        });
+
+        clearBtn.addEventListener('click', function () {
+            const hadValue = input.value.trim().length > 0;
+            input.value = '';
+            sync();
+            input.focus();
+
+            if (hadValue) {
+                form.submit();
+            }
+        });
+
+        sync();
+    })();
+</script>
+{% endblock %}

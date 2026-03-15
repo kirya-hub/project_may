@@ -1,0 +1,297 @@
+:root {
+    --cafes-bg: #f5f6fa;
+    --cafes-card: #ffffff;
+    --cafes-text: #121212;
+    --cafes-muted: #767b86;
+    --cafes-line: #ececf3;
+    --cafes-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    --cafes-radius-xl: 24px;
+    --cafes-radius-lg: 18px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--cafes-bg);
+}
+
+.cafes-page {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 14px 14px 110px;
+}
+
+.cafes-top {
+    margin-bottom: 14px;
+}
+
+.cafes-title {
+    margin: 0 0 14px;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--cafes-text);
+}
+
+.cafes-search-form {
+    margin: 0;
+}
+
+.cafes-search-field {
+    position: relative;
+    width: 100%;
+}
+
+.cafes-search-input {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 48px 0 16px;
+    border: 1px solid var(--cafes-line);
+    border-radius: 16px;
+    background: #ffffff;
+    color: var(--cafes-text);
+    font-size: 15px;
+    font-weight: 700;
+    outline: none;
+    box-shadow: var(--cafes-shadow);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.cafes-search-input::placeholder {
+    color: #9aa0ab;
+    font-weight: 600;
+}
+
+.cafes-search-input:focus {
+    border-color: #d8dbe5;
+    box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.04);
+}
+
+.cafes-search-clear {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    transform: translateY(-50%) scale(0.92);
+    border: 1px solid var(--cafes-line);
+    border-radius: 999px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.cafes-search-clear.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+
+.cafes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cafe-list-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--cafes-line);
+    border-radius: var(--cafes-radius-xl);
+    background: var(--cafes-card);
+    box-shadow: var(--cafes-shadow);
+    text-decoration: none;
+    color: var(--cafes-text);
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.cafe-list-card:hover {
+    text-decoration: none;
+    color: var(--cafes-text);
+    border-color: #e2e5ee;
+}
+
+.cafe-list-card:active {
+    transform: scale(0.992);
+}
+
+.cafe-list-left {
+    flex-shrink: 0;
+}
+
+.cafe-list-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    object-fit: cover;
+    display: block;
+    background: #eef1f6;
+    border: 1px solid #eef0f5;
+}
+
+.cafe-list-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #5e6470;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08)),
+        linear-gradient(135deg, #dfe3eb, #f3f5f9);
+    text-transform: uppercase;
+}
+
+.cafe-list-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.cafe-list-name-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.cafe-list-name {
+    min-width: 0;
+    font-size: 20px;
+    line-height: 1.15;
+    font-weight: 900;
+    color: var(--cafes-text);
+    word-break: break-word;
+}
+
+.cafe-list-address {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    min-width: 0;
+    color: var(--cafes-muted);
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+.cafe-list-pin {
+    flex-shrink: 0;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.cafe-list-address-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cafe-list-stats {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    color: #6b707a;
+    font-size: 13px;
+    line-height: 1.3;
+    font-weight: 800;
+}
+
+.cafe-list-dot {
+    color: #b6bac3;
+}
+
+.cafes-empty {
+    padding: 20px 16px;
+    border: 1px solid var(--cafes-line);
+    border-radius: var(--cafes-radius-xl);
+    background: var(--cafes-card);
+    box-shadow: var(--cafes-shadow);
+    text-align: center;
+}
+
+.cafes-empty-title {
+    margin: 0 0 6px;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--cafes-text);
+}
+
+.cafes-empty-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--cafes-muted);
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .cafes-page {
+        padding: 12px 12px 110px;
+    }
+
+    .cafes-title {
+        font-size: 24px;
+    }
+
+    .cafe-list-card {
+        padding: 12px;
+        gap: 12px;
+        border-radius: 22px;
+    }
+
+    .cafe-list-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+    }
+
+    .cafe-list-name {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 390px) {
+    .cafes-title {
+        font-size: 22px;
+    }
+
+    .cafes-search-input {
+        min-height: 50px;
+        font-size: 14px;
+    }
+
+    .cafe-list-name-row {
+        gap: 8px;
+    }
+
+    .cafe-list-name {
+        font-size: 17px;
+    }
+
+    .cafe-list-address {
+        font-size: 13px;
+    }
+
+    .cafe-list-stats {
+        font-size: 12px;
+    }
+}

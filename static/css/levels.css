@@ -1,27 +1,94 @@
 .level-badge {
+    --level-size: 24px;
+    --level-font-size: 12px;
+    --level-bg-start: #2a2a2a;
+    --level-bg-end: #111111;
+    --level-border: rgba(255, 255, 255, 0.18);
+    --level-shadow: rgba(0, 0, 0, 0.2);
+
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    height: 18px;
-    padding: 0 8px;
-    margin-left: 6px;
-
+    flex: 0 0 auto;
+    width: var(--level-size);
+    height: var(--level-size);
+    min-width: var(--level-size);
+    min-height: var(--level-size);
+    padding: 0;
+    margin: 0;
     border-radius: 999px;
-    background: #000;
+    border: 1px solid var(--level-border);
+    background: linear-gradient(180deg, var(--level-bg-start) 0%, var(--level-bg-end) 100%);
     color: #fff;
-
-    font-size: 11px;
-    font-weight: 900;
-    line-height: 18px;
-
-    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 10px var(--level-shadow);
     vertical-align: middle;
+    text-decoration: none;
+    text-indent: 0;
+    overflow: hidden;
+    isolation: isolate;
+    direction: ltr;
+    unicode-bidi: isolate;
+    writing-mode: horizontal-tb;
+    transform: translateZ(0);
 }
 
-.level-badge::before {
-    content: "LVL ";
-    font-size: 10px;
+.level-badge::before,
+.level-badge::after {
+    content: none !important;
+    display: none !important;
+}
+
+.level-badge__text {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: var(--level-font-size);
     font-weight: 900;
-    opacity: 0.9;
+    line-height: 1;
+    letter-spacing: 0;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transform: translateY(-0.5px);
+}
+
+.level-badge--compact {
+    --level-size: 24px;
+    --level-font-size: 12px;
+}
+
+.level-badge--hero {
+    --level-size: 30px;
+    --level-font-size: 14px;
+}
+
+.level-badge--base {
+    --level-bg-start: #2a2a2a;
+    --level-bg-end: #111111;
+    --level-border: rgba(255, 255, 255, 0.18);
+    --level-shadow: rgba(0, 0, 0, 0.2);
+}
+
+.level-badge--mid {
+    --level-bg-start: #27365a;
+    --level-bg-end: #131b2d;
+    --level-border: rgba(101, 142, 255, 0.34);
+    --level-shadow: rgba(35, 65, 140, 0.24);
+}
+
+.level-badge--high {
+    --level-bg-start: #4d3720;
+    --level-bg-end: #24170c;
+    --level-border: rgba(255, 188, 82, 0.38);
+    --level-shadow: rgba(143, 91, 28, 0.24);
+}
+
+.level-badge--max {
+    --level-bg-start: #4d2f6d;
+    --level-bg-end: #23142f;
+    --level-border: rgba(197, 139, 255, 0.42);
+    --level-shadow: rgba(99, 49, 149, 0.26);
 }

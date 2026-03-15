@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Редактирование {{ cafe.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cafe_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cafe-edit-page">
+    <div class="cafe-edit-card">
+        <h1 class="cafe-edit-title">Редактирование кафе</h1>
+        <p class="cafe-edit-subtitle">{{ cafe.name }}</p>
+
+        <form method="post" enctype="multipart/form-data" class="cafe-edit-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Название</label>
+                {{ form.name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.avatar.id_for_label }}">Аватар</label>
+                {{ form.avatar }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Адрес</label>
+                {{ form.address }}
+            </div>
+
+            <div class="map-help-card">
+                <div class="map-help-title">Точка на карте</div>
+                <div class="map-help-text">
+                    Адрес и координаты должны указывать на одно и то же место.
+                    Если меняешь адрес — обнови широту и долготу тоже.
+                </div>
+
+                {% if osm_map_url %}
+                <a href="{{ osm_map_url }}" target="_blank" rel="noopener" class="map-help-link">
+                    Открыть текущую точку в карте
+                </a>
+                {% else %}
+                <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener" class="map-help-link">
+                    Открыть карту
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="form-row-two">
+                <div class="form-group">
+                    <label for="{{ form.latitude.id_for_label }}">Широта</label>
+                    {{ form.latitude }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.longitude.id_for_label }}">Долгота</label>
+                    {{ form.longitude }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.working_hours.id_for_label }}">Часы работы</label>
+                {{ form.working_hours }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Описание</label>
+                {{ form.description }}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="form-errors">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <a href="{% url 'cafe_detail' cafe.slug %}" class="btn-secondary">Отмена</a>
+                <button type="submit" class="btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

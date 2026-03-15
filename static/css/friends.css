@@ -1,27 +1,27 @@
-.friends-wrap{
+.friends-wrap {
   max-width: 520px;
   margin: 0 auto;
   padding: 14px 12px 110px;
 }
 
-.friends-header{
-  display:flex;
+.friends-header {
+  display: flex;
   align-items: baseline;
   gap: 10px;
   margin-bottom: 12px;
 }
 
-.friends-title{
+.friends-title {
   font-size: 22px;
   font-weight: 800;
 }
 
-.friends-count{
+.friends-count {
   font-size: 16px;
   opacity: .7;
 }
 
-.friends-search{
+.friends-search {
   position: sticky;
   top: 92px;
   z-index: 50;
@@ -30,20 +30,19 @@
   margin: 0 0 10px;
 }
 
-.friends-tabs{
+.friends-tabs {
   position: sticky;
   top: 146px;
   z-index: 49;
   background: #fff;
   padding: 6px 0 10px;
   margin: 0 0 14px;
-
   display: flex;
   gap: 8px;
 }
 
 .friends-search::before,
-.friends-tabs::before{
+.friends-tabs::before {
   content: "";
   position: absolute;
   left: -12px;
@@ -54,19 +53,12 @@
   z-index: -1;
 }
 
-.friends-search,
-.friends-tabs{
-  position: sticky;
-  position: sticky;
-  position: sticky;
-}
-
-.search-field{
+.search-field {
   position: relative;
   width: 100%;
 }
 
-.search-field input{
+.search-field input {
   width: 100%;
   height: 44px;
   padding: 0 44px 0 14px;
@@ -78,7 +70,7 @@
   background: #fff;
 }
 
-.search-clear{
+.search-clear {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -91,109 +83,126 @@
   line-height: 1;
   padding: 0;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%) scale(.92);
   transition: opacity .18s ease, transform .18s ease;
 }
 
-.search-clear.show{
+.search-clear.show {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(-50%) scale(1);
 }
 
-.friends-tabs a{
+.friends-tabs a {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid #e6e6e6;
-  text-decoration:none;
-  color:#000;
-  font-weight:700;
-  opacity:.8;
+  text-decoration: none;
+  color: #000;
+  font-weight: 700;
+  opacity: .8;
   background: #fff;
 }
 
-.friends-tabs a.active{
+.friends-tabs a.active {
   opacity: 1;
 }
 
-.popular-block{
+.popular-block {
   margin: 8px 0 18px;
 }
 
-.popular-title{
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.list-title{
+.popular-title,
+.list-title {
   font-weight: 800;
   margin: 10px 0 8px;
 }
 
-.user-list{
-  display:flex;
-  flex-direction:column;
+.user-list {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.user-card{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid #eee;
-  border-radius: 16px;
-  background:#fff;
+  padding: 12px;
+  border: 1px solid #ededed;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
 }
 
-.user-left{
-  display:flex;
-  align-items:center;
+.user-left {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  text-decoration:none;
-  color:#000;
+  text-decoration: none;
+  color: #000;
   min-width: 0;
+  flex: 1;
 }
 
-.user-ava{
+.user-ava {
   width: 46px;
   height: 46px;
   border-radius: 999px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
-.user-text{
-  min-width:0;
+.user-text {
+  min-width: 0;
+  flex: 1;
 }
 
-.user-name{
+.user-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.user-name-main {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.user-name {
   font-weight: 800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width: 240px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.user-username{
+.user-name-row .level-badge {
+  flex: 0 0 auto;
+}
+
+.user-username {
   font-size: 13px;
   opacity: .7;
+  margin-top: 2px;
 }
 
-.user-actions{
-  display:flex;
-  align-items:center;
+.user-actions {
+  display: flex;
+  align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
-.badge{
+.badge {
   font-weight: 800;
   opacity: .75;
   padding: 8px 10px;
@@ -201,23 +210,29 @@
   border: 1px solid #e6e6e6;
 }
 
-.btn{
+.btn {
   padding: 8px 12px;
   border-radius: 999px;
   border: 0;
-  background:#000;
-  color:#fff;
+  background: #000;
+  color: #fff;
   font-weight: 800;
 }
 
-.btn-outline{
-  background:#fff;
-  color:#000;
+.btn-outline {
+  background: #fff;
+  color: #000;
   border: 1px solid #e6e6e6;
 }
 
-.empty{
+.empty {
   padding: 18px 10px;
   opacity: .7;
   text-align: center;
+}
+
+@media (max-width: 430px) {
+  .user-card {
+    padding: 10px;
+  }
 }

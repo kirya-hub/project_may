@@ -1,26 +1,67 @@
 {% extends "base.html" %}
+{% load static %}
 {% load level_tags %}
 {% block title %}Новый обмен{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/trades.css' %}">
+{% endblock %}
+
 {% block content %}
-<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Новый обмен</div>
-    <div style="opacity:.7; margin-bottom: 14px;">
-        С другом: <b>@{{ to_user.username }} <span class="level-badge">LVL {% user_level to_user %}</span></b>
+<div class="trades-page">
+    <div class="trades-title">Новый обмен</div>
+    <div class="trades-muted" style="margin-bottom: 14px;">
+        С другом: <b>@{{ to_user.username }}</b> <span class="level-badge">{% user_level to_user %}</span>
     </div>
 
     {% if form.errors %}
-    <div
-        style="border:1px solid #ffd1d1; background:#fff3f3; padding:10px 12px; border-radius:12px; margin-bottom: 10px;">
+    <div class="trade-error">
         <b>Ошибки:</b> {{ form.errors }}
     </div>
     {% endif %}
 
-    <form method="post">
+    <form method="post" class="trade-form">
         {% csrf_token %}
-        {{ form.as_p }}
 
-        <button type="submit" class="btn" style="width:100%;">Отправить</button>
+        <div class="trade-field">
+            <label class="trade-label">{{ form.offered.label }}</label>
+            <div class="trade-options">
+                {% for choice in form.offered %}
+                <label class="trade-option">
+                    {{ choice.tag }}
+                    <div>
+                        <div class="trade-option-code">{{ choice.choice_label }}</div>
+                    </div>
+                </label>
+                {% empty %}
+                <div class="trade-empty-inline">У тебя нет доступных купонов для обмена</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="trade-field">
+            <label class="trade-label">{{ form.requested.label }}</label>
+            <div class="trade-options">
+                {% for choice in form.requested %}
+                <label class="trade-option">
+                    {{ choice.tag }}
+                    <div>
+                        <div class="trade-option-code">{{ choice.choice_label }}</div>
+                    </div>
+                </label>
+                {% empty %}
+                <div class="trade-empty-inline">У друга нет доступных купонов для обмена</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="trade-field">
+            <label class="trade-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+            <textarea name="{{ form.message.html_name }}" id="{{ form.message.id_for_label }}" class="trade-textarea"
+                rows="4">{{ form.message.value|default:'' }}</textarea>
+        </div>
+
+        <button type="submit" class="trade-submit">Отправить</button>
     </form>
 </div>
 {% endblock %}

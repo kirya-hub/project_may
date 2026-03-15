@@ -1,16 +1,27 @@
-{% load level_tags %}
 {% load feed_extras %}
 
 <div class="comment-item" data-comment-id="{{ comment.id }}">
     <div class="comment-top">
-        <div class="comment-meta">
-            <a class="comment-user"
+        <div class="comment-main">
+            <a class="comment-avatar-link"
                 href="{% url 'profile_by_username' comment.user.username %}?next={{ request.get_full_path|urlencode }}">
-                {{ comment.user.username }}
+                {% if comment.user.profile.avatar %}
+                <img class="comment-avatar-img" src="{{ comment.user.profile.avatar.url }}"
+                    alt="Аватар {{ comment.user.username }}" draggable="false">
+                {% else %}
+                <div class="comment-avatar-fallback">{{ comment.user.username|slice:":1"|upper }}</div>
+                {% endif %}
             </a>
-            <span class="level-badge">{{ comment.user|user_level }}</span>
-            <span class="comment-sep">·</span>
-            <span class="comment-time">{{ comment.created_at|smart_time }}</span>
+
+            <div class="comment-meta">
+                <a class="comment-user"
+                    href="{% url 'profile_by_username' comment.user.username %}?next={{ request.get_full_path|urlencode }}">
+                    {{ comment.user.username }}
+                </a>
+                {% include "includes/level_badge.html" with user=comment.user size="compact" %}
+                <span class="comment-sep">·</span>
+                <span class="comment-time">{{ comment.created_at|smart_time }}</span>
+            </div>
         </div>
 
         {% if request.user.is_authenticated and request.user.id == comment.user_id %}
@@ -22,9 +33,9 @@
 
             <div class="comment-menu js-comment-menu" hidden>
                 <form class="js-comment-delete-form" action="{% url 'delete_comment' comment.id %}" method="post"
-                    data-comment-id="{{ comment.id }}">
+                    data-comment-id="{{ comment.id }}" data-order-id="{{ order_id|default:comment.order_id }}">
                     {% csrf_token %}
-                    <button class="comment-menu-delete" type="submit">Удалить комментарий</button>
+                    <button class="comment-menu-delete js-comment-delete-btn" type="submit">Удалить комментарий</button>
                 </form>
             </div>
         </div>

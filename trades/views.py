@@ -102,7 +102,16 @@ def trade_new(request, username: str):
     else:
         form = TradeOfferForm(offered_qs=offered_qs, requested_qs=requested_qs)
 
-    return render(request, 'trades/new.html', {'to_user': to_user, 'form': form})
+    return render(
+        request,
+        'trades/new.html',
+        {
+            'to_user': to_user,
+            'form': form,
+            'show_back': True,
+            'header_back_url': None,
+        },
+    )
 
 
 @login_required

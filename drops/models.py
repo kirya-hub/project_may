@@ -6,9 +6,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from cafes.models import Cafe
-from promo.models import CouponOffer
-
 
 def week_start_for(d: timezone.datetime | None = None):
     if d is None:
@@ -28,7 +25,9 @@ class DropWeek(models.Model):
         EXPIRED = 'EXPIRED', 'Истёк'
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='drop_weeks'
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='drop_weeks',
     )
     week_start = models.DateField()
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.CHOOSING)
@@ -85,12 +84,12 @@ class DropOption(models.Model):
         LEGENDARY = 'LEGENDARY', 'Легендарный'
 
     drop_week = models.ForeignKey(DropWeek, on_delete=models.CASCADE, related_name='options')
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='drop_options')
+    cafe = models.ForeignKey('cafes.Cafe', on_delete=models.CASCADE, related_name='drop_options')
 
     rarity = models.CharField(max_length=10, choices=Rarity.choices, default=Rarity.COMMON)
 
     reward_offer = models.ForeignKey(
-        CouponOffer,
+        'promo.CouponOffer',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

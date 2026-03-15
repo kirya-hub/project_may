@@ -39,21 +39,26 @@ def _rarity_weights_for_profile(profile: Profile | None) -> list[tuple[str, int]
         return RARITY_WEIGHTS_BASE
 
     level = int(getattr(profile, 'level', 1) or 1)
-    bump = min(level // 5, 10)
 
-    common = max(55, 75 - bump * 2)
-    rare = min(35, 20 + bump * 2)
-    legendary = min(10, 5 + bump)
-
-    total = common + rare + legendary
-    if total != 100:
-        common += 100 - total
-
-    return [
-        (DropOption.Rarity.COMMON, common),
-        (DropOption.Rarity.RARE, rare),
-        (DropOption.Rarity.LEGENDARY, legendary),
-    ]
+    if level >= 15:
+        return [
+            (DropOption.Rarity.COMMON, 52),
+            (DropOption.Rarity.RARE, 33),
+            (DropOption.Rarity.LEGENDARY, 15),
+        ]
+    if level >= 10:
+        return [
+            (DropOption.Rarity.COMMON, 60),
+            (DropOption.Rarity.RARE, 30),
+            (DropOption.Rarity.LEGENDARY, 10),
+        ]
+    if level >= 5:
+        return [
+            (DropOption.Rarity.COMMON, 68),
+            (DropOption.Rarity.RARE, 25),
+            (DropOption.Rarity.LEGENDARY, 7),
+        ]
+    return RARITY_WEIGHTS_BASE
 
 
 def _pick_rarity(profile: Profile | None, rng: random.Random | None = None) -> str:
@@ -180,6 +185,7 @@ def choose_option(user, option_id: int) -> DropWeek:
         user=user,
         kind=FeedEvent.Kind.DROP_CHOSEN,
         cafe=option.cafe,
+        rarity=option.rarity,
         text=f'выбрал Drop: {option.cafe.name}',
     )
 

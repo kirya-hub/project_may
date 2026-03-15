@@ -2,6 +2,7 @@
 {% load static %}
 {% load russian %}
 
+
 {% block title %}Профиль{% endblock %}
 
 {% block extra_css %}
@@ -30,7 +31,11 @@
         {{ profile.user.username }}
         {% endif %}
       </div>
-      <div class="username">@{{ profile.user.username }}</div>
+
+      <div class="profile-identity-row">
+        <div class="username">@{{ profile.user.username }}</div>
+        {% include "includes/level_badge.html" with level=level size="hero" %}
+      </div>
     </div>
 
     <div class="level-progress-card">

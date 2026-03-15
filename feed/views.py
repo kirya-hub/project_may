@@ -108,9 +108,14 @@ def add_comment(request, order_id: int):
     comments_count = Comment.objects.filter(order=order).count()
     comment_html = render_to_string(
         'feed/_comment_item.html',
-        {'comment': comment},
+        {'comment': comment, 'order_id': order.id},
         request=request,
     )
+
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    if not is_ajax:
+        next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'home'
+        return redirect(next_url)
 
     return JsonResponse(
         {

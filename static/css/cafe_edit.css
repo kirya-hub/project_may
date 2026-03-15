@@ -1,0 +1,188 @@
+:root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --text: #121212;
+    --muted: #6f7280;
+    --line: #ececf3;
+    --accent: #111111;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+}
+
+.cafe-edit-page {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 18px 14px 110px;
+}
+
+.cafe-edit-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    padding: 18px;
+}
+
+.cafe-edit-title {
+    margin: 0 0 6px;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--text);
+}
+
+.cafe-edit-subtitle {
+    margin: 0 0 18px;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.cafe-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.form-input,
+.form-textarea,
+.cafe-edit-form input[type="file"] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fff;
+    color: var(--text);
+    font-size: 15px;
+    padding: 14px 16px;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-row-two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.map-help-card {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #f8f9fc;
+    padding: 14px;
+}
+
+.map-help-title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 900;
+    color: var(--text);
+}
+
+.map-help-text {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.map-help-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: #111111;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.form-errors {
+    border: 1px solid #ffd8d8;
+    border-radius: 16px;
+    background: #fff4f4;
+    color: #8c2020;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 700;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.btn-primary,
+.btn-secondary {
+    flex: 1;
+    min-height: 48px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    border: 0;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text);
+}
+
+@media (max-width: 640px) {
+    .cafe-edit-page {
+        padding: 12px 12px 110px;
+    }
+
+    .cafe-edit-card {
+        padding: 14px;
+        border-radius: 22px;
+    }
+
+    .cafe-edit-title {
+        font-size: 24px;
+    }
+
+    .form-row-two {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

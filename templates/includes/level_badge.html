@@ -1,0 +1,18 @@
+{% load level_tags %}
+{% if level %}
+{% with resolved_level=level %}
+<span
+    class="level-badge {% if size == 'hero' %}level-badge--hero{% else %}level-badge--compact{% endif %} level-badge--{{ resolved_level|level_tier }}{% if extra_class %} {{ extra_class }}{% endif %}"
+    aria-label="Уровень {{ resolved_level }}">
+    <span class="level-badge__text">{{ resolved_level }}</span>
+</span>
+{% endwith %}
+{% else %}
+{% with resolved_level=user|user_level %}
+<span
+    class="level-badge {% if size == 'hero' %}level-badge--hero{% else %}level-badge--compact{% endif %} level-badge--{{ resolved_level|level_tier }}{% if extra_class %} {{ extra_class }}{% endif %}"
+    aria-label="Уровень {{ resolved_level }}">
+    <span class="level-badge__text">{{ resolved_level }}</span>
+</span>
+{% endwith %}
+{% endif %}

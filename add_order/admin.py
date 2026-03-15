@@ -9,13 +9,14 @@ class OrderAdmin(admin.ModelAdmin):
         'id',
         'user',
         'cafe',
+        'rating',
         'total_sum',
         'is_duplicate',
         'duplicate_reason',
         'duplicate_source_order',
         'created_at',
     )
-    list_filter = ('created_at', 'user', 'cafe', 'is_duplicate', 'duplicate_reason')
+    list_filter = ('created_at', 'user', 'cafe', 'rating', 'is_duplicate', 'duplicate_reason')
     search_fields = (
         'comment',
         'place_name',

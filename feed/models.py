@@ -1,9 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from add_order.models import Order
-from cafes.models import Cafe
-
 
 class Like(models.Model):
     user = models.ForeignKey(
@@ -12,7 +9,7 @@ class Like(models.Model):
         related_name='order_likes',
     )
     order = models.ForeignKey(
-        Order,
+        'add_order.Order',
         on_delete=models.CASCADE,
         related_name='likes',
     )
@@ -37,7 +34,7 @@ class Comment(models.Model):
         related_name='feed_comments',
     )
     order = models.ForeignKey(
-        Order,
+        'add_order.Order',
         on_delete=models.CASCADE,
         related_name='comments',
     )
@@ -55,6 +52,11 @@ class FeedEvent(models.Model):
     class Kind(models.TextChoices):
         DROP_CHOSEN = 'DROP_CHOSEN', 'Выбор Drop'
 
+    class Rarity(models.TextChoices):
+        COMMON = 'COMMON', 'Обычный'
+        RARE = 'RARE', 'Редкий'
+        LEGENDARY = 'LEGENDARY', 'Легендарный'
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -64,11 +66,17 @@ class FeedEvent(models.Model):
     kind = models.CharField(max_length=20, choices=Kind.choices)
 
     cafe = models.ForeignKey(
-        Cafe,
+        'cafes.Cafe',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='feed_events',
+    )
+
+    rarity = models.CharField(
+        max_length=10,
+        choices=Rarity.choices,
+        default=Rarity.COMMON,
     )
 
     text = models.CharField(max_length=255)

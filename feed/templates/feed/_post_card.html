@@ -1,17 +1,16 @@
 {% load static %}
 {% load feed_extras %}
 {% load tz %}
-{% load level_tags %}
 
 <div class="post-card" id="post-{{ o.id }}">
 
   <div class="post-head">
     <div class="post-left">
-
       <a class="post-avatar-link"
         href="{% url 'profile_by_username' o.user.username %}?next={{ request.get_full_path|urlencode }}">
         {% if o.user.profile.avatar %}
-        <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар">
+        <img class="post-avatar-img" src="{{ o.user.profile.avatar.url }}" alt="Аватар {{ o.user.username }}"
+          draggable="false">
         {% else %}
         <div class="post-avatar-fallback">{{ o.user.username|slice:":1"|upper }}</div>
         {% endif %}
@@ -21,27 +20,28 @@
         <div class="post-userline">
           <a class="post-user-link"
             href="{% url 'profile_by_username' o.user.username %}?next={{ request.get_full_path|urlencode }}">
-            {{ o.user.username }}
-            <span class="level-badge">{{ o.user|user_level }}</span>
+            <span class="post-user-link-text">{{ o.user.username }}</span>
           </a>
+          {% include "includes/level_badge.html" with user=o.user size="compact" %}
+        </div>
 
+        <div class="post-meta-row">
           {% if o.cafe %}
-          <span class="post-sep">·</span>
-          <a class="post-cafe-link" href="{% url 'cafe_detail' o.cafe.slug %}">
+          <a class="post-cafe-link post-cafe-link-row" href="{% url 'cafe_detail' o.cafe.slug %}">
             {{ o.cafe.name }}
           </a>
           {% elif o.place_name %}
-          <span class="post-sep">·</span>
-          <span class="post-cafe-plain">{{ o.place_name }}</span>
+          <span class="post-cafe-plain post-cafe-link-row">{{ o.place_name }}</span>
           {% endif %}
         </div>
       </div>
-
     </div>
   </div>
 
   {% if o.dish_photo %}
-  <img class="post-img" src="{{ o.dish_photo.url }}" alt="Фото блюда">
+  <div class="post-media-shell">
+    <img class="post-img" src="{{ o.dish_photo.url }}" alt="Фото блюда" draggable="false">
+  </div>
   {% endif %}
 
   {% if o.comment %}
@@ -55,29 +55,32 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
         <button class="btn-like{% if o.is_liked %} is-liked{% endif %}" type="submit"
-          aria-pressed="{% if o.is_liked %}true{% else %}false{% endif %}">
-          <span class="btn-like-icon">{% if o.is_liked %}❤️{% else %}🤍{% endif %}</span>
+          aria-pressed="{% if o.is_liked %}true{% else %}false{% endif %}" data-liked-icon="❤️" data-unliked-icon="🤍">
+          <span class="btn-like-icon" aria-hidden="true">{% if o.is_liked %}❤️{% else %}🤍{% endif %}</span>
           <span class="btn-like-count">{{ o.likes_count }}</span>
         </button>
       </form>
       {% else %}
-      <div class="btn-like btn-like-disabled">🤍 {{ o.likes_count }}</div>
+      <div class="btn-like btn-like-disabled"><span class="btn-like-icon" aria-hidden="true">🤍</span><span
+          class="btn-like-count">{{ o.likes_count }}</span></div>
       {% endif %}
 
-      <button class="btn-comment js-toggle-comments" type="button" data-target="comments-{{ o.id }}"
+      <button class="btn-comment js-comment-toggle" type="button" data-target="comments-{{ o.id }}"
         aria-expanded="false">
-        <span>💬</span>
+        <span class="btn-comment-icon" aria-hidden="true">💬</span>
         <span class="btn-comment-count">{{ o.comments_count|default:0 }}</span>
       </button>
     </div>
 
-    <div class="post-time-inline">{{ o.created_at|smart_time }}</div>
+    <div class="post-actions-right">
+      <span class="post-time-inline">{{ o.created_at|smart_time }}</span>
+    </div>
   </div>
 
   <div class="comments-wrap" id="comments-{{ o.id }}" hidden>
     <div class="comments-list js-comments-list">
       {% for comment in o.comments.all %}
-      {% include "feed/_comment_item.html" with comment=comment %}
+      {% include "feed/_comment_item.html" with comment=comment order_id=o.id %}
       {% empty %}
       <div class="comments-empty js-comments-empty">Пока нет комментариев</div>
       {% endfor %}
@@ -87,10 +90,16 @@
     <form class="comment-form js-comment-form" action="{% url 'add_comment' o.id %}" method="post"
       data-order-id="{{ o.id }}">
       {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
       <div class="comment-input-wrap">
-        <textarea class="comment-input" name="text" maxlength="300" placeholder="Написать комментарий..." rows="1"
-          enterkeyhint="send"></textarea>
-        <button class="comment-submit" type="submit">Отправить</button>
+        <textarea class="comment-input comment-form-input" name="text" maxlength="300"
+          placeholder="Написать комментарий..." rows="1" enterkeyhint="send"></textarea>
+        <button class="comment-submit comment-form-submit" type="submit" aria-label="Отправить комментарий">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M21.4 3.3a1 1 0 0 0-1.06-.2L3.9 9.64a1 1 0 0 0 .08 1.88l6.6 2.2 2.2 6.6a1 1 0 0 0 .88.68h.07a1 1 0 0 0 .9-.55l6.72-16.4a1 1 0 0 0-.05-.75ZM13.6 17.1l-1.4-4.2a1 1 0 0 0-.63-.63l-4.2-1.4 10.57-4.33Z" />
+          </svg>
+        </button>
       </div>
     </form>
     {% else %}

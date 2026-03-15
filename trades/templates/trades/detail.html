@@ -1,93 +1,87 @@
 {% extends "base.html" %}
+{% load static %}
 {% load level_tags %}
 
 {% block title %}Обмен #{{ trade.id }}{% endblock %}
 
-{% block content %}
-<div style="max-width: 520px; margin: 0 auto; padding: 14px 12px;">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/trades.css' %}">
+{% endblock %}
 
-    <div style="display:flex; justify-content:space-between; gap:12px; align-items:baseline;">
-        <div style="font-size: 22px; font-weight: 900;">Обмен #{{ trade.id }}</div>
-        <div style="opacity:.7; font-weight:900;">
-            {{ trade.get_status_display }}
-        </div>
+{% block content %}
+<div class="trades-page">
+    <div class="trades-title-row">
+        <div class="trades-title">Обмен #{{ trade.id }}</div>
+        <div class="trades-status">{{ trade.get_status_display }}</div>
     </div>
 
-    <div style="margin-top:10px; opacity:.9; line-height: 1.35;">
-        От:
-        <b>
-            @{{ trade.from_user.username }}
-            <span class="level-badge">{{ trade.from_user|user_level }}</span>
-        </b>
-        <br>
-        Кому:
-        <b>
-            @{{ trade.to_user.username }}
-            <span class="level-badge">{{ trade.to_user|user_level }}</span>
-        </b>
+    <div class="trades-muted" style="line-height: 1.4;">
+        От: <b>@{{ trade.from_user.username }}</b> <span class="level-badge">{% user_level trade.from_user %}</span><br>
+        Кому: <b>@{{ trade.to_user.username }}</b> <span class="level-badge">{% user_level trade.to_user %}</span>
     </div>
 
     {% if trade.message %}
-    <div style="margin-top: 12px; padding: 10px 12px; border: 1px solid #eee; border-radius: 14px; background:#fff;">
-        <div style="font-weight: 900; margin-bottom: 6px;">Сообщение</div>
-        <div style="opacity:.85;">{{ trade.message }}</div>
+    <div class="trade-message">
+        <div class="trade-section-title">Сообщение</div>
+        <div class="trade-desc">{{ trade.message }}</div>
     </div>
     {% endif %}
 
-    <div style="margin-top:14px;">
-        <div style="font-weight:900; margin-bottom:8px;">Отдаю</div>
-
+    <div class="trade-section">
+        <div class="trade-section-title">Отдаю</div>
         {% for c in offered %}
-        <div style="padding:10px 12px; border:1px solid #eee; border-radius:14px; margin-bottom:10px; background:#fff;">
-            <div style="font-weight:900;">{{ c.code }}</div>
-            <div style="opacity:.75; margin-top:4px;">{{ c.description }}</div>
-            <div style="opacity:.65; font-size:12px; margin-top:6px;">{{ c.expires_at_display }}</div>
+        <div class="trade-option" style="cursor: default;">
+            <div>
+                <div class="trade-code">{{ c.code }}</div>
+                <div class="trade-desc">{{ c.description }}</div>
+                <div class="trade-expire">{{ c.expires_at_display }}</div>
+            </div>
         </div>
         {% empty %}
-        <div style="opacity:.7;">Нет купонов</div>
+        <div class="trade-empty-inline">Нет купонов</div>
         {% endfor %}
     </div>
 
-    <div style="margin-top:14px;">
-        <div style="font-weight:900; margin-bottom:8px;">Хочу</div>
-
+    <div class="trade-section">
+        <div class="trade-section-title">Хочу</div>
         {% for c in requested %}
-        <div style="padding:10px 12px; border:1px solid #eee; border-radius:14px; margin-bottom:10px; background:#fff;">
-            <div style="font-weight:900;">{{ c.code }}</div>
-            <div style="opacity:.75; margin-top:4px;">{{ c.description }}</div>
-            <div style="opacity:.65; font-size:12px; margin-top:6px;">{{ c.expires_at_display }}</div>
+        <div class="trade-option" style="cursor: default;">
+            <div>
+                <div class="trade-code">{{ c.code }}</div>
+                <div class="trade-desc">{{ c.description }}</div>
+                <div class="trade-expire">{{ c.expires_at_display }}</div>
+            </div>
         </div>
         {% empty %}
-        <div style="opacity:.7;">Нет купонов</div>
+        <div class="trade-empty-inline">Нет купонов</div>
         {% endfor %}
     </div>
 
-    <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+    <div class="trade-actions">
         {% if trade.status == trade.Status.PENDING %}
         {% if request.user.id == trade.to_user_id %}
         <form method="post" action="{% url 'trades:accept' trade.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn">Принять</button>
+            <button type="submit" class="trade-btn">Принять</button>
         </form>
 
         <form method="post" action="{% url 'trades:decline' trade.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline">Отклонить</button>
+            <button type="submit" class="trade-btn-outline">Отклонить</button>
         </form>
         {% endif %}
 
         {% if request.user.id == trade.from_user_id %}
         <form method="post" action="{% url 'trades:cancel' trade.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline">Отменить</button>
+            <button type="submit" class="trade-btn-outline">Отменить</button>
         </form>
         {% endif %}
         {% endif %}
     </div>
 
-    <div style="margin-top: 12px; opacity:.6; font-size: 12px;">
+    <div class="trades-date" style="margin-top: 12px; font-size: 12px;">
         Создан {{ trade.created_at|date:"d.m.Y H:i" }}
     </div>
-
 </div>
 {% endblock %}
