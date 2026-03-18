@@ -1,153 +1,128 @@
 {% extends "base.html" %}
 {% load static %}
-{% load russian %}
-
 
 {% block title %}Профиль{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
 <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
 {% endblock %}
 
 {% block content %}
-
 <div class="profile-wrap">
-  <div class="profile-top">
+    <div class="profile-top profile-top--showcase">
+        <div class="avatar-wrap avatar-wrap--hero">
+            {% if profile.avatar %}
+            <img class="avatar-photo" src="{{ profile.avatar.url }}" alt="Аватар">
+            {% else %}
+            <img class="avatar-guest" src="{% static 'icons/profile.svg' %}" alt="Аватар">
+            {% endif %}
+        </div>
 
-    <div class="avatar-wrap">
-      {% if profile.avatar %}
-      <img class="avatar-photo" src="{{ profile.avatar.url }}" alt="Аватар">
-      {% else %}
-      <img class="avatar-guest" src="{% static 'icons/profile.svg' %}" alt="Аватар">
-      {% endif %}
-    </div>
+        <div class="profile-names">
+            <div class="display-name">{% if profile.name %}{{ profile.name }}{% else %}{{ profile.user.username }}{% endif %}</div>
+            <div class="profile-identity-row">
+                <div class="username">@{{ profile.user.username }}</div>
+                {% include "includes/level_badge.html" with level=level size="hero" extra_class="profile-level-badge" %}
+            </div>
+        </div>
 
-    <div class="profile-names">
-      <div class="display-name">
-        {% if profile.name %}
-        {{ profile.name }}
-        {% else %}
-        {{ profile.user.username }}
+        <div class="level-progress-card level-progress-card--showcase">
+            <div class="level-progress-top">
+                <div class="level-progress-title">Прогресс уровня</div>
+                <div class="level-progress-sub">Lv {{ level }} → {{ next_level }}</div>
+            </div>
+            <div class="level-progress-bar" style="--p: {{ level_progress_percent }}%;">
+                <div class="level-progress-fill"></div>
+            </div>
+            <div class="level-progress-bottom">
+                <div class="level-progress-xp">{{ xp_in_level }} / {{ xp_needed }} XP</div>
+                <div class="level-progress-percent">{{ level_progress_percent }}%</div>
+            </div>
+        </div>
+
+        {% if request.user.is_authenticated and request.user == profile.user %}
+        <div class="profile-actions">
+            <a class="icon-btn" href="{% url 'edit_profile' %}" title="Редактировать профиль">
+                <img src="{% static 'icons/edit.svg' %}" alt="edit">
+            </a>
+            <form class="logout-icon-form" action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="icon-btn" type="submit" title="Выйти">
+                    <img src="{% static 'icons/logout.svg' %}" alt="logout">
+                </button>
+            </form>
+        </div>
+
+        <a href="{% url 'friends:friends_page' %}" class="friends-card light">
+            <div>
+                <div class="friends-card-kicker">Соц. круг</div>
+                <div class="friends-card-title">{{ friends_count }} друзей</div>
+            </div>
+            <div class="friends-avatars">
+                {% for u in friends_preview %}
+                {% if u.profile.avatar %}
+                <img class="friend-ava" src="{{ u.profile.avatar.url }}" alt="friend">
+                {% else %}
+                <img class="friend-ava stub" src="{% static 'icons/profile.svg' %}" alt="friend">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </a>
         {% endif %}
-      </div>
 
-      <div class="profile-identity-row">
-        <div class="username">@{{ profile.user.username }}</div>
-        {% include "includes/level_badge.html" with level=level size="hero" %}
-      </div>
-    </div>
+        {% if request.user.is_authenticated and request.user != profile.user %}
+        <div class="profile-social-actions">
+            <form method="post" action="{% url 'friends:follow_toggle' profile.user.id %}" class="profile-social-actions__form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                {% if is_friend %}
+                <span class="profile-pill">Друг</span>
+                <button class="profile-action-btn profile-action-btn--ghost" type="submit">Отписаться</button>
+                {% elif is_following %}
+                <button class="profile-action-btn profile-action-btn--ghost" type="submit">Отписаться</button>
+                {% else %}
+                <button class="profile-action-btn" type="submit">Подписаться</button>
+                {% endif %}
+            </form>
 
-    <div class="level-progress-card">
-      <div class="level-progress-top">
-        <div class="level-progress-title">Прогресс уровня</div>
-        <div class="level-progress-sub">Lv {{ level }} → {{ next_level }}</div>
-      </div>
-
-      <div class="level-progress-bar" style="--p: {{ level_progress_percent }}%;">
-        <div class="level-progress-fill"></div>
-      </div>
-
-      <div class="level-progress-bottom">
-        <div class="level-progress-xp">{{ xp_in_level }} / {{ xp_needed }} XP</div>
-        <div class="level-progress-percent">{{ level_progress_percent }}%</div>
-      </div>
-    </div>
-
-    {% if request.user.is_authenticated and request.user == profile.user %}
-    <div class="profile-actions">
-      <a class="icon-btn" href="{% url 'edit_profile' %}" title="Редактировать профиль">
-        <img src="{% static 'icons/edit.svg' %}" alt="edit">
-      </a>
-
-      <form class="logout-icon-form" action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button class="icon-btn" type="submit" title="Выйти">
-          <img src="{% static 'icons/logout.svg' %}" alt="logout">
-        </button>
-      </form>
-    </div>
-
-    <a href="{% url 'friends:friends_page' %}" class="friends-card light">
-      <div class="friends-card-title">
-        {{ friends_count }} {{ friends_count|russian:"друг,друга,друзей" }}
-      </div>
-      <div class="friends-avatars">
-        {% for u in friends_preview %}
-        {% if u.profile.avatar %}
-        <img class="friend-ava" src="{{ u.profile.avatar.url }}" alt="friend">
-        {% else %}
-        <img class="friend-ava stub" src="{% static 'icons/profile.svg' %}" alt="friend">
+            {% if can_trade %}
+            <a class="profile-action-btn profile-action-btn--trade" href="{% url 'trades:new' profile.user.username %}">Обмен</a>
+            {% endif %}
+        </div>
         {% endif %}
+    </div>
+
+    <div class="profile-section-header">
+        <div>
+            <div class="section-title">Витрина</div>
+            <div class="profile-section-note">Публичные активные купоны пользователя</div>
+        </div>
+    </div>
+
+    {% if promocodes %}
+    <div class="profile-showcase-grid">
+        {% for p in promocodes %}
+        {% include "promo/includes/coupon_card.html" with item=p source_label=p.get_origin_display show_status='1' footer_label="Срок" footer_value=p.expires_at_display subfooter=p.code card_class="coupon-card--profile" %}
         {% endfor %}
-      </div>
-    </a>
+    </div>
+    {% else %}
+    <div class="profile-empty-card">Пока нет активных купонов</div>
     {% endif %}
 
-    {% if request.user.is_authenticated and request.user != profile.user %}
-    <div class="follow-form" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-      <form method="post" action="{% url 'friends:follow_toggle' profile.user.id %}">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.get_full_path }}">
-
-        {% if is_friend %}
-        <div class="badge">Друг</div>
-        <button class="btn btn-outline" type="submit">Отписаться</button>
-        {% elif is_following %}
-        <button class="btn btn-outline" type="submit">Отписаться</button>
-        {% else %}
-        <button class="btn" type="submit">Подписаться</button>
-        {% endif %}
-      </form>
-
-      {% if can_trade %}
-      <a class="btn btn-outline" href="{% url 'trades:new' profile.user.username %}">
-        Обмен
-      </a>
-      {% endif %}
+    <div class="profile-section-header profile-section-header--posts">
+        <div class="section-title">Публикации</div>
     </div>
+
+    {% if posts %}
+    <div class="feed profile-feed">
+        {% for o in posts %}
+        {% include "feed/_post_card.html" with o=o %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="profile-empty-card">Пока нет публикаций</div>
     {% endif %}
-
-  </div>
-
-  <div class="section-title">Промокоды</div>
-
-  {% if promocodes %}
-  {% for p in promocodes %}
-  <div class="promo-card">
-    <div style="font-weight: 950; font-size: 16px;">
-      {{ p.code }}
-    </div>
-
-    {% if p.description %}
-    <div style="margin-top: 6px; color:#666; font-size: 14px; line-height: 1.35;">
-      {{ p.description }}
-    </div>
-    {% endif %}
-
-    {% if p.expires_at %}
-    <div style="margin-top: 8px; font-size: 12px; color:#999;">
-      До: {{ p.expires_at|date:"d.m.Y" }}
-    </div>
-    {% endif %}
-  </div>
-  {% endfor %}
-  {% else %}
-  <div class="promo-card">Пока нет промокодов</div>
-  {% endif %}
-
-  <div class="section-title" style="margin-top: 18px;">Публикации</div>
-
-  {% if posts %}
-  <div class="feed" style="padding: 0; gap: 14px;">
-    {% for o in posts %}
-    {% include "feed/_post_card.html" with o=o %}
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="promo-card">Пока нет публикаций</div>
-  {% endif %}
-
 </div>
-
 {% endblock %}

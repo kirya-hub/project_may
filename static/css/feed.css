@@ -948,3 +948,139 @@
     min-height: 40px;
   }
 }
+
+.feed-friends-block,
+.feed-rest-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feed-friends-block {
+  margin-top: 2px;
+}
+
+.feed-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.feed-section-kicker {
+  color: #7d7d7d;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.feed-section-title {
+  margin-top: 4px;
+  color: #111;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.feed-section-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid #dbdbe0;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.trade-feed-card__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.trade-feed-card__avatars {
+  position: relative;
+  width: 74px;
+  min-width: 74px;
+  height: 54px;
+}
+
+.trade-feed-card__avatar-secondary {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border: 2px solid #fff;
+}
+
+.trade-feed-card__users {
+  min-width: 0;
+  flex: 1;
+}
+
+.trade-feed-card__kicker {
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.trade-feed-card__title {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.trade-feed-card__title a {
+  text-decoration: none;
+}
+
+.trade-feed-card__time,
+.trade-feed-card__more {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.trade-feed-card__coupons {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 430px) {
+  .feed-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .trade-feed-card__coupons {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feed-friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

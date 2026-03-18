@@ -38,5 +38,14 @@
 
   "editor.minimap.enabled": false,
   "editor.wordWrap": "off",
-  "editor.formatOnPaste": true
+  "editor.formatOnPaste": true,
+
+  "[html]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  },
+  "[django-html]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  }
 }

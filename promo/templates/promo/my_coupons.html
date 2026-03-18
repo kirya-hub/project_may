@@ -9,54 +9,33 @@
 
 {% block content %}
 <div class="promo-page">
-  <div class="promo-title">Мои купоны</div>
+    <div class="promo-title">Мои купоны</div>
 
-  <div class="promo-tabs">
-    <a href="?status=ACTIVE" class="promo-tab {% if active_tab == 'ACTIVE' %}is-active{% endif %}">
-      Активные <span class="promo-tab-count">{{ counts.ACTIVE }}</span>
-    </a>
-
-    <a href="?status=USED" class="promo-tab {% if active_tab == 'USED' %}is-active{% endif %}">
-      Использованные <span class="promo-tab-count">{{ counts.USED }}</span>
-    </a>
-
-    <a href="?status=EXPIRED" class="promo-tab {% if active_tab == 'EXPIRED' %}is-active{% endif %}">
-      Истёкшие <span class="promo-tab-count">{{ counts.EXPIRED }}</span>
-    </a>
-  </div>
-
-  {% if coupons %}
-  <div class="promo-coupons">
-    {% for c in coupons %}
-    <div class="coupon-card">
-      <div class="coupon-top">
-        <div class="coupon-code">{{ c.code }}</div>
-        <div class="coupon-status">{{ c.get_status_display }}</div>
-      </div>
-
-      {% if c.description %}
-      <div class="coupon-desc">{{ c.description }}</div>
-      {% endif %}
-
-      <div class="coupon-bottom">
-        <div class="coupon-exp">{{ c.expires_at_display }}</div>
-
-        {% if c.status == "ACTIVE" %}
-        <form method="post" action="{% url 'promo:use_coupon' c.id %}">
-          {% csrf_token %}
-          <button type="submit" class="coupon-btn">Использовать</button>
-        </form>
-        {% endif %}
-      </div>
-
-      {% if c.used_at %}
-      <div class="coupon-used">Использован {{ c.used_at|date:"d.m.Y H:i" }}</div>
-      {% endif %}
+    <div class="promo-tabs">
+        <a href="?status=ACTIVE" class="promo-tab {% if active_tab == 'ACTIVE' %}is-active{% endif %}">
+            Активные <span class="promo-tab-count">{{ counts.ACTIVE }}</span>
+        </a>
+        <a href="?status=USED" class="promo-tab {% if active_tab == 'USED' %}is-active{% endif %}">
+            Использованные <span class="promo-tab-count">{{ counts.USED }}</span>
+        </a>
+        <a href="?status=EXPIRED" class="promo-tab {% if active_tab == 'EXPIRED' %}is-active{% endif %}">
+            Истёкшие <span class="promo-tab-count">{{ counts.EXPIRED }}</span>
+        </a>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="promo-empty">Здесь пока пусто.</div>
-  {% endif %}
+
+    <div class="promo-coupons">
+        {% for c in coupons %}
+        {% url 'promo:use_coupon' c.id as use_coupon_url %}
+
+        {% if c.status == 'ACTIVE' %}
+        {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status='1' footer_label="Срок" footer_value=c.expires_at_display subfooter=c.code action_label="Использовать" action_url=use_coupon_url %}
+        {% else %}
+        {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status='1' footer_label="Срок" footer_value=c.expires_at_display subfooter=c.code %}
+        {% endif %}
+
+        {% empty %}
+        <div class="promo-empty">Здесь пока пусто.</div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

@@ -55,8 +55,8 @@ class Profile(models.Model):
         return self.user.username
 
     @property
-    def points(self) -> float:
-        return (self.points10 or 0) / 10
+    def points(self) -> int:
+        return (self.points10 or 0) // 10
 
 
 class PromoCode(models.Model):
@@ -64,6 +64,10 @@ class PromoCode(models.Model):
         ACTIVE = 'ACTIVE', 'Активен'
         USED = 'USED', 'Использован'
         EXPIRED = 'EXPIRED', 'Истёк'
+
+    class Origin(models.TextChoices):
+        SHOP = 'SHOP', 'Магазин'
+        DROP = 'DROP', 'Drop'
 
     profile = models.ForeignKey(
         Profile,
@@ -88,7 +92,14 @@ class PromoCode(models.Model):
         null=True,
         blank=True,
         related_name='issued_promocodes',
-        verbose_name='Купон из магазина',
+        verbose_name='Шаблон награды',
+    )
+
+    origin = models.CharField(
+        max_length=10,
+        choices=Origin.choices,
+        default=Origin.SHOP,
+        verbose_name='Источник',
     )
 
     acquired_at = models.DateTimeField(
@@ -124,10 +135,56 @@ class PromoCode(models.Model):
         return f'{self.code} ({self.profile.user.username})'
 
     @property
+    def rarity_code(self) -> str:
+        if self.source_offer and self.source_offer.rarity:
+            return self.source_offer.rarity.lower()
+        return 'common'
+
+    @property
+    def reward_type_label(self) -> str:
+        if self.source_offer:
+            return self.source_offer.get_reward_type_display()
+        return 'Купон'
+
+    @property
+    def rarity_display(self) -> str:
+        if self.source_offer:
+            return self.source_offer.get_rarity_display()
+        return 'Обычный'
+
+    @property
+    def display_title(self) -> str:
+        if self.source_offer and self.source_offer.title:
+            return self.source_offer.title
+        return self.code
+
+    @property
+    def benefit_text(self) -> str:
+        if self.description:
+            return self.description.strip()
+        if self.source_offer and self.source_offer.description:
+            return self.source_offer.description.strip()
+        return self.display_title
+
+    @property
+    def cafe_name(self) -> str:
+        if self.source_offer and self.source_offer.cafe:
+            return self.source_offer.cafe.name
+        return ''
+
+    @property
     def is_expired(self) -> bool:
         if not self.expires_at:
             return False
         return self.expires_at < timezone.localdate()
+
+    @property
+    def is_shop_coupon(self) -> bool:
+        return self.origin == self.Origin.SHOP
+
+    @property
+    def is_drop_coupon(self) -> bool:
+        return self.origin == self.Origin.DROP
 
     @property
     def expires_at_display(self) -> str:

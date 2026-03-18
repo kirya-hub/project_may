@@ -29,8 +29,8 @@
                 {% for choice in form.offered %}
                 <label class="trade-option">
                     {{ choice.tag }}
-                    <div>
-                        <div class="trade-option-code">{{ choice.choice_label }}</div>
+                    <div class="trade-option-body">
+                        <div class="trade-option-code">{{ choice.choice_label|cut:"[]'" }}</div>
                     </div>
                 </label>
                 {% empty %}
@@ -45,8 +45,8 @@
                 {% for choice in form.requested %}
                 <label class="trade-option">
                     {{ choice.tag }}
-                    <div>
-                        <div class="trade-option-code">{{ choice.choice_label }}</div>
+                    <div class="trade-option-body">
+                        <div class="trade-option-code">{{ choice.choice_label|cut:"[]'" }}</div>
                     </div>
                 </label>
                 {% empty %}

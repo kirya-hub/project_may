@@ -1,0 +1,51 @@
+<div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}">
+    <div class="coupon-card__accent"></div>
+
+    <div class="coupon-card__top">
+        <div class="coupon-card__eyebrow-row">
+            {% if source_label %}<span class="coupon-card__eyebrow">{{ source_label }}</span>{% endif %}
+            {% if item.cafe_name %}<span class="coupon-card__eyebrow coupon-card__eyebrow--soft">{{ item.cafe_name }}</span>{% endif %}
+        </div>
+
+        <div class="coupon-card__top-right">
+            {% if price_label %}
+            <div class="coupon-card__price">{{ price_label }}</div>
+            {% elif show_status %}
+            <div class="coupon-status coupon-status--{{ item.rarity_code|default:'common' }}{% if item.status == 'USED' %} coupon-status--used{% elif item.status == 'EXPIRED' %} coupon-status--expired{% endif %}">
+                {{ item.get_status_display }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="coupon-card__title">{{ item.display_title }}</div>
+    <div class="coupon-card__benefit">{{ item.benefit_text }}</div>
+
+    <div class="coupon-card__meta-row">
+        <span class="coupon-chip coupon-chip--{{ item.rarity_code|default:'common' }}">{{ item.reward_type_label }}</span>
+        <span class="coupon-chip coupon-chip--outline">{{ item.rarity_display }}</span>
+        {% if extra_chip %}<span class="coupon-chip coupon-chip--outline">{{ extra_chip }}</span>{% endif %}
+    </div>
+
+    <div class="coupon-card__bottom">
+        <div class="coupon-card__info">
+            {% if footer_label %}<div class="coupon-card__footer-label">{{ footer_label }}</div>{% endif %}
+            {% if footer_value %}<div class="coupon-card__footer-value">{{ footer_value }}</div>{% endif %}
+            {% if subfooter %}<div class="coupon-card__subfooter">{{ subfooter }}</div>{% endif %}
+        </div>
+
+        {% if action_label %}
+        {% if action_url %}
+        <form method="post" action="{{ action_url }}">
+            {% csrf_token %}
+            <button type="submit" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}" {% if action_disabled %}disabled{% endif %}>{{ action_label }}</button>
+        </form>
+        {% else %}
+        <button type="button" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}" {% if action_disabled %}disabled{% endif %}>{{ action_label }}</button>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    {% if helper_text %}<div class="coupon-card__helper">{{ helper_text }}</div>{% endif %}
+    {% if used_text %}<div class="coupon-card__helper">{{ used_text }}</div>{% endif %}
+</div>

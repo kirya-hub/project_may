@@ -10,6 +10,7 @@ from add_order.models import Order
 from cafes.models import Cafe
 from feed.models import FeedEvent
 from promo.models import CouponOffer
+from promo.services import generate_unique_code, get_active_drop_coupon
 from user_profile.levels import add_xp
 from user_profile.models import Profile, PromoCode
 
@@ -20,6 +21,22 @@ RARITY_WEIGHTS_BASE: list[tuple[str, int]] = [
     (DropOption.Rarity.RARE, 20),
     (DropOption.Rarity.LEGENDARY, 5),
 ]
+
+DROP_EXPIRATION_DAYS = {
+    DropOption.Rarity.COMMON: 5,
+    DropOption.Rarity.RARE: 7,
+    DropOption.Rarity.LEGENDARY: 14,
+}
+
+RARITY_FALLBACKS = {
+    DropOption.Rarity.COMMON: [CouponOffer.Rarity.COMMON],
+    DropOption.Rarity.RARE: [CouponOffer.Rarity.RARE, CouponOffer.Rarity.COMMON],
+    DropOption.Rarity.LEGENDARY: [
+        CouponOffer.Rarity.LEGENDARY,
+        CouponOffer.Rarity.RARE,
+        CouponOffer.Rarity.COMMON,
+    ],
+}
 
 
 def _weighted_choice(items: list[tuple[str, int]], rng: random.Random | None = None) -> str:
@@ -65,19 +82,25 @@ def _pick_rarity(profile: Profile | None, rng: random.Random | None = None) -> s
     return _weighted_choice(_rarity_weights_for_profile(profile), rng=rng)
 
 
-def _pick_reward_offer(cafe: Cafe | None, rng: random.Random | None = None) -> CouponOffer | None:
+def _pick_reward_offer(
+    cafe: Cafe | None,
+    rarity: CouponOffer.Rarity,
+    rng: random.Random | None = None,
+) -> CouponOffer | None:
     rng_obj = rng if rng is not None else random.Random()
-    qs = CouponOffer.objects.filter(is_active=True)
+    base_qs = CouponOffer.objects.filter(is_active=True, available_in_drop=True)
 
-    if cafe is not None:
-        cafe_qs = qs.filter(cafe=cafe)
-        if cafe_qs.exists():
-            qs = cafe_qs
+    for offer_rarity in RARITY_FALLBACKS.get(rarity, [CouponOffer.Rarity.COMMON]):
+        qs = base_qs.filter(rarity=offer_rarity)
+        if cafe is not None:
+            cafe_qs = qs.filter(cafe=cafe)
+            if cafe_qs.exists():
+                qs = cafe_qs
 
-    offers = list(qs[:200])
-    if not offers:
-        return None
-    return rng_obj.choice(offers)
+        offers = list(qs.order_by('id')[:200])
+        if offers:
+            return rng_obj.choice(offers)
+    return None
 
 
 def _seen_cafe_ids(user) -> set[int]:
@@ -152,7 +175,7 @@ def ensure_week_options(user) -> DropWeek:
         options: list[DropOption] = []
         for cafe in cafes:
             rarity = _pick_rarity(profile, rng=rng)
-            reward_offer = _pick_reward_offer(cafe, rng=rng)
+            reward_offer = _pick_reward_offer(cafe, rarity, rng=rng)
             options.append(
                 DropOption(
                     drop_week=week,
@@ -218,22 +241,24 @@ def try_complete_by_order(order: Order) -> bool:
         already = PromoCode.objects.filter(
             profile=profile,
             source_offer_id=chosen.reward_offer_id,
+            origin=PromoCode.Origin.DROP,
             acquired_at__date__gte=week.week_start,
         ).exists()
 
         if not already:
-            from promo.services import generate_unique_code
+            previous_active_drop = get_active_drop_coupon(profile)
+            if previous_active_drop is not None:
+                previous_active_drop.status = PromoCode.Status.EXPIRED
+                previous_active_drop.save(update_fields=['status'])
 
+            expires_at = timezone.localdate() + timedelta(days=DROP_EXPIRATION_DAYS[chosen.rarity])
             PromoCode.objects.create(
                 profile=profile,
                 source_offer_id=chosen.reward_offer_id,
+                origin=PromoCode.Origin.DROP,
                 code=generate_unique_code(),
                 description=chosen.reward_offer.description if chosen.reward_offer else '',
-                expires_at=(
-                    timezone.localdate() + timedelta(days=int(chosen.reward_offer.expires_in_days))
-                    if chosen.reward_offer and chosen.reward_offer.expires_in_days
-                    else None
-                ),
+                expires_at=expires_at,
                 status=PromoCode.Status.ACTIVE,
             )
 

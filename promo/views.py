@@ -7,7 +7,15 @@ from django.utils import timezone
 from user_profile.models import Profile, PromoCode
 
 from .models import CouponOffer, PointsTransaction
-from .services import NotEnoughPoints, purchase_offer
+from .services import (
+    ActiveShopCouponExists,
+    NotEnoughPoints,
+    expire_profile_coupons,
+    get_active_drop_coupon,
+    get_active_shop_coupon,
+    get_rotating_shop_offers,
+    purchase_offer,
+)
 
 
 def _get_points_context(user):
@@ -18,6 +26,7 @@ def _get_points_context(user):
 @login_required
 def promo_home(request):
     profile = _get_points_context(request.user)
+    expire_profile_coupons(profile)
     transactions = (
         PointsTransaction.objects.filter(user=request.user)
         .select_related('order')
@@ -28,7 +37,7 @@ def promo_home(request):
         request,
         'promo/promo_home.html',
         {
-            'points': (profile.points10 or 0) / 10,
+            'points': profile.points,
             'points10': profile.points10 or 0,
             'transactions': transactions,
         },
@@ -38,25 +47,21 @@ def promo_home(request):
 @login_required
 def coupon_shop(request):
     profile = _get_points_context(request.user)
+    expire_profile_coupons(profile)
 
-    offers = (
-        CouponOffer.objects.filter(is_active=True).select_related('cafe').order_by('-created_at')
-    )
-
-    owned_offer_ids = list(
-        PromoCode.objects.filter(profile=profile, source_offer__isnull=False).values_list(
-            'source_offer_id', flat=True
-        )
-    )
+    offers = get_rotating_shop_offers()
+    active_shop_coupon = get_active_shop_coupon(profile)
+    active_drop_coupon = get_active_drop_coupon(profile)
 
     return render(
         request,
         'promo/coupon_shop.html',
         {
             'offers': offers,
-            'points': (profile.points10 or 0) / 10,
+            'points': profile.points,
             'points10': profile.points10 or 0,
-            'owned_offer_ids': owned_offer_ids,
+            'active_shop_coupon': active_shop_coupon,
+            'active_drop_coupon': active_drop_coupon,
             'show_back': True,
             'header_back_url': reverse('promo:home'),
         },
@@ -68,17 +73,16 @@ def buy_coupon(request, offer_id: int):
     if request.method != 'POST':
         return redirect('promo:shop')
 
-    offer = get_object_or_404(CouponOffer, id=offer_id, is_active=True)
-    profile = _get_points_context(request.user)
-
-    already = PromoCode.objects.filter(profile=profile, source_offer=offer).first()
-    if already:
-        messages.info(request, f'Этот купон уже куплен. Код: {already.code}')
-        return redirect('promo:shop')
+    offer = get_object_or_404(CouponOffer, id=offer_id, is_active=True, available_in_shop=True)
 
     try:
         new_coupon = purchase_offer(request.user, offer)
         messages.success(request, f'Купон куплен ✅ Код: {new_coupon.code}')
+    except ActiveShopCouponExists:
+        messages.error(
+            request,
+            'Сначала используй или дождись окончания текущего магазинного купона.',
+        )
     except NotEnoughPoints:
         messages.error(request, 'Не хватает баллов')
     except Exception:
@@ -90,21 +94,16 @@ def buy_coupon(request, offer_id: int):
 @login_required
 def my_coupons(request):
     profile = _get_points_context(request.user)
-    today = timezone.localdate()
-
-    PromoCode.objects.filter(
-        profile=profile,
-        status=PromoCode.Status.ACTIVE,
-        expires_at__isnull=False,
-        expires_at__lt=today,
-    ).update(status=PromoCode.Status.EXPIRED)
+    expire_profile_coupons(profile)
 
     status = (request.GET.get('status') or 'ACTIVE').upper()
     allowed = {PromoCode.Status.ACTIVE, PromoCode.Status.USED, PromoCode.Status.EXPIRED}
     if status not in allowed:
         status = PromoCode.Status.ACTIVE
 
-    coupons_qs = PromoCode.objects.filter(profile=profile)
+    coupons_qs = PromoCode.objects.filter(profile=profile).select_related(
+        'source_offer', 'source_offer__cafe'
+    )
 
     counts = {
         'ACTIVE': coupons_qs.filter(status=PromoCode.Status.ACTIVE).count(),

@@ -1,31 +1,154 @@
 from __future__ import annotations
 
+import hashlib
 import secrets
 import string
 from datetime import timedelta
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from user_profile.models import Profile, PromoCode
 
-from .models import CouponOffer, PointsTransaction, TransactionKind
+from .models import CouponOffer, PointsBalance, PointsTransaction, TransactionKind
 
-PERCENT = Decimal('0.05')
+BASE_CASHBACK_PERCENT = Decimal('0.05')
 DAILY_ACCRUAL_LIMIT = 2
 MIN_TOTAL_SUM = Decimal('1.00')
 MAX_POINTS10_PER_ORDER = 5000
+SHOP_REFRESH_HOURS = 72
 
 
-def _to_points10(total_sum: Decimal) -> int:
-    raw = total_sum * PERCENT * Decimal('10')
+class NotEnoughPoints(Exception):
+    pass
+
+
+class ActiveShopCouponExists(Exception):
+    pass
+
+
+def _cashback_percent_for_profile(profile: Profile | None) -> Decimal:
+    level = int(getattr(profile, 'level', 1) or 1) if profile else 1
+    if level >= 10:
+        return Decimal('0.07')
+    if level >= 5:
+        return Decimal('0.06')
+    return BASE_CASHBACK_PERCENT
+
+
+def _to_points10(total_sum: Decimal, percent: Decimal) -> int:
+    raw = total_sum * percent * Decimal('10')
     points10 = int(raw.quantize(Decimal('1'), rounding=ROUND_HALF_UP))
     return max(0, min(points10, MAX_POINTS10_PER_ORDER))
 
 
 def _get_or_create_profile(user) -> Profile:
     return Profile.objects.select_for_update().get_or_create(user=user)[0]
+
+
+def _get_or_create_balance(user):
+    return PointsBalance.objects.select_for_update().get_or_create(user=user)[0]
+
+
+def _active_coupon_q(profile: Profile):
+    today = timezone.localdate()
+    return Q(profile=profile, status=PromoCode.Status.ACTIVE) & (
+        Q(expires_at__isnull=True) | Q(expires_at__gte=today)
+    )
+
+
+def expire_profile_coupons(profile: Profile, *, origin: str | None = None) -> int:
+    qs = PromoCode.objects.filter(
+        profile=profile,
+        status=PromoCode.Status.ACTIVE,
+        expires_at__lt=timezone.localdate(),
+    )
+    if origin:
+        qs = qs.filter(origin=origin)
+    return qs.update(status=PromoCode.Status.EXPIRED)
+
+
+def get_active_coupons(profile: Profile, *, origin: str | None = None):
+    expire_profile_coupons(profile, origin=origin)
+    qs = PromoCode.objects.filter(_active_coupon_q(profile)).select_related(
+        'source_offer', 'source_offer__cafe'
+    )
+    if origin:
+        qs = qs.filter(origin=origin)
+    return qs.order_by('-acquired_at')
+
+
+def get_active_shop_coupon(profile: Profile):
+    return get_active_coupons(profile, origin=PromoCode.Origin.SHOP).first()
+
+
+def get_active_drop_coupon(profile: Profile):
+    return get_active_coupons(profile, origin=PromoCode.Origin.DROP).first()
+
+
+def _current_shop_window_key(now=None) -> str:
+    now = now or timezone.now()
+    hours = int(now.timestamp() // (SHOP_REFRESH_HOURS * 3600))
+    return str(hours)
+
+
+def _pick_deterministic_offer(qs, seed_key: str) -> CouponOffer | None:
+    offers = list(qs.order_by('id')[:200])
+    if not offers:
+        return None
+    if len(offers) == 1:
+        return offers[0]
+    digest = hashlib.sha256(seed_key.encode('utf-8')).hexdigest()
+    index = int(digest[:12], 16) % len(offers)
+    return offers[index]
+
+
+def get_rotating_shop_offers(now=None) -> list[CouponOffer]:
+    seed = _current_shop_window_key(now=now)
+    base_qs = CouponOffer.objects.filter(is_active=True, available_in_shop=True)
+    slots = [
+        (
+            'coffee',
+            base_qs.filter(
+                reward_type=CouponOffer.RewardType.COFFEE,
+                rarity=CouponOffer.Rarity.COMMON,
+            ),
+        ),
+        (
+            'dessert',
+            base_qs.filter(
+                reward_type=CouponOffer.RewardType.DESSERT,
+                rarity=CouponOffer.Rarity.COMMON,
+            ),
+        ),
+        (
+            'discount',
+            base_qs.filter(
+                reward_type=CouponOffer.RewardType.DISCOUNT,
+                rarity=CouponOffer.Rarity.COMMON,
+            ),
+        ),
+        (
+            'rare',
+            base_qs.filter(
+                reward_type=CouponOffer.RewardType.DISCOUNT,
+                rarity=CouponOffer.Rarity.RARE,
+            ),
+        ),
+    ]
+
+    offers: list[CouponOffer] = []
+    seen_ids: set[int] = set()
+    for slot_name, qs in slots:
+        offer = _pick_deterministic_offer(qs.exclude(id__in=seen_ids), f'{seed}:{slot_name}')
+        if offer is None:
+            offer = _pick_deterministic_offer(qs, f'{seed}:{slot_name}:fallback')
+        if offer is not None and offer.id not in seen_ids:
+            offers.append(offer)
+            seen_ids.add(offer.id)
+    return offers
 
 
 @transaction.atomic
@@ -62,11 +185,12 @@ def accrue_points_for_order(order) -> int:
     if today_count >= DAILY_ACCRUAL_LIMIT:
         return 0
 
-    points10 = _to_points10(total_sum)
+    profile = _get_or_create_profile(order.user)
+    balance = _get_or_create_balance(order.user)
+    percent = _cashback_percent_for_profile(profile)
+    points10 = _to_points10(total_sum, percent)
     if points10 <= 0:
         return 0
-
-    profile = _get_or_create_profile(order.user)
 
     try:
         PointsTransaction.objects.create(
@@ -83,6 +207,9 @@ def accrue_points_for_order(order) -> int:
     profile.points10 = (profile.points10 or 0) + points10
     profile.save(update_fields=['points10'])
 
+    balance.points10 = (balance.points10 or 0) + points10
+    balance.save(update_fields=['points10'])
+
     order.points_accrued = True
     order.save(update_fields=['points_accrued'])
 
@@ -94,10 +221,6 @@ def accrue_points_for_order(order) -> int:
         pass
 
     return points10
-
-
-class NotEnoughPoints(Exception):
-    pass
 
 
 def generate_code(groups: int = 2, group_len: int = 4) -> str:
@@ -118,14 +241,15 @@ def generate_unique_code(max_attempts: int = 10) -> str:
 
 @transaction.atomic
 def purchase_offer(user, offer: CouponOffer) -> PromoCode:
-    if not offer.is_active:
+    if not offer.is_active or not offer.available_in_shop:
         raise ValueError('Купон не продаётся')
 
     profile = _get_or_create_profile(user)
+    balance = _get_or_create_balance(user)
 
-    existing = PromoCode.objects.filter(profile=profile, source_offer=offer).first()
-    if existing:
-        return existing
+    active_shop_coupon = get_active_shop_coupon(profile)
+    if active_shop_coupon is not None:
+        raise ActiveShopCouponExists
 
     cost = int(offer.cost_points10 or 0)
     if (profile.points10 or 0) < cost:
@@ -133,6 +257,9 @@ def purchase_offer(user, offer: CouponOffer) -> PromoCode:
 
     profile.points10 = (profile.points10 or 0) - cost
     profile.save(update_fields=['points10'])
+
+    balance.points10 = max(0, (balance.points10 or 0) - cost)
+    balance.save(update_fields=['points10'])
 
     PointsTransaction.objects.create(
         user=user,
@@ -150,6 +277,7 @@ def purchase_offer(user, offer: CouponOffer) -> PromoCode:
     return PromoCode.objects.create(
         profile=profile,
         source_offer=offer,
+        origin=PromoCode.Origin.SHOP,
         code=code,
         description=offer.description,
         expires_at=expires_at,

@@ -86,6 +86,18 @@
     border-radius: 16px;
     background: #f8f9fc;
     cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+}
+
+.trade-option:hover {
+    border-color: #d9dbe6;
+    background: #f2f4fa;
+}
+
+.trade-option:has(input:checked) {
+    border-color: #111111;
+    background: #f3f3f6;
+    box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05);
 }
 
 .trade-option input {
@@ -93,10 +105,17 @@
     flex-shrink: 0;
 }
 
+.trade-option-body {
+    min-width: 0;
+    flex: 1;
+}
+
 .trade-option-code {
     font-weight: 900;
-    line-height: 1.2;
+    line-height: 1.35;
     color: #121212;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .trade-option-owner,
@@ -285,5 +304,120 @@
     .trade-actions .trade-btn,
     .trade-actions .trade-btn-outline {
         width: 100%;
+    }
+}
+
+.trades-page--activity {
+    padding-bottom: 128px;
+}
+
+.trade-members-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 22px;
+    border: 1px solid #ececf3;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+.trade-member-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trade-member-label {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.trade-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.trade-activity-card {
+    display: block;
+    padding: 16px;
+    border-radius: 24px;
+    border: 1px solid #ececf3;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+    color: inherit;
+    text-decoration: none;
+}
+
+.trade-activity-card:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.trade-activity-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.trade-activity-card__title {
+    color: #111827;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.trade-activity-card__user {
+    color: #111827;
+}
+
+.trade-activity-card__arrow {
+    color: #2f68d8;
+    margin: 0 4px;
+}
+
+.trade-activity-card__time {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.trade-activity-card__subtitle {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.trade-activity-card__coupons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.trade-activity-card__more {
+    margin-top: 10px;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 420px) {
+    .trade-activity-card__top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .trade-activity-card__coupons {
+        grid-template-columns: 1fr;
     }
 }

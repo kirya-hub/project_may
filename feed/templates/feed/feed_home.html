@@ -5,19 +5,19 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
 {% endblock %}
 
 {% block content %}
-
 <div class="feed">
   <section class="feed-hero">
     <div class="feed-hero-top">
       <div>
         <div class="feed-hero-kicker">Главная</div>
-        <h1 class="feed-hero-title">Свежие отзывы, чеки и drop-события</h1>
-        <p class="feed-hero-text">Следи за друзьями, новыми кафе и активностью в одном месте</p>
+        <h1 class="feed-hero-title">Свежие отзывы, drop-события и обмены</h1>
+        <p class="feed-hero-text">Сначала друзья, потом остальная лента. Так и должно быть.</p>
       </div>
-      <div class="feed-hero-pill">{{ items|length }} постов</div>
+      <div class="feed-hero-pill">{{ total_items_count }} событий</div>
     </div>
 
     <a href="{% url 'cafes_list' %}" class="feed-cafes-search">
@@ -26,19 +26,55 @@
     </a>
   </section>
 
-  {% for item in items %}
-  {% if item.type == "order" %}
-  {% include "feed/_post_card.html" with o=item.obj %}
-  {% else %}
-  {% include "feed/_event_card.html" with e=item.obj %}
-  {% endif %}
-  {% empty %}
-  <div class="feed-empty-card">
-    <div class="feed-empty-emoji">☕</div>
-    <div class="feed-empty-title">Пока нет публикаций</div>
-    <div class="feed-empty-text">Добавь первый чек или отзыв и лента оживёт.</div>
-  </div>
-  {% endfor %}
-</div>
+  {% if friend_items %}
+  <section class="feed-friends-block">
+    <div class="feed-section-head">
+      <div>
+        <div class="feed-section-kicker">Сначала свои</div>
+        <div class="feed-section-title">Активность друзей</div>
+      </div>
+      <a href="{% url 'trades:activity' %}" class="feed-section-link">Обмены</a>
+    </div>
 
+    <div class="feed-friends-list">
+      {% for item in friend_items %}
+      {% if item.type == "order" %}
+      {% include "feed/_post_card.html" with o=item.obj %}
+      {% elif item.type == "event" %}
+      {% include "feed/_event_card.html" with e=item.obj %}
+      {% else %}
+      {% include "feed/_trade_activity_card.html" with e=item.obj %}
+      {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="feed-rest-block">
+    {% if friend_items %}
+    <div class="feed-section-head">
+      <div>
+        <div class="feed-section-kicker">Остальное</div>
+        <div class="feed-section-title">Общая лента</div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% for item in items %}
+    {% if item.type == "order" %}
+    {% include "feed/_post_card.html" with o=item.obj %}
+    {% elif item.type == "event" %}
+    {% include "feed/_event_card.html" with e=item.obj %}
+    {% else %}
+    {% include "feed/_trade_activity_card.html" with e=item.obj %}
+    {% endif %}
+    {% empty %}
+    <div class="feed-empty-card">
+      <div class="feed-empty-emoji">☕</div>
+      <div class="feed-empty-title">Пока нет публикаций</div>
+      <div class="feed-empty-text">Добавь первый чек или отзыв и лента оживёт.</div>
+    </div>
+    {% endfor %}
+  </section>
+</div>
 {% endblock %}

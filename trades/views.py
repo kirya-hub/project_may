@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -21,6 +21,28 @@ from .services import (
     create_trade_offer,
     decline_trade,
 )
+
+
+def _trade_items_prefetch():
+    return Prefetch(
+        'trade__items',
+        queryset=TradeItem.objects.select_related(
+            'promocode',
+            'promocode__source_offer',
+            'promocode__source_offer__cafe',
+        ).order_by('id'),
+    )
+
+
+def _decorate_trade_activity(event: TradeActivity) -> TradeActivity:
+    items = list(event.trade.items.all())
+    offered = [item.promocode for item in items if item.side == TradeItem.Side.OFFERED]
+    requested = [item.promocode for item in items if item.side == TradeItem.Side.REQUESTED]
+    event.offered_preview = offered[:1]
+    event.requested_preview = requested[:1]
+    event.extra_offered_count = max(0, len(offered) - 1)
+    event.extra_requested_count = max(0, len(requested) - 1)
+    return event
 
 
 @login_required
@@ -69,6 +91,7 @@ def trade_new(request, username: str):
             profile=from_profile,
             status=PromoCode.Status.ACTIVE,
         )
+        .select_related('source_offer', 'source_offer__cafe')
         .filter(Q(expires_at__isnull=True) | Q(expires_at__gte=today))
         .exclude(id__in=busy_ids)
         .order_by('-acquired_at')
@@ -79,6 +102,7 @@ def trade_new(request, username: str):
             profile=to_profile,
             status=PromoCode.Status.ACTIVE,
         )
+        .select_related('source_offer', 'source_offer__cafe')
         .filter(Q(expires_at__isnull=True) | Q(expires_at__gte=today))
         .exclude(id__in=busy_ids)
         .order_by('-acquired_at')
@@ -118,7 +142,10 @@ def trade_new(request, username: str):
 def trade_detail(request, trade_id: int):
     trade = get_object_or_404(
         TradeOffer.objects.select_related('from_user', 'to_user').prefetch_related(
-            'items', 'items__promocode'
+            'items',
+            'items__promocode',
+            'items__promocode__source_offer',
+            'items__promocode__source_offer__cafe',
         ),
         id=trade_id,
     )
@@ -201,7 +228,17 @@ def trade_activity(request):
     friend_ids = list(friends_qs(request.user).values_list('id', flat=True))
 
     events = (
-        TradeActivity.objects.select_related('actor', 'trade', 'trade__from_user', 'trade__to_user')
+        TradeActivity.objects.filter(kind=TradeActivity.Kind.ACCEPTED)
+        .select_related(
+            'actor',
+            'actor__profile',
+            'trade',
+            'trade__from_user',
+            'trade__from_user__profile',
+            'trade__to_user',
+            'trade__to_user__profile',
+        )
+        .prefetch_related(_trade_items_prefetch())
         .filter(
             Q(trade__from_user_id__in=friend_ids)
             | Q(trade__to_user_id__in=friend_ids)
@@ -217,7 +254,7 @@ def trade_activity(request):
         request,
         'trades/activity.html',
         {
-            'events': events,
+            'events': [_decorate_trade_activity(event) for event in events],
             'show_back': True,
             'header_back_url': next_url,
         },

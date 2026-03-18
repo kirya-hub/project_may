@@ -6,6 +6,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/trades.css' %}">
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -15,9 +16,17 @@
         <div class="trades-status">{{ trade.get_status_display }}</div>
     </div>
 
-    <div class="trades-muted" style="line-height: 1.4;">
-        От: <b>@{{ trade.from_user.username }}</b> <span class="level-badge">{% user_level trade.from_user %}</span><br>
-        Кому: <b>@{{ trade.to_user.username }}</b> <span class="level-badge">{% user_level trade.to_user %}</span>
+    <div class="trade-members-card">
+        <div class="trade-member-line">
+            <span class="trade-member-label">Отправитель</span>
+            <b>@{{ trade.from_user.username }}</b>
+            {% include "includes/level_badge.html" with user=trade.from_user size="compact" %}
+        </div>
+        <div class="trade-member-line">
+            <span class="trade-member-label">Получатель</span>
+            <b>@{{ trade.to_user.username }}</b>
+            {% include "includes/level_badge.html" with user=trade.to_user size="compact" %}
+        </div>
     </div>
 
     {% if trade.message %}
@@ -29,32 +38,24 @@
 
     <div class="trade-section">
         <div class="trade-section-title">Отдаю</div>
-        {% for c in offered %}
-        <div class="trade-option" style="cursor: default;">
-            <div>
-                <div class="trade-code">{{ c.code }}</div>
-                <div class="trade-desc">{{ c.description }}</div>
-                <div class="trade-expire">{{ c.expires_at_display }}</div>
-            </div>
+        <div class="promo-coupons promo-coupons--compact">
+            {% for c in offered %}
+            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter="Код: "|add:c.code card_class="coupon-card--trade" %}
+            {% empty %}
+            <div class="trade-empty-inline">Нет купонов</div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="trade-empty-inline">Нет купонов</div>
-        {% endfor %}
     </div>
 
     <div class="trade-section">
         <div class="trade-section-title">Хочу</div>
-        {% for c in requested %}
-        <div class="trade-option" style="cursor: default;">
-            <div>
-                <div class="trade-code">{{ c.code }}</div>
-                <div class="trade-desc">{{ c.description }}</div>
-                <div class="trade-expire">{{ c.expires_at_display }}</div>
-            </div>
+        <div class="promo-coupons promo-coupons--compact">
+            {% for c in requested %}
+            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter="Код: "|add:c.code card_class="coupon-card--trade" %}
+            {% empty %}
+            <div class="trade-empty-inline">Нет купонов</div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="trade-empty-inline">Нет купонов</div>
-        {% endfor %}
     </div>
 
     <div class="trade-actions">
@@ -80,8 +81,6 @@
         {% endif %}
     </div>
 
-    <div class="trades-date" style="margin-top: 12px; font-size: 12px;">
-        Создан {{ trade.created_at|date:"d.m.Y H:i" }}
-    </div>
+    <div class="trades-date">Создан {{ trade.created_at|date:"d.m.Y H:i" }}</div>
 </div>
 {% endblock %}

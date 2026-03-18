@@ -1,65 +1,65 @@
 {% extends "base.html" %}
-{% load level_tags %}
+{% load static %}
 
-{% block title %}Активность{% endblock %}
+{% block title %}Активность друзей{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/trades.css' %}">
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
+{% endblock %}
 
 {% block content %}
-<div style="max-width:520px;margin:0 auto;padding:14px 12px;">
-    <div style="font-size:22px;font-weight:900;margin-bottom:14px;">
-        Активность
+<div class="trades-page trades-page--activity">
+    <div class="trades-title-row">
+        <div>
+            <div class="trades-title">Активность друзей</div>
+            <div class="trades-muted">Публичные обмены друзей и твои завершённые сделки</div>
+        </div>
     </div>
 
     {% if events %}
-    <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="trade-activity-list">
         {% for e in events %}
-        <a href="{% url 'trades:detail' e.trade.id %}?next={{ request.get_full_path|urlencode }}" style="
-                        text-decoration:none;
-                        color:#000;
-                        border:1px solid #eee;
-                        border-radius:16px;
-                        padding:14px;
-                        display:block;
-                        background:#fff;
-                   ">
-
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div style="font-weight:900;">
-                    @{{ e.actor.username }}
-                    <span style="
-                                display:inline-flex;
-                                align-items:center;
-                                justify-content:center;
-                                height:18px;
-                                padding:0 8px;
-                                margin-left:6px;
-                                border-radius:999px;
-                                background:#000;
-                                color:#fff;
-                                font-size:11px;
-                                font-weight:900;
-                            ">
-                        LVL {{ e.actor|user_level }}
-                    </span>
-                    — {{ e.get_kind_display }}
+        <a href="{% url 'trades:detail' e.trade.id %}?next={{ request.get_full_path|urlencode }}" class="trade-activity-card">
+            <div class="trade-activity-card__top">
+                <div class="trade-activity-card__title">
+                    <span class="trade-activity-card__user">@{{ e.trade.from_user.username }}</span>
+                    <span class="trade-activity-card__arrow">⇄</span>
+                    <span class="trade-activity-card__user">@{{ e.trade.to_user.username }}</span>
                 </div>
-
-                <div style="opacity:.6;font-size:12px;">
-                    {{ e.created_at|date:"d.m H:i" }}
-                </div>
+                <div class="trade-activity-card__time">{{ e.created_at|date:"d.m H:i" }}</div>
             </div>
 
-            <div style="margin-top:8px;opacity:.75;font-size:13px;">
-                @{{ e.trade.from_user.username }}
-                <span style="font-weight:900;">→</span>
-                @{{ e.trade.to_user.username }}
-                • {{ e.trade.get_status_display }}
+            <div class="trade-activity-card__subtitle">Обмен завершён</div>
+
+            <div class="trade-activity-card__coupons">
+                {% if e.offered_preview %}
+                {% include "promo/includes/coupon_preview.html" with item=e.offered_preview.0 source_label="Отдал" %}
+                {% endif %}
+
+                {% if e.requested_preview %}
+                {% include "promo/includes/coupon_preview.html" with item=e.requested_preview.0 source_label="Получил" %}
+                {% endif %}
             </div>
 
+            {% if e.extra_offered_count or e.extra_requested_count %}
+            <div class="trade-activity-card__more">
+                {% if e.extra_offered_count %}
+                +{{ e.extra_offered_count }} ещё со стороны отправителя
+                {% endif %}
+                {% if e.extra_offered_count and e.extra_requested_count %}
+                •
+                {% endif %}
+                {% if e.extra_requested_count %}
+                +{{ e.extra_requested_count }} ещё со стороны получателя
+                {% endif %}
+            </div>
+            {% endif %}
         </a>
         {% endfor %}
     </div>
     {% else %}
-    <div style="opacity:.7;">Пока нет событий.</div>
+    <div class="trade-empty">Пока нет публичных обменов.</div>
     {% endif %}
 </div>
 {% endblock %}

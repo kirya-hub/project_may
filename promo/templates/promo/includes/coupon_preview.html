@@ -1,0 +1,14 @@
+<div
+    class="coupon-preview coupon-preview--{{ item.rarity_code|default:'common' }}{% if preview_class %} {{ preview_class }}{% endif %}">
+    <div class="coupon-preview__accent"></div>
+    <div class="coupon-preview__body">
+        {% if source_label or item.cafe_name %}
+        <div class="coupon-preview__topline">
+            {% if source_label %}<span>{{ source_label }}</span>{% endif %}
+            {% if item.cafe_name %}<span>{{ item.cafe_name }}</span>{% endif %}
+        </div>
+        {% endif %}
+        <div class="coupon-preview__title">{{ item.benefit_text }}</div>
+        <div class="coupon-preview__meta">{{ item.reward_type_label }} • {{ item.rarity_display }}</div>
+    </div>
+</div>

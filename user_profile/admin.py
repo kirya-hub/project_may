@@ -17,7 +17,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def friends_count(self, obj):
         user = obj.user
-        following_ids = Follow.objects.filter(follower=user).values_list('following_id', flat=True)
         followers_ids = Follow.objects.filter(following=user).values_list('follower_id', flat=True)
         return Follow.objects.filter(follower=user, following_id__in=followers_ids).count()
 
@@ -26,6 +25,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
-    list_display = ('code', 'profile', 'status', 'expires_at', 'acquired_at', 'used_at')
-    list_filter = ('status', 'expires_at')
+    list_display = ('code', 'profile', 'origin', 'status', 'expires_at', 'acquired_at', 'used_at')
+    list_filter = ('origin', 'status', 'expires_at')
     search_fields = ('code', 'profile__user__username')

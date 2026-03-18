@@ -1,0 +1,60 @@
+{% load static %}
+<div class="post-card trade-feed-card trade-feed-card--{{ e.offered_preview.0.rarity_code|default:'common' }}">
+    <div class="trade-feed-card__top">
+        <div class="trade-feed-card__avatars">
+            <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}" class="post-avatar-link">
+                {% if e.trade.from_user.profile.avatar %}
+                <img class="post-avatar-img" src="{{ e.trade.from_user.profile.avatar.url }}" alt="ava" draggable="false">
+                {% else %}
+                <div class="post-avatar-fallback">{{ e.trade.from_user.username|first|upper }}</div>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}" class="post-avatar-link trade-feed-card__avatar-secondary">
+                {% if e.trade.to_user.profile.avatar %}
+                <img class="post-avatar-img" src="{{ e.trade.to_user.profile.avatar.url }}" alt="ava" draggable="false">
+                {% else %}
+                <div class="post-avatar-fallback">{{ e.trade.to_user.username|first|upper }}</div>
+                {% endif %}
+            </a>
+        </div>
+
+        <div class="trade-feed-card__users">
+            <div class="trade-feed-card__kicker">Обмен друзей</div>
+            <div class="trade-feed-card__title">
+                <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}">@{{ e.trade.from_user.username }}</a>
+                <span>⇄</span>
+                <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}">@{{ e.trade.to_user.username }}</a>
+            </div>
+            <div class="trade-feed-card__time">{{ e.created_at|date:"j M" }}</div>
+        </div>
+
+        <div class="event-mark" aria-hidden="true">
+            <span class="event-mark-ico" style="--ico-url: url('{% static 'icons/gift.svg' %}');"></span>
+        </div>
+    </div>
+
+    <div class="trade-feed-card__coupons">
+        {% if e.offered_preview %}
+        {% include "promo/includes/coupon_preview.html" with item=e.offered_preview.0 source_label="Отдал" %}
+        {% endif %}
+
+        {% if e.requested_preview %}
+        {% include "promo/includes/coupon_preview.html" with item=e.requested_preview.0 source_label="Получил" %}
+        {% endif %}
+    </div>
+
+    {% if e.extra_offered_count or e.extra_requested_count %}
+    <div class="trade-feed-card__more">
+        {% if e.extra_offered_count %}
+        +{{ e.extra_offered_count }} ещё от отправителя
+        {% endif %}
+        {% if e.extra_offered_count and e.extra_requested_count %}
+        •
+        {% endif %}
+        {% if e.extra_requested_count %}
+        +{{ e.extra_requested_count }} ещё от получателя
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

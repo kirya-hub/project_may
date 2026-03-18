@@ -423,3 +423,147 @@
     gap: 8px;
   }
 }
+
+.profile-top--showcase {
+  gap: 14px;
+}
+
+.avatar-wrap--hero {
+  width: 132px;
+  height: 132px;
+}
+
+.profile-level-badge {
+  transform: translateY(1px);
+}
+
+.profile-social-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.profile-social-actions__form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #d9d9de;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+  font-size: 15px;
+  font-weight: 900;
+  color: #40424a;
+}
+
+.profile-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 0;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.profile-action-btn--ghost {
+  border: 1px solid #d9d9de;
+  background: #fff;
+  color: #111;
+  box-shadow: none;
+}
+
+.profile-action-btn--trade {
+  background: linear-gradient(180deg, #2f68d8 0%, #1946a4 100%);
+}
+
+.profile-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 22px;
+}
+
+.profile-section-header--posts {
+  margin-top: 26px;
+}
+
+.profile-section-note {
+  margin-top: 6px;
+  color: #7a7a84;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.profile-showcase-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.profile-empty-card {
+  margin-top: 10px;
+  padding: 18px 16px;
+  border-radius: 22px;
+  border: 1px solid #e3e4e8;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8fa 100%);
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.05);
+  color: #5a5e69;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.profile-feed {
+  padding: 0;
+  gap: 14px;
+}
+
+.friends-card-kicker {
+  color: #7a7a84;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.friends-card-title {
+  margin-top: 4px;
+}
+
+.level-progress-card--showcase {
+  width: 100%;
+  margin-top: 4px;
+}
+
+@media (max-width: 430px) {
+
+  .profile-action-btn,
+  .profile-pill {
+    min-width: 118px;
+  }
+}
+
+.profile-section-header .section-title {
+  margin-top: 0;
+}
