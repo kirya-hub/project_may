@@ -14,8 +14,7 @@
     <div class="feed-hero-top">
       <div>
         <div class="feed-hero-kicker">Главная</div>
-        <h1 class="feed-hero-title">Свежие отзывы, drop-события и обмены</h1>
-        <p class="feed-hero-text">Сначала друзья, потом остальная лента. Так и должно быть.</p>
+        <h1 class="feed-hero-title">Лента</h1>
       </div>
       <div class="feed-hero-pill">{{ total_items_count }} событий</div>
     </div>
@@ -28,14 +27,6 @@
 
   {% if friend_items %}
   <section class="feed-friends-block">
-    <div class="feed-section-head">
-      <div>
-        <div class="feed-section-kicker">Сначала свои</div>
-        <div class="feed-section-title">Активность друзей</div>
-      </div>
-      <a href="{% url 'trades:activity' %}" class="feed-section-link">Обмены</a>
-    </div>
-
     <div class="feed-friends-list">
       {% for item in friend_items %}
       {% if item.type == "order" %}
@@ -51,15 +42,6 @@
   {% endif %}
 
   <section class="feed-rest-block">
-    {% if friend_items %}
-    <div class="feed-section-head">
-      <div>
-        <div class="feed-section-kicker">Остальное</div>
-        <div class="feed-section-title">Общая лента</div>
-      </div>
-    </div>
-    {% endif %}
-
     {% for item in items %}
     {% if item.type == "order" %}
     {% include "feed/_post_card.html" with o=item.obj %}

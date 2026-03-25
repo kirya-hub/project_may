@@ -1,4 +1,5 @@
 {% load static %}
+{% load feed_extras %}
 
 <div class="post-card event-card event-card-drop event-card-{{ e.rarity|lower }}">
     <div class="event-head">
@@ -42,7 +43,7 @@
         <div class="event-text">{{ e.text }}</div>
 
         <div class="event-footer">
-            <div class="post-time-inline">{{ e.created_at|date:"j M" }}</div>
+            <div class="post-time-inline">{{ e.created_at|smart_time }}</div>
         </div>
     </div>
 </div>

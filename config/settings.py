@@ -13,7 +13,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-secret-key-change-me')
 DEBUG = os.getenv('DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
 
 _allowed_hosts = os.getenv('ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',') if h.strip()] or (
+    ['*'] if DEBUG else []
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -89,7 +91,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
@@ -102,3 +103,36 @@ LOGIN_REDIRECT_URL = '/profile/me/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'add_order': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'promo': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'drops': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'trades': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'user_profile': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+    },
+}

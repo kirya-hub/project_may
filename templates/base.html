@@ -55,7 +55,7 @@
                         {% endif %}
                     </a>
 
-                    <a class="header-action" href="{% url 'trades:activity' %}?next={{ request.path|urlencode }}"
+                    <a class="header-action" href="{% url 'trades:home' %}?next={{ request.path|urlencode }}"
                         aria-label="Уведомления">
                         <span class="header-action-ico" style="--ico-url: url('{% static 'icons/bell.svg' %}');"></span>
                         {% if inbox_badge_count|default:0 %}

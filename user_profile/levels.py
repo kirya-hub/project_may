@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+import logging
+
 from django.db import transaction
 from django.utils import timezone
 
 from .models import Profile
 
+logger = logging.getLogger(__name__)
+
 MAX_LEVEL = 15
 
 LEGENDARY_BY_LEVEL = [4, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8]
-
 
 def xp_needed_for_level(level: int) -> int:
     if level <= 1:
@@ -22,11 +25,9 @@ def xp_needed_for_level(level: int) -> int:
     x = level - 4
     return 120 + x * 55 + x * x * 10
 
-
 def get_or_create_profile(user) -> Profile:
     profile, _ = Profile.objects.get_or_create(user=user)
     return profile
-
 
 def add_xp(user, amount: int) -> Profile:
     if amount <= 0:
@@ -35,6 +36,7 @@ def add_xp(user, amount: int) -> Profile:
     with transaction.atomic():
         profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
 
+        old_level = profile.level
         profile.xp = (profile.xp or 0) + amount
 
         if profile.level >= MAX_LEVEL:
@@ -49,8 +51,16 @@ def add_xp(user, amount: int) -> Profile:
             profile.level += 1
 
         profile.save(update_fields=['xp', 'level'])
-        return profile
 
+        if profile.level != old_level:
+            logger.info(
+                "Уровень повышен: user=%s %d → %d",
+                user.pk,
+                old_level,
+                profile.level,
+            )
+
+        return profile
 
 def grant_trade_xp_once_per_day(user, amount: int) -> bool:
     if amount <= 0:
@@ -62,10 +72,15 @@ def grant_trade_xp_once_per_day(user, amount: int) -> bool:
         profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
 
         if profile.last_trade_xp_date == today:
+            logger.debug(
+                "grant_trade_xp: пропущено для user=%s — XP за сегодня уже начислен",
+                user.pk,
+            )
             return False
 
         profile.last_trade_xp_date = today
         profile.save(update_fields=['last_trade_xp_date'])
 
     add_xp(user, amount)
+    logger.debug("grant_trade_xp: начислено %d XP для user=%s", amount, user.pk)
     return True

@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import logging
+import os
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -9,6 +14,36 @@ from .forms import OrderForm
 from .models import Order
 from .services.receipt_validator import process_order_receipt
 
+logger = logging.getLogger(__name__)
+
+def _delete_order_files(order: Order) -> None:
+    """Удаляет медиафайлы заказа с диска перед удалением объекта.
+
+    Django НЕ удаляет файлы автоматически при delete() — без этого
+    каждый дубликат оставлял бы чек и фото блюда навсегда в media/.
+    """
+    paths: list[str] = []
+    if order.check_image:
+        try:
+            paths.append(order.check_image.path)
+        except ValueError:
+            pass
+    if order.dish_photo:
+        try:
+            paths.append(order.dish_photo.path)
+        except ValueError:
+            pass
+
+    order.delete()
+
+    for path in paths:
+        try:
+            if os.path.exists(path):
+                os.remove(path)
+                logger.debug("Удалён медиафайл: %s", path)
+        except OSError as exc:
+
+            logger.warning("Не удалось удалить файл %s: %s", path, exc)
 
 @login_required
 def add_order_page(request):
@@ -22,9 +57,16 @@ def add_order_page(request):
 
             try:
                 process_order_receipt(order)
-            except Exception as e:
-                order.delete()
-                messages.warning(request, f'Чек не обработался, пост не создан: {e}')
+            except Exception as exc:
+                logger.error(
+                    "Ошибка обработки чека для заказа #%s user=%s: %s",
+                    order.pk,
+                    request.user.pk,
+                    exc,
+                    exc_info=True,
+                )
+                _delete_order_files(order)
+                messages.warning(request, f'Чек не обработался, пост не создан: {exc}')
                 return redirect('add_order')
 
             order = Order.objects.get(pk=order.pk)
@@ -39,7 +81,14 @@ def add_order_page(request):
                     order.duplicate_reason,
                     'Этот чек уже был загружен раньше.',
                 )
-                order.delete()
+                logger.info(
+                    "Дубликат чека: заказ #%s reason=%s user=%s",
+                    order.pk,
+                    order.duplicate_reason,
+                    request.user.pk,
+                )
+
+                _delete_order_files(order)
                 messages.warning(request, f'{message} Пост в ленте не создан.')
                 return redirect('add_order')
 

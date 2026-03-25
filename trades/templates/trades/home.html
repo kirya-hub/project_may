@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load level_tags %}
 {% block title %}Обмен{% endblock %}
 
 {% block extra_css %}
@@ -11,18 +10,27 @@
 <div class="trades-page">
     <div class="trades-title-row">
         <div class="trades-title">Обмен</div>
-        <a href="{% url 'trades:activity' %}" class="trade-btn-outline"
-            style="text-decoration: none; display: inline-flex; align-items: center;">Активность</a>
     </div>
 
     <div class="trade-section" style="margin-top: 0;">
         <div class="trade-section-title">Входящие</div>
         <div class="trade-card-list">
             {% for t in incoming %}
-            <a href="{% url 'trades:detail' t.id %}" class="trade-card">
+            <a href="{% url 'trades:detail' t.id %}" class="trade-card trade-card--compact">
                 <div class="trade-card-top">
-                    <div class="trade-card-title">
-                        От @{{ t.from_user.username }} <span class="level-badge">LVL {% user_level t.from_user %}</span>
+                    <div class="trade-card-userblock trade-card-userblock--rich">
+                        <div class="trade-card-avatar">
+                            {% if t.from_user.profile.avatar %}
+                            <img class="trade-card-avatar__img" src="{{ t.from_user.profile.avatar.url }}" alt="ava">
+                            {% else %}
+                            <div class="trade-card-avatar__fallback">{{ t.from_user.username|first|upper }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="trade-card-usertext">
+                            <div class="trade-card-label">Отправил</div>
+                            <div class="trade-card-name">{% if t.from_user.profile.name %}{{ t.from_user.profile.name }}{% else %}{{ t.from_user.username }}{% endif %}</div>
+                            <div class="trade-card-meta">@{{ t.from_user.username }}</div>
+                        </div>
                     </div>
                     <div class="trade-pill">{{ t.get_status_display }}</div>
                 </div>
@@ -37,10 +45,21 @@
         <div class="trade-section-title">Исходящие</div>
         <div class="trade-card-list">
             {% for t in outgoing %}
-            <a href="{% url 'trades:detail' t.id %}" class="trade-card">
+            <a href="{% url 'trades:detail' t.id %}" class="trade-card trade-card--compact">
                 <div class="trade-card-top">
-                    <div class="trade-card-title">
-                        Кому @{{ t.to_user.username }} <span class="level-badge">LVL {% user_level t.to_user %}</span>
+                    <div class="trade-card-userblock trade-card-userblock--rich">
+                        <div class="trade-card-avatar">
+                            {% if t.to_user.profile.avatar %}
+                            <img class="trade-card-avatar__img" src="{{ t.to_user.profile.avatar.url }}" alt="ava">
+                            {% else %}
+                            <div class="trade-card-avatar__fallback">{{ t.to_user.username|first|upper }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="trade-card-usertext">
+                            <div class="trade-card-label">Получает</div>
+                            <div class="trade-card-name">{% if t.to_user.profile.name %}{{ t.to_user.profile.name }}{% else %}{{ t.to_user.username }}{% endif %}</div>
+                            <div class="trade-card-meta">@{{ t.to_user.username }}</div>
+                        </div>
                     </div>
                     <div class="trade-pill">{{ t.get_status_display }}</div>
                 </div>

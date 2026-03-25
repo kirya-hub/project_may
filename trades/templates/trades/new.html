@@ -5,6 +5,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/trades.css' %}">
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -20,45 +21,50 @@
     </div>
     {% endif %}
 
-    <form method="post" class="trade-form">
+    <form method="post" class="trade-form trade-form--cards">
         {% csrf_token %}
 
         <div class="trade-field">
             <label class="trade-label">{{ form.offered.label }}</label>
-            <div class="trade-options">
-                {% for choice in form.offered %}
-                <label class="trade-option">
-                    {{ choice.tag }}
-                    <div class="trade-option-body">
-                        <div class="trade-option-code">{{ choice.choice_label|cut:"[]'" }}</div>
-                    </div>
+            {% if offered_coupons %}
+            <div class="trade-coupon-pick-list">
+                {% for coupon in offered_coupons %}
+                <label class="trade-coupon-pick">
+                    <input type="checkbox" name="{{ form.offered.html_name }}" value="{{ coupon.id }}" {% if form.offered.value and coupon.id|stringformat:'s' in form.offered.value %}checked{% endif %}>
+                    <span class="trade-coupon-pick__box"></span>
+                    <span class="trade-coupon-pick__content">
+                        {% include "promo/includes/coupon_preview.html" with item=coupon source_label=coupon.get_origin_display preview_class="coupon-preview--picker" %}
+                    </span>
                 </label>
-                {% empty %}
-                <div class="trade-empty-inline">У тебя нет доступных купонов для обмена</div>
                 {% endfor %}
             </div>
+            {% else %}
+            <div class="trade-empty-inline">Нет доступных купонов для обмена</div>
+            {% endif %}
         </div>
 
         <div class="trade-field">
             <label class="trade-label">{{ form.requested.label }}</label>
-            <div class="trade-options">
-                {% for choice in form.requested %}
-                <label class="trade-option">
-                    {{ choice.tag }}
-                    <div class="trade-option-body">
-                        <div class="trade-option-code">{{ choice.choice_label|cut:"[]'" }}</div>
-                    </div>
+            {% if requested_coupons %}
+            <div class="trade-coupon-pick-list">
+                {% for coupon in requested_coupons %}
+                <label class="trade-coupon-pick">
+                    <input type="checkbox" name="{{ form.requested.html_name }}" value="{{ coupon.id }}" {% if form.requested.value and coupon.id|stringformat:'s' in form.requested.value %}checked{% endif %}>
+                    <span class="trade-coupon-pick__box"></span>
+                    <span class="trade-coupon-pick__content">
+                        {% include "promo/includes/coupon_preview.html" with item=coupon source_label=coupon.get_origin_display preview_class="coupon-preview--picker" %}
+                    </span>
                 </label>
-                {% empty %}
-                <div class="trade-empty-inline">У друга нет доступных купонов для обмена</div>
                 {% endfor %}
             </div>
+            {% else %}
+            <div class="trade-empty-inline">У друга нет доступных купонов для обмена</div>
+            {% endif %}
         </div>
 
         <div class="trade-field">
             <label class="trade-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
-            <textarea name="{{ form.message.html_name }}" id="{{ form.message.id_for_label }}" class="trade-textarea"
-                rows="4">{{ form.message.value|default:'' }}</textarea>
+            <textarea name="{{ form.message.html_name }}" id="{{ form.message.id_for_label }}" class="trade-textarea" rows="4">{{ form.message.value|default:'' }}</textarea>
         </div>
 
         <button type="submit" class="trade-submit">Отправить</button>

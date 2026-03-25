@@ -1084,3 +1084,177 @@
   flex-direction: column;
   gap: 12px;
 }
+
+
+
+/* ── Design overrides (single canonical section) ── */
+.feed { gap: 16px; }
+
+.feed-hero {
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(17,24,39,.08);
+  background: radial-gradient(circle at top right, rgba(73,96,255,.12), transparent 34%),
+              linear-gradient(180deg, #fff 0%, #f6f7fb 100%);
+  box-shadow: 0 16px 34px rgba(15,23,42,.07);
+}
+
+.feed-hero-title { font-size: 26px; letter-spacing: -0.04em; }
+
+/* Hide section headers in feed — clean look */
+.feed-section-head,
+.feed-section-kicker,
+.feed-section-title,
+.feed-section-link { display: none; }
+
+.feed-friends-block,
+.feed-rest-block,
+.feed-friends-list { gap: 14px; }
+.feed-friends-block { margin-top: 2px; }
+
+.feed-cafes-search {
+  min-height: 52px;
+  border-color: rgba(17,24,39,.08);
+  background: linear-gradient(180deg, #fff 0%, #fbfbfd 100%);
+}
+
+/* ── Post card ── */
+.post-card {
+  border-color: rgba(17,24,39,.08);
+  background: linear-gradient(180deg, #fff 0%, #fbfbfd 100%);
+  box-shadow: 0 16px 30px rgba(15,23,42,.07);
+}
+.post-card::before {
+  background: radial-gradient(circle at top right, rgba(88,109,255,.05), transparent 32%);
+}
+.post-head { margin-bottom: 14px; }
+.post-avatar-link {
+  border: 1px solid rgba(17,24,39,.08);
+  box-shadow: 0 6px 16px rgba(15,23,42,.07);
+}
+.post-user-link { font-size: 16px; }
+.post-cafe-link,
+.post-cafe-plain {
+  border-color: rgba(88,98,122,.13);
+  background: rgba(246,248,252,.96);
+  color: #505868;
+}
+.post-media-shell {
+  border-radius: 20px;
+  background: #eef1f6;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 12px 24px rgba(15,23,42,.07);
+}
+.post-text { margin-top: 12px; font-size: 15px; line-height: 1.55; }
+.btn-like,
+.btn-comment {
+  min-height: 42px;
+  border-color: rgba(17,24,39,.08);
+  background: #f6f7fb;
+  color: #1f2937;
+  box-shadow: none;
+}
+.btn-like.is-liked { background: #fff0f4; border-color: #ffc5d3; color: #db2557; }
+.btn-comment       { background: #f3f5fb; }
+.post-time-inline  { color: #8894a6; }
+.comments-wrap     { border-top-color: rgba(17,24,39,.07); }
+.comment-item {
+  border-color: rgba(17,24,39,.07);
+  background: linear-gradient(180deg, #fff 0%, #fafbff 100%);
+}
+
+/* ── Event card — common style ── */
+.event-card {
+  border-width: 1px;
+  box-shadow: 0 16px 30px rgba(15,23,42,.18);
+}
+.event-mark {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.14);
+}
+.event-title { font-size: 18px; }
+
+/* Final rarity colors — matching feed drop posts */
+.event-card-common {
+  background: radial-gradient(circle at top right, rgba(45,212,191,.28), transparent 34%),
+              linear-gradient(145deg, #031917 0%, #042a24 48%, #0c4a3e 100%);
+  border-color: rgba(45,212,191,.30);
+  box-shadow: 0 16px 30px rgba(3,25,23,.30);
+}
+.event-card-rare {
+  background: radial-gradient(circle at top right, rgba(157,98,255,.22), transparent 34%),
+              linear-gradient(145deg, #17072f 0%, #220943 48%, #43007a 100%);
+  border-color: rgba(157,98,255,.26);
+  box-shadow: 0 16px 30px rgba(31,9,58,.28);
+}
+.event-card-legendary {
+  background: radial-gradient(circle at top right, rgba(255,214,82,.24), transparent 34%),
+              linear-gradient(145deg, #2b1400 0%, #5a2700 46%, #9a5a00 100%);
+  border-color: rgba(255,214,82,.28);
+  box-shadow: 0 16px 30px rgba(66,31,0,.28);
+}
+
+.event-rarity-common {
+  background: rgba(13,148,136,.20);
+  color: #5eead4;
+  border-color: rgba(45,212,191,.30);
+}
+.event-rarity-rare {
+  background: rgba(123,44,255,.18);
+  color: #dea6ff;
+  border-color: rgba(157,98,255,.28);
+}
+.event-rarity-legendary {
+  background: rgba(255,188,57,.18);
+  color: #ffe08a;
+  border-color: rgba(255,214,82,.30);
+}
+
+/* ── Trade feed card ── */
+.trade-feed-card {
+  background: radial-gradient(circle at top right, rgba(140,120,255,.14), transparent 34%),
+              linear-gradient(145deg, #161d35 0%, #131830 100%);
+  border: 1px solid rgba(145,134,255,.16);
+  box-shadow: 0 14px 28px rgba(15,23,42,.14);
+  padding: 11px 11px 10px;
+}
+.trade-feed-card .post-avatar-link {
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  box-shadow: none;
+}
+.trade-feed-card .post-avatar-fallback { background: rgba(255,255,255,.92); }
+.trade-feed-card__kicker  { color: rgba(255,255,255,.58); font-size: 10px; letter-spacing: .12em; }
+.trade-feed-card__title,
+.trade-feed-card__title a { color: #fff; }
+.trade-feed-card__time,
+.trade-feed-card__more    { color: rgba(255,255,255,.62); }
+.trade-feed-card__top     { align-items: flex-start; margin-bottom: 8px; }
+.trade-feed-card__route   { display: flex; align-items: center; margin-top: 8px; gap: 6px; }
+.trade-feed-card__person  {
+  display: flex; align-items: center; flex: 1; min-width: 0;
+  padding: 8px; gap: 8px; border-radius: 14px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.07);
+  text-decoration: none; color: inherit;
+}
+.trade-feed-card__person-meta { min-width: 0; flex: 1; overflow: hidden; }
+.trade-feed-card__swap {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+  font-size: 13px; color: rgba(255,255,255,.65);
+}
+.trade-feed-card__person .post-avatar-img,
+.trade-feed-card__person .post-avatar-fallback { width: 34px; height: 34px; min-width: 34px; }
+.trade-feed-card__label   { color: rgba(255,255,255,.52); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.trade-feed-card__name    { margin-top: 0; font-size: 13px; line-height: 1.1; color: #fff; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trade-feed-card__username{ font-size: 10px; color: rgba(255,255,255,.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trade-feed-card__coupons { gap: 7px; margin-top: 9px; }
+.trade-feed-card__coupon-col { min-width: 0; }
+.trade-feed-card__coupon-title { margin-bottom: 4px; font-size: 10px; color: rgba(255,255,255,.68); font-weight: 700; letter-spacing: .10em; text-transform: uppercase; }
+.trade-feed-card__coupon-col--from .trade-feed-card__coupon-title { color: #c7d2fe; }
+.trade-feed-card__coupon-col--to   .trade-feed-card__coupon-title { color: #fde68a; }
+.trade-feed-card__bottom  { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.trade-feed-card__time    { margin-left: auto; text-align: right; font-size: 12px; }
+.trade-feed-card__more    { font-size: 11px; }
+.trade-feed-card__person  { background: rgba(255,255,255,.06); }
+.trade-feed-card__coupon-col { gap: 6px; }

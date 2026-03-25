@@ -1,9 +1,18 @@
+from __future__ import annotations
+
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
+
+from promo.services import get_active_drop_coupon
+from user_profile.models import Profile
 
 from .models import DropOption, DropWeek
 from .services import choose_option, ensure_week_options
 
+logger = logging.getLogger(__name__)
 
 @login_required
 def drops_page(request):
@@ -19,26 +28,36 @@ def drops_page(request):
         .order_by('id')
     )
 
+    earned_coupon = None
+    if week.status in (DropWeek.Status.ACTIVE, DropWeek.Status.COMPLETED):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        earned_coupon = get_active_drop_coupon(profile)
+
     return render(
         request,
         'drops/drops_page.html',
         {
             'drop_week': week,
             'options': options,
+            'earned_coupon': earned_coupon,
             'show_back': True,
         },
     )
 
-
+@require_POST
 @login_required
 def choose_drop(request, option_id: int):
-    if request.method != 'GET':
-        return redirect('drops:drops_page')
-
     week = ensure_week_options(request.user)
 
     if week.status != DropWeek.Status.CHOOSING:
+        logger.info(
+            "choose_drop: неверный статус %s для user=%s, week=%s",
+            week.status,
+            request.user.pk,
+            week.pk,
+        )
         return redirect('drops:drops_page')
 
     choose_option(request.user, option_id)
+    logger.debug("user=%s выбрал drop option=%s", request.user.pk, option_id)
     return redirect('drops:drops_page')

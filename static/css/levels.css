@@ -60,35 +60,30 @@
     --level-font-size: 12px;
 }
 
-.level-badge--hero {
-    --level-size: 30px;
-    --level-font-size: 14px;
-}
-
 .level-badge--base {
-    --level-bg-start: #2a2a2a;
-    --level-bg-end: #111111;
-    --level-border: rgba(255, 255, 255, 0.18);
-    --level-shadow: rgba(0, 0, 0, 0.2);
+    --level-bg-start: #1f2937;
+    --level-bg-end: #0f172a;
+    --level-border: rgba(148, 163, 184, 0.34);
+    --level-shadow: rgba(15, 23, 42, 0.28);
 }
 
 .level-badge--mid {
-    --level-bg-start: #27365a;
-    --level-bg-end: #131b2d;
-    --level-border: rgba(101, 142, 255, 0.34);
-    --level-shadow: rgba(35, 65, 140, 0.24);
+    --level-bg-start: #155e75;
+    --level-bg-end: #0f2d4a;
+    --level-border: rgba(56, 189, 248, 0.42);
+    --level-shadow: rgba(14, 116, 144, 0.26);
 }
 
 .level-badge--high {
-    --level-bg-start: #4d3720;
-    --level-bg-end: #24170c;
-    --level-border: rgba(255, 188, 82, 0.38);
-    --level-shadow: rgba(143, 91, 28, 0.24);
+    --level-bg-start: #5b21b6;
+    --level-bg-end: #2e1065;
+    --level-border: rgba(168, 85, 247, 0.42);
+    --level-shadow: rgba(91, 33, 182, 0.28);
 }
 
 .level-badge--max {
-    --level-bg-start: #4d2f6d;
-    --level-bg-end: #23142f;
-    --level-border: rgba(197, 139, 255, 0.42);
-    --level-shadow: rgba(99, 49, 149, 0.26);
+    --level-bg-start: #b45309;
+    --level-bg-end: #7c2d12;
+    --level-border: rgba(251, 191, 36, 0.46);
+    --level-shadow: rgba(180, 83, 9, 0.30);
 }

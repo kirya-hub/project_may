@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load level_tags %}
 
 {% block title %}Обмен #{{ trade.id }}{% endblock %}
 
@@ -16,42 +15,65 @@
         <div class="trades-status">{{ trade.get_status_display }}</div>
     </div>
 
-    <div class="trade-members-card">
-        <div class="trade-member-line">
-            <span class="trade-member-label">Отправитель</span>
-            <b>@{{ trade.from_user.username }}</b>
-            {% include "includes/level_badge.html" with user=trade.from_user size="compact" %}
-        </div>
-        <div class="trade-member-line">
-            <span class="trade-member-label">Получатель</span>
-            <b>@{{ trade.to_user.username }}</b>
-            {% include "includes/level_badge.html" with user=trade.to_user size="compact" %}
+    <div class="trade-members-card trade-members-card--rich">
+        <div class="trade-members-route">
+            <div class="trade-member trade-member--from">
+                <div class="trade-member-avatar">
+                    {% if trade.from_user.profile.avatar %}
+                    <img class="trade-member-avatar__img" src="{{ trade.from_user.profile.avatar.url }}" alt="ava">
+                    {% else %}
+                    <div class="trade-member-avatar__fallback">{{ trade.from_user.username|first|upper }}</div>
+                    {% endif %}
+                </div>
+                <div class="trade-member-content">
+                    <div class="trade-member-label">Отправитель</div>
+                    <div class="trade-member-name">{% if trade.from_user.profile.name %}{{ trade.from_user.profile.name }}{% else %}{{ trade.from_user.username }}{% endif %}</div>
+                    <div class="trade-member-username">@{{ trade.from_user.username }}</div>
+                </div>
+            </div>
+
+            <div class="trade-members-swap" aria-hidden="true">⇄</div>
+
+            <div class="trade-member trade-member--to">
+                <div class="trade-member-avatar">
+                    {% if trade.to_user.profile.avatar %}
+                    <img class="trade-member-avatar__img" src="{{ trade.to_user.profile.avatar.url }}" alt="ava">
+                    {% else %}
+                    <div class="trade-member-avatar__fallback">{{ trade.to_user.username|first|upper }}</div>
+                    {% endif %}
+                </div>
+                <div class="trade-member-content">
+                    <div class="trade-member-label">Получатель</div>
+                    <div class="trade-member-name">{% if trade.to_user.profile.name %}{{ trade.to_user.profile.name }}{% else %}{{ trade.to_user.username }}{% endif %}</div>
+                    <div class="trade-member-username">@{{ trade.to_user.username }}</div>
+                </div>
+            </div>
         </div>
     </div>
 
     {% if trade.message %}
-    <div class="trade-message">
+    <div class="trade-message trade-message--soft">
         <div class="trade-section-title">Сообщение</div>
         <div class="trade-desc">{{ trade.message }}</div>
     </div>
     {% endif %}
 
-    <div class="trade-section">
-        <div class="trade-section-title">Отдаю</div>
-        <div class="promo-coupons promo-coupons--compact">
+    <div class="trade-section trade-section--compact">
+        <div class="trade-section-title">Отдает</div>
+        <div class="promo-coupons promo-coupons--compact promo-coupons--trade-detail">
             {% for c in offered %}
-            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter="Код: "|add:c.code card_class="coupon-card--trade" %}
+            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter=c.code card_class="coupon-card--trade" %}
             {% empty %}
             <div class="trade-empty-inline">Нет купонов</div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="trade-section">
-        <div class="trade-section-title">Хочу</div>
-        <div class="promo-coupons promo-coupons--compact">
+    <div class="trade-section trade-section--compact">
+        <div class="trade-section-title">Получает</div>
+        <div class="promo-coupons promo-coupons--compact promo-coupons--trade-detail">
             {% for c in requested %}
-            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter="Код: "|add:c.code card_class="coupon-card--trade" %}
+            {% include "promo/includes/coupon_card.html" with item=c source_label=c.get_origin_display show_status=True footer_label="Срок" footer_value=c.expires_at_display subfooter=c.code card_class="coupon-card--trade" %}
             {% empty %}
             <div class="trade-empty-inline">Нет купонов</div>
             {% endfor %}

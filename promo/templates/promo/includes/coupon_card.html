@@ -1,5 +1,7 @@
 <div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}">
     <div class="coupon-card__accent"></div>
+    <div class="coupon-card__cut coupon-card__cut--top"></div>
+    <div class="coupon-card__cut coupon-card__cut--bottom"></div>
 
     <div class="coupon-card__top">
         <div class="coupon-card__eyebrow-row">
@@ -27,11 +29,13 @@
         {% if extra_chip %}<span class="coupon-chip coupon-chip--outline">{{ extra_chip }}</span>{% endif %}
     </div>
 
+    <div class="coupon-card__divider"></div>
+
     <div class="coupon-card__bottom">
         <div class="coupon-card__info">
             {% if footer_label %}<div class="coupon-card__footer-label">{{ footer_label }}</div>{% endif %}
             {% if footer_value %}<div class="coupon-card__footer-value">{{ footer_value }}</div>{% endif %}
-            {% if subfooter %}<div class="coupon-card__subfooter">{{ subfooter }}</div>{% endif %}
+            {% if subfooter %}<div class="coupon-card__subfooter">Код: {{ subfooter }}</div>{% endif %}
         </div>
 
         {% if action_label %}

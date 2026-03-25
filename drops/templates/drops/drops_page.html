@@ -3,291 +3,426 @@
 
 {% block title %}Drop{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/promo.css' %}">
+{% endblock %}
+
 {% block content %}
 <style>
-    .drop-wrap {
-        max-width: 520px;
-        margin: 0 auto;
-        padding: 14px 12px 110px;
-    }
+  .drop-wrap {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 14px 14px 120px;
+  }
 
-    .drop-title {
-        margin: 0 0 10px;
-        font-size: 22px;
-        font-weight: 900;
-        letter-spacing: -0.02em;
-    }
+  /* ── Header ───────────────────────────────────── */
+  .drop-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .drop-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    margin: 0;
+  }
+  .timer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(17,24,39,.09);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    box-shadow: 0 2px 8px rgba(15,23,42,.06);
+  }
+  .timer-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.18);
+    animation: pdot 1.8s ease-in-out infinite;
+  }
+  @keyframes pdot {
+    0%,100%{ box-shadow:0 0 0 3px rgba(34,197,94,.18); }
+    50%    { box-shadow:0 0 0 5px rgba(34,197,94,.10); }
+  }
+  .drop-hint {
+    font-size: 14px; color: #64748b; margin-bottom: 18px; line-height: 1.5;
+  }
 
-    .drop-subrow {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 12px;
-    }
+  /* ══ CHOOSING — option cards ══════════════════ */
+  .drop-grid { display: flex; flex-direction: column; gap: 14px; }
 
-    .timer-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        border: 1px solid rgba(0, 0, 0, .08);
-        background: rgba(0, 0, 0, .02);
-        font-weight: 800;
-    }
+  .drop-card {
+    position: relative; overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 0;
+    color: #fff;
+    box-shadow: 0 16px 32px rgba(15,23,42,.22);
+    animation: dce .4s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes dce {
+    from{ opacity:0; transform:translateY(10px) scale(.98); }
+    to  { opacity:1; transform:translateY(0)    scale(1);   }
+  }
 
-    .timer-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #111;
-        opacity: .75;
-    }
+  .drop-card-common {
+    background:
+      radial-gradient(ellipse at top right, rgba(45,212,191,.32), transparent 50%),
+      linear-gradient(150deg, #031917 0%, #042a24 55%, #0c4a3e 100%);
+    border-color: rgba(45,212,191,.32);
+    box-shadow: 0 16px 32px rgba(3,25,23,.32), 0 0 0 1px rgba(45,212,191,.12);
+  }
+  .drop-card-rare {
+    background:
+      radial-gradient(ellipse at top right, rgba(157,98,255,.28), transparent 50%),
+      linear-gradient(150deg, #17072f 0%, #220943 52%, #43007a 100%);
+    border-color: rgba(157,98,255,.26);
+    box-shadow: 0 16px 32px rgba(31,9,58,.30), 0 0 0 1px rgba(157,98,255,.12);
+  }
+  .drop-card-legendary {
+    background:
+      radial-gradient(ellipse at top right, rgba(255,214,82,.30), transparent 50%),
+      linear-gradient(150deg, #2b1400 0%, #5a2700 52%, #9a5a00 100%);
+    border-color: rgba(255,214,82,.30);
+    box-shadow: 0 16px 32px rgba(66,31,0,.30), 0 0 0 1px rgba(255,214,82,.14);
+  }
 
-    .drop-hint {
-        opacity: .7;
-        font-size: 13px;
-    }
+  /* Left accent */
+  .drop-card::before {
+    content: ""; position: absolute; inset: 0 auto 0 0;
+    width: 6px; border-radius: 24px 0 0 24px;
+  }
+  .drop-card-common::before    { background: linear-gradient(180deg,#2dd4bf,#0891b2); }
+  .drop-card-rare::before      { background: linear-gradient(180deg,#cb63ff,#7b2cff); }
+  .drop-card-legendary::before { background: linear-gradient(180deg,#ffd95a,#ff9f0a); }
 
-    .drop-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+  /* Card body */
+  .drop-card-body { padding: 18px 18px 18px 22px; }
 
-    .drop-card {
-        border: 1px solid rgba(0, 0, 0, .08);
-        border-radius: 16px;
-        padding: 12px;
-        background: #fff;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, .04);
-    }
+  .drop-card-head {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 12px;
+    margin-bottom: 12px;
+  }
 
-    .drop-topline {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 10px;
-    }
+  .drop-cafe-name {
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.02em; color: #fff;
+    margin: 0; line-height: 1.15;
+  }
 
-    .drop-cafe {
-        font-weight: 900;
-        font-size: 16px;
-        margin: 0;
-    }
+  .drop-rarity-badge {
+    display: inline-flex; align-items: center;
+    padding: 5px 13px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: .03em;
+    white-space: nowrap; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10);
+    color: rgba(255,255,255,.92);
+  }
 
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 900;
-        border: 1px solid rgba(0, 0, 0, .08);
-        background: rgba(0, 0, 0, .03);
-        white-space: nowrap;
-    }
+  .drop-reward-block {
+    padding: 11px 14px; border-radius: 14px;
+    background: rgba(0,0,0,.18);
+    border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 14px;
+  }
+  .drop-reward-kicker {
+    font-size: 10px; font-weight: 700; letter-spacing: .10em;
+    text-transform: uppercase; color: rgba(236,241,248,.55);
+    margin-bottom: 3px;
+  }
+  .drop-reward-val {
+    font-size: 16px; font-weight: 800; color: #fff; line-height: 1.25;
+  }
 
-    .rarity-rare {
-        background: rgba(70, 120, 255, .10);
-        border-color: rgba(70, 120, 255, .22);
-    }
+  /* Divider */
+  .drop-card-divider {
+    height: 1px; margin: 0 18px 0 22px;
+    background: linear-gradient(90deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,.04) 100%);
+  }
 
-    .rarity-legendary {
-        background: rgba(255, 170, 0, .14);
-        border-color: rgba(255, 170, 0, .26);
-    }
+  /* Footer with button */
+  .drop-card-footer {
+    padding: 14px 18px 16px 22px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
 
-    .drop-meta {
-        margin-top: 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
+  .drop-card-rarity-label {
+    font-size: 12px; color: rgba(236,241,248,.60); font-weight: 600;
+  }
 
-    .meta-row {
-        display: flex;
-        gap: 8px;
-        font-size: 13px;
-    }
+  .btn-choose {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 130px; height: 44px; padding: 0 20px;
+    border-radius: 14px; font-weight: 700; font-size: 14px;
+    border: 0; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: opacity .15s, transform .12s;
+    box-shadow: 0 8px 20px rgba(0,0,0,.22);
+  }
+  .btn-choose:active { opacity:.82; transform:scale(.97); }
 
-    .meta-key {
-        opacity: .6;
-        min-width: 70px;
-    }
+  .drop-card-common    .btn-choose { background: linear-gradient(180deg,#2dd4bf,#0891b2); color: #fff; }
+  .drop-card-rare      .btn-choose { background: linear-gradient(180deg,#cb63ff,#7b2cff); color: #fff; }
+  .drop-card-legendary .btn-choose { background: linear-gradient(180deg,#ffd95a,#ff9f0a); color: #1f1300; }
 
-    .meta-val {
-        font-weight: 700;
-        opacity: .9;
-    }
+  /* ══ ACTIVE / COMPLETED — mission card ════════ */
+  .mission-card {
+    position: relative; overflow: hidden;
+    border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
+    color: #fff;
+    box-shadow: 0 20px 40px rgba(15,23,42,.24);
+  }
+  .mission-card::before {
+    content: ""; position: absolute; inset: 0 auto 0 0;
+    width: 7px; border-radius: 24px 0 0 24px;
+  }
+  .mission-card-common {
+    background:
+      radial-gradient(ellipse at top right, rgba(45,212,191,.32), transparent 50%),
+      linear-gradient(150deg, #031917 0%, #042a24 52%, #0c4a3e 100%);
+    border-color: rgba(45,212,191,.32);
+    box-shadow: 0 20px 40px rgba(3,25,23,.32), 0 0 0 1px rgba(45,212,191,.14);
+  }
+  .mission-card-common::before   { background: linear-gradient(180deg,#2dd4bf,#0891b2); }
+  .mission-card-rare {
+    background:
+      radial-gradient(ellipse at top right, rgba(157,98,255,.28), transparent 50%),
+      linear-gradient(150deg, #17072f 0%, #220943 50%, #43007a 100%);
+    border-color: rgba(157,98,255,.26);
+    box-shadow: 0 20px 40px rgba(31,9,58,.30), 0 0 0 1px rgba(157,98,255,.12);
+  }
+  .mission-card-rare::before     { background: linear-gradient(180deg,#cb63ff,#7b2cff); }
+  .mission-card-legendary {
+    background:
+      radial-gradient(ellipse at top right, rgba(255,214,82,.30), transparent 50%),
+      linear-gradient(150deg, #2b1400 0%, #5a2700 50%, #9a5a00 100%);
+    border-color: rgba(255,214,82,.30);
+    box-shadow: 0 20px 40px rgba(66,31,0,.30), 0 0 0 1px rgba(255,214,82,.14);
+  }
+  .mission-card-legendary::before{ background: linear-gradient(180deg,#ffd95a,#ff9f0a); }
 
-    .drop-actions {
-        margin-top: 10px;
-        display: flex;
-        gap: 10px;
-    }
+  .mission-body { padding: 20px 20px 20px 26px; }
 
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 10px 12px;
-        border-radius: 12px;
-        font-weight: 900;
-        border: 1px solid rgba(0, 0, 0, .12);
-        background: #111;
-        color: #fff;
-        text-decoration: none;
-    }
+  .mission-status-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  }
+  .mission-status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.22);
+    animation: pdot 1.8s ease-in-out infinite;
+  }
+  .mission-status-text {
+    font-size: 11px; font-weight: 700; letter-spacing: .10em;
+    text-transform: uppercase; color: rgba(236,241,248,.62);
+  }
 
-    .btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 10px 12px;
-        border-radius: 12px;
-        font-weight: 900;
-        border: 1px solid rgba(0, 0, 0, .12);
-        background: rgba(0, 0, 0, .02);
-        color: #111;
-        text-decoration: none;
-    }
+  .mission-cafe {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+    color: #fff; margin: 0 0 6px; line-height: 1.1;
+  }
+  .mission-rarity {
+    display: inline-flex; align-items: center;
+    padding: 4px 13px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10); color: rgba(255,255,255,.92);
+    margin-bottom: 16px;
+  }
+  .mission-reward-block {
+    padding: 12px 15px; border-radius: 14px;
+    background: rgba(0,0,0,.20); border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 14px;
+  }
+  .mission-reward-kicker {
+    font-size: 10px; font-weight: 700; letter-spacing: .10em;
+    text-transform: uppercase; color: rgba(236,241,248,.52); margin-bottom: 3px;
+  }
+  .mission-reward-text {
+    font-size: 18px; font-weight: 800; color: #fff; line-height: 1.2;
+  }
+  .mission-instruction {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px; border-radius: 14px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 16px;
+  }
+  .mission-instruction-icon { font-size: 18px; flex-shrink: 0; }
+  .mission-instruction-text { font-size: 13px; color: rgba(236,241,248,.80); line-height: 1.5; font-weight: 500; }
 
-    .state-card {
-        border: 1px solid rgba(0, 0, 0, .08);
-        border-radius: 16px;
-        padding: 14px;
-        background: rgba(0, 0, 0, .02);
-    }
+  .mission-footer {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
+    padding-top: 4px;
+  }
+  .mission-timer {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 700; color: rgba(236,241,248,.68);
+  }
+  .mission-earned-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(236,241,248,.52);
+    margin: 18px 0 10px;
+  }
 
-    .state-title {
-        font-weight: 900;
-        font-size: 16px;
-        margin: 0 0 6px;
-    }
-
-    .state-text {
-        margin: 0;
-        opacity: .75;
-        font-size: 13px;
-        line-height: 1.35;
-    }
+  /* ══ COMPLETED / EXPIRED — state cards ════════ */
+  .state-card {
+    border: 1px solid rgba(17,24,39,.08); border-radius: 24px; padding: 24px 20px;
+    background: linear-gradient(180deg,#fff 0%,#f8fafc 100%);
+    box-shadow: 0 14px 30px rgba(15,23,42,.07);
+  }
+  .state-emoji { font-size: 36px; margin-bottom: 10px; display: block; }
+  .state-title { font-weight: 800; font-size: 22px; color: #0f172a; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .state-text  { margin: 0; font-size: 14px; color: #64748b; line-height: 1.55; }
+  .state-coupon{ margin-top: 18px; }
+  .state-actions { margin-top: 18px; display: flex; gap: 10px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 1; padding: 14px 12px; border-radius: 16px;
+    font-weight: 700; font-size: 14px; border: none;
+    background: #0f172a; color: #fff; text-decoration: none;
+    box-shadow: 0 8px 20px rgba(15,23,42,.14);
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 1; padding: 14px 12px; border-radius: 16px;
+    font-weight: 700; font-size: 14px;
+    border: 1px solid rgba(17,24,39,.12); background: transparent;
+    color: #1e293b; text-decoration: none;
+  }
 </style>
 
 <div class="drop-wrap">
-    <div class="drop-subrow">
-        <h2 class="drop-title">Drop недели</h2>
-
-        <div class="timer-pill">
-            <span class="timer-dot"></span>
-            <span class="drop-hint">до конца</span>
-            <span id="dropTimer">—</span>
-        </div>
+  <div class="drop-header">
+    <h2 class="drop-title">Drop недели</h2>
+    <div class="timer-pill">
+      <span class="timer-dot"></span>
+      <span id="dropTimer">—</span>
     </div>
+  </div>
 
-    {% if drop_week.status == "CHOOSING" %}
-    <div class="drop-hint" style="margin-bottom:12px;">Выбери 1 из 3 вариантов:</div>
-
-    <div class="drop-grid">
-        {% for opt in options %}
-        <div class="drop-card">
-            <div class="drop-topline">
-                <p class="drop-cafe">{{ opt.cafe.name }}</p>
-
-                <span class="badge
-              {% if opt.rarity == 'RARE' %}rarity-rare{% elif opt.rarity == 'LEGENDARY' %}rarity-legendary{% endif %}
-            ">
-                    {{ opt.get_rarity_display }}
-                </span>
-            </div>
-
-            <div class="drop-meta">
-                <div class="meta-row">
-                    <div class="meta-key">Награда</div>
-                    <div class="meta-val">
-                        {% if opt.reward_offer %}
-                        {{ opt.reward_offer.title }}
-                        {% else %}
-                        —
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="drop-actions">
-                <a class="btn-primary" href="{% url 'drops:choose_drop' opt.id %}">Выбрать</a>
-            </div>
+  {% if drop_week.status == "CHOOSING" %}
+  <p class="drop-hint">Выбери один из трёх — сделай чек до конца недели и получишь купон:</p>
+  <div class="drop-grid">
+    {% for opt in options %}
+    <div class="drop-card drop-card-{{ opt.rarity|lower }}">
+      <div class="drop-card-body">
+        <div class="drop-card-head">
+          <p class="drop-cafe-name">{{ opt.cafe.name }}</p>
+          <span class="drop-rarity-badge">{{ opt.get_rarity_display }}</span>
         </div>
-        {% endfor %}
-    </div>
-
-    {% elif drop_week.status == "ACTIVE" %}
-    <div class="state-card">
-        <p class="state-title">
-            Активно: {{ drop_week.chosen_option.cafe.name }}
-            <span class="badge" style="margin-left:8px;">
-                {{ drop_week.chosen_option.get_rarity_display }}
-            </span>
-        </p>
-        <p class="state-text">
-            Сделай чек в этом месте - и награда начислится автоматически.
-        </p>
-    </div>
-
-    {% elif drop_week.status == "COMPLETED" %}
-    <div class="state-card">
-        <p class="state-title">Миссия выполнена 🎉</p>
-        <p class="state-text">Если у дропа была награда-купон — он уже лежит в твоих купонах.</p>
-        <div class="drop-actions" style="margin-top:12px;">
-            <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Мои купоны</a>
-            <a class="btn-ghost" href="/promo/">Промо</a>
+        {% if opt.reward_offer %}
+        <div class="drop-reward-block">
+          <div class="drop-reward-kicker">Твоя награда</div>
+          <div class="drop-reward-val">{{ opt.reward_offer.benefit_text }}</div>
         </div>
+        {% endif %}
+      </div>
+      <div class="drop-card-divider"></div>
+      <div class="drop-card-footer">
+        <span class="drop-card-rarity-label">
+          {% if opt.rarity == "LEGENDARY" %}⭐ Легендарный{% elif opt.rarity == "RARE" %}💜 Редкий{% else %}Обычный{% endif %}
+        </span>
+        <form method="post" action="{% url 'drops:choose_drop' opt.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-choose">Выбрать</button>
+        </form>
+      </div>
     </div>
+    {% endfor %}
+  </div>
 
-    {% elif drop_week.status == "EXPIRED" %}
-    <div class="state-card">
-        <p class="state-title">Drop истёк</p>
-        <p class="state-text">
-            Неделя закончилась. Нажми обновить — и мы пересоберём Drop для текущей недели.
-        </p>
-        <div class="drop-actions" style="margin-top:12px;">
-            <a class="btn-primary" href="/drops/?refresh=1">Обновить</a>
+  {% elif drop_week.status == "ACTIVE" %}
+  {% with opt=drop_week.chosen_option %}
+  <div class="mission-card mission-card-{{ opt.rarity|lower }}">
+    <div class="mission-body">
+      <div class="mission-status-row">
+        <span class="mission-status-dot"></span>
+        <span class="mission-status-text">Активная миссия</span>
+      </div>
+      <p class="mission-cafe">{{ opt.cafe.name }}</p>
+      <span class="mission-rarity">{{ opt.get_rarity_display }}</span>
+
+      {% if opt.reward_offer %}
+      <div class="mission-reward-block">
+        <div class="mission-reward-kicker">Твоя награда</div>
+        <div class="mission-reward-text">{{ opt.reward_offer.benefit_text }}</div>
+      </div>
+      {% endif %}
+
+      <div class="mission-instruction">
+        <span class="mission-instruction-icon">🧾</span>
+        <span class="mission-instruction-text">
+          Сделай чек в <strong>{{ opt.cafe.name }}</strong> — купон начислится автоматически.
+        </span>
+      </div>
+
+      <div class="mission-footer">
+        <div class="mission-timer">
+          <span class="timer-dot"></span>
+          Осталось: <span id="dropTimer2">—</span>
         </div>
+      </div>
+
+      {% if earned_coupon %}
+      <div class="mission-earned-label">Уже в копилке</div>
+      {% include "promo/includes/coupon_card.html" with item=earned_coupon source_label=earned_coupon.get_origin_display show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code card_class="coupon-card--profile" %}
+      {% endif %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {% elif drop_week.status == "COMPLETED" %}
+  <div class="state-card">
+    <span class="state-emoji">🎉</span>
+    <p class="state-title">Миссия выполнена!</p>
+    <p class="state-text">Купон уже в твоей коллекции.</p>
+    {% if earned_coupon %}
+    <div class="state-coupon">
+      {% include "promo/includes/coupon_card.html" with item=earned_coupon source_label=earned_coupon.get_origin_display show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code %}
     </div>
     {% endif %}
+    <div class="state-actions">
+      <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Все купоны</a>
+      <a class="btn-ghost"   href="/promo/">Промо</a>
+    </div>
+  </div>
+
+  {% elif drop_week.status == "EXPIRED" %}
+  <div class="state-card">
+    <span class="state-emoji">⏰</span>
+    <p class="state-title">Drop истёк</p>
+    <p class="state-text">Неделя закончилась. Обнови — и мы подберём новый Drop.</p>
+    <div class="state-actions">
+      <a class="btn-primary" href="/drops/?refresh=1">Обновить</a>
+    </div>
+  </div>
+  {% endif %}
 </div>
 
 <script>
-    (function () {
-        let left = Number("{{ drop_week.seconds_left|default:'0' }}") || 0;
-        const el = document.getElementById("dropTimer");
-        if (!el) return;
-
-        function fmt(sec) {
-            sec = Math.max(0, sec);
-            const d = Math.floor(sec / 86400);
-            sec = sec % 86400;
-            const h = Math.floor(sec / 3600);
-            sec = sec % 3600;
-            const m = Math.floor(sec / 60);
-
-            const hh = String(h).padStart(2, "0");
-            const mm = String(m).padStart(2, "0");
-            if (d > 0) return `${d}д ${hh}:${mm}`;
-            return `${hh}:${mm}`;
-        }
-
-        function tick() {
-            el.textContent = fmt(left);
-            left -= 1;
-            if (left < 0) left = 0;
-        }
-
-        tick();
-        setInterval(tick, 1000);
-    })();
+(function () {
+  let left = Number("{{ drop_week.seconds_left|default:'0' }}") || 0;
+  const els = [document.getElementById("dropTimer"), document.getElementById("dropTimer2")].filter(Boolean);
+  function fmt(sec) {
+    sec = Math.max(0, sec);
+    const d = Math.floor(sec / 86400); sec %= 86400;
+    const h = Math.floor(sec / 3600);  sec %= 3600;
+    const m = Math.floor(sec / 60);
+    if (d > 0) return `${d}д ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+  }
+  function tick() { const t=fmt(left); els.forEach(el=>el.textContent=t); if(left>0) left--; }
+  tick(); setInterval(tick, 1000);
+})();
 </script>
 {% endblock %}

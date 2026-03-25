@@ -132,6 +132,8 @@ def trade_new(request, username: str):
         {
             'to_user': to_user,
             'form': form,
+            'offered_coupons': offered_qs,
+            'requested_coupons': requested_qs,
             'show_back': True,
             'header_back_url': None,
         },

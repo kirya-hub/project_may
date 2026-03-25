@@ -10,248 +10,214 @@
 {% endblock %}
 
 {% block content %}
-<div class="cafe-container">
-    <div class="cafe-header">
-        {% if cafe.avatar %}
-        <img src="{{ cafe.avatar.url }}" class="cafe-avatar" alt="{{ cafe.name }}">
-        {% else %}
-        <div class="cafe-avatar cafe-avatar-placeholder"></div>
-        {% endif %}
+<div class="cafe-page">
 
-        <div class="cafe-header-info">
-            <h1 class="cafe-name">{{ cafe.name }}</h1>
-
-            {% if cafe.address %}
-            <p class="cafe-address">📍 {{ cafe.address }}</p>
-            {% endif %}
-
-            {% if rating_value %}
-            <div class="cafe-rating">
-                ⭐ {{ rating_value }}
-                <span class="cafe-rating-count">({{ rating_count }})</span>
-            </div>
+    <!-- ── HERO ── -->
+    <div class="cafe-hero">
+        <div class="cafe-hero__avatar-wrap">
+            {% if cafe.avatar %}
+            <img src="{{ cafe.avatar.url }}" class="cafe-hero__avatar" alt="{{ cafe.name }}">
             {% else %}
-            <div class="cafe-rating cafe-rating-empty">Пока нет оценок</div>
+            <div class="cafe-hero__avatar cafe-hero__avatar--empty">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
             {% endif %}
+        </div>
 
-            {% if can_edit %}
-            <a href="{% url 'cafe_edit' cafe.slug %}" class="edit-cafe-btn">
-                Редактировать
-            </a>
+        <div class="cafe-hero__body">
+            <h1 class="cafe-hero__name">{{ cafe.name }}</h1>
+            {% if cafe.address %}
+            <p class="cafe-hero__address">
+                <svg class="cafe-hero__pin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ cafe.address }}
+            </p>
             {% endif %}
+            <div class="cafe-hero__meta">
+                {% if rating_value %}
+                <div class="cafe-pill cafe-pill--star">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    {{ rating_value }}
+                    <span class="cafe-pill__sub">({{ rating_count }})</span>
+                </div>
+                {% else %}
+                <div class="cafe-pill cafe-pill--dim">Нет оценок</div>
+                {% endif %}
+                {% if cafe.working_hours %}
+                <div class="cafe-pill cafe-pill--dim">🕒 {{ cafe.working_hours }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if can_edit %}
+        <a href="{% url 'cafe_edit' cafe.slug %}" class="cafe-edit-btn">Редактировать</a>
+        {% endif %}
+    </div>
+
+    <!-- ── STATS ROW ── -->
+    <div class="cafe-stats-row">
+        <div class="cafe-stat">
+            <div class="cafe-stat__val">{{ rating_count }}</div>
+            <div class="cafe-stat__label">Оценок</div>
+        </div>
+        <div class="cafe-stat-divider"></div>
+        <div class="cafe-stat">
+            <div class="cafe-stat__val">{{ recent_visits|length }}</div>
+            <div class="cafe-stat__label">Гостей</div>
+        </div>
+        <div class="cafe-stat-divider"></div>
+        <div class="cafe-stat">
+            <div class="cafe-stat__val">{{ recent_events|length }}</div>
+            <div class="cafe-stat__label">Событий</div>
         </div>
     </div>
 
-    <div class="share-stats-block">
-        <div class="share-stats-title">Сообщество кафе</div>
-
-        <div class="share-stats-grid share-stats-grid-wide">
-            <div class="share-stat-card">
-                <div class="share-stat-value">{{ checks_count }}</div>
-                <div class="share-stat-label">всего чеков</div>
-            </div>
-
-            <div class="share-stat-card">
-                <div class="share-stat-value">{{ visitors_count }}</div>
-                <div class="share-stat-label">всего посетителей</div>
-            </div>
-
-            <div class="share-stat-card">
-                <div class="share-stat-value">{{ week_checks_count }}</div>
-                <div class="share-stat-label">чеков за 7 дней</div>
-            </div>
-
-            <div class="share-stat-card">
-                <div class="share-stat-value">{{ month_visitors_count }}</div>
-                <div class="share-stat-label">людей за 30 дней</div>
-            </div>
-        </div>
-    </div>
-
+    <!-- ── FRIENDS HERE ── -->
     {% if request.user.is_authenticated and friend_visitors %}
-    <div class="friends-here-block">
-        <div class="friends-here-title">Друзья были здесь</div>
-
-        <div class="friends-here-list">
+    <div class="cafe-section">
+        <div class="cafe-section__header">
+            <div class="cafe-section__kicker">Соцсеть</div>
+            <div class="cafe-section__title">Друзья бывали здесь</div>
+        </div>
+        <div class="cafe-friends-list">
             {% for friend in friend_visitors %}
             <a href="{% url 'profile_by_username' friend.username %}?next={{ request.get_full_path|urlencode }}"
-                class="friend-here-item">
+                class="cafe-friend-chip">
                 {% if friend.profile.avatar %}
-                <img src="{{ friend.profile.avatar.url }}" alt="{{ friend.username }}" class="friend-here-avatar">
+                <img src="{{ friend.profile.avatar.url }}" alt="{{ friend.username }}" class="cafe-friend-chip__ava">
                 {% else %}
-                <div class="friend-here-avatar friend-here-avatar-placeholder">
-                    {{ friend.username|slice:":1"|upper }}
-                </div>
+                <div class="cafe-friend-chip__ava cafe-friend-chip__ava--stub">{{ friend.username|slice:":1"|upper }}</div>
                 {% endif %}
-                <span class="friend-here-name">{{ friend.username }}</span>
+                <span class="cafe-friend-chip__name">{{ friend.username }}</span>
             </a>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
+    <!-- ── RECENT VISITORS ── -->
     {% if recent_visits %}
-    <div class="social-block">
-        <div class="social-block-title">Недавно были здесь</div>
-        <div class="visit-list">
+    <div class="cafe-section">
+        <div class="cafe-section__header">
+            <div class="cafe-section__kicker">Активность</div>
+            <div class="cafe-section__title">Кто был недавно</div>
+        </div>
+        <div class="cafe-visitors">
             {% for visit in recent_visits %}
             <a href="{% url 'profile_by_username' visit.user.username %}?next={{ request.get_full_path|urlencode }}"
-                class="visit-item">
-                <div class="visit-user">
+                class="cafe-visitor">
+                <div class="cafe-visitor__left">
                     {% if visit.user.profile.avatar %}
-                    <img src="{{ visit.user.profile.avatar.url }}" alt="{{ visit.user.username }}" class="visit-avatar">
+                    <img src="{{ visit.user.profile.avatar.url }}" alt="{{ visit.user.username }}" class="cafe-visitor__ava">
                     {% else %}
-                    <div class="visit-avatar visit-avatar-placeholder">{{ visit.user.username|slice:":1"|upper }}</div>
+                    <div class="cafe-visitor__ava cafe-visitor__ava--stub">{{ visit.user.username|slice:":1"|upper }}</div>
                     {% endif %}
-
-                    <div class="visit-user-text">
-                        <div class="visit-username">@{{ visit.user.username }}</div>
-                        <div class="visit-date">{{ visit.created_at|date:"d.m.Y H:i" }}</div>
+                    <div class="cafe-visitor__info">
+                        <div class="cafe-visitor__name">@{{ visit.user.username }}</div>
+                        <div class="cafe-visitor__date">{{ visit.created_at|date:"d.m.Y H:i" }}</div>
                     </div>
                 </div>
-
-                <div class="visit-status">Чек</div>
+                <div class="cafe-badge">Чек</div>
             </a>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
-    {% if recent_posts %}
-    <div class="social-block">
-        <div class="social-block-title">Последние публикации</div>
-        <div class="post-preview-list">
-            {% for post in recent_posts %}
-            <a href="{% url 'profile_by_username' post.user.username %}?next={{ request.get_full_path|urlencode }}"
-                class="post-preview-card">
-                <div class="post-preview-top">
-                    <div class="post-preview-user">@{{ post.user.username }}</div>
-                    <div class="post-preview-date">{{ post.created_at|date:"d.m H:i" }}</div>
-                </div>
-
-                <div class="post-preview-text">
-                    {% if post.comment %}
-                    {{ post.comment|truncatechars:120 }}
-                    {% else %}
-                    Загрузил чек из этого кафе
-                    {% endif %}
-                </div>
-
-                <div class="post-preview-meta">
-                    <span>{{ post.likes_count }} лайков</span>
-                    <span>•</span>
-                    <span>{{ post.comments_count }} комментариев</span>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if recent_events %}
-    <div class="social-block">
-        <div class="social-block-title">Активность вокруг кафе</div>
-        <div class="event-list">
-            {% for event in recent_events %}
-            <div class="event-item">
-                <div class="event-user">@{{ event.user.username }}</div>
-                <div class="event-text">{{ event.text }}</div>
-                <div class="event-date">{{ event.created_at|date:"d.m.Y H:i" }}</div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
+    <!-- ── MAP ── -->
     {% if has_map_coordinates %}
-    <div class="cafe-map-block">
-        <div class="cafe-map-top">
-            <div>
-                <div class="cafe-map-title">Где находится</div>
-                {% if cafe.address %}
-                <div class="cafe-map-address">{{ cafe.address }}</div>
-                {% endif %}
-            </div>
+    <div class="cafe-section">
+        <div class="cafe-section__header">
+            <div class="cafe-section__kicker">Навигация</div>
+            <div class="cafe-section__title">Где находимся</div>
         </div>
-
-        <div id="cafe-map" class="cafe-map-canvas" data-lat="{{ cafe.latitude }}" data-lng="{{ cafe.longitude }}"
-            data-name="{{ cafe.name|escapejs }}" data-address="{{ cafe.address|default:''|escapejs }}"></div>
-
-        <a href="{{ osm_map_url }}" target="_blank" rel="noopener" class="cafe-map-open-link">
-            Открыть карту
-        </a>
+        <div class="cafe-map-wrap">
+            <div id="cafe-map" class="cafe-map-canvas"
+                data-lat="{{ cafe.latitude }}"
+                data-lng="{{ cafe.longitude }}"
+                data-name="{{ cafe.name|escapejs }}"
+                data-address="{{ cafe.address|default:''|escapejs }}"></div>
+            <a href="{{ osm_map_url }}" target="_blank" rel="noopener" class="cafe-map-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Открыть в картах
+            </a>
+        </div>
     </div>
     {% endif %}
 
-    <div class="menu-section">
-        <h2 class="menu-section-title">Меню</h2>
-
-        <div class="menu-grid">
-            {% for category in cafe.categories.all %}
+    <!-- ── MENU ── -->
+    {% with cats=cafe.categories.all %}
+    {% if cats %}
+    <div class="cafe-section">
+        <div class="cafe-section__header">
+            <div class="cafe-section__kicker">Кафе</div>
+            <div class="cafe-section__title">Меню</div>
+        </div>
+        <div class="cafe-menu-grid">
+            {% for category in cats %}
             {% if category.slug %}
-            <a href="{% url 'category_detail' cafe.slug category.slug %}" class="menu-item">
+            <a href="{% url 'category_detail' cafe.slug category.slug %}" class="cafe-menu-item">
                 {% if category.icon %}
-                <img src="{{ category.icon.url }}" class="menu-icon" alt="{{ category.title }}">
+                <img src="{{ category.icon.url }}" class="cafe-menu-item__icon" alt="{{ category.title }}">
+                {% else %}
+                <div class="cafe-menu-item__icon cafe-menu-item__icon--stub">☕</div>
                 {% endif %}
-                <p class="menu-title">{{ category.title }}</p>
+                <span class="cafe-menu-item__label">{{ category.title }}</span>
             </a>
             {% endif %}
-            {% empty %}
-            <div class="empty-inline">Категории меню пока не добавлены</div>
             {% endfor %}
         </div>
     </div>
+    {% endif %}
+    {% endwith %}
 
-    <div class="cafe-info">
-        <h2>Информация</h2>
-
-        {% if cafe.address %}
-        <div class="info-row">📍 {{ cafe.address }}</div>
-        {% endif %}
-
-        {% if cafe.working_hours %}
-        <div class="info-row">🕒 {{ cafe.working_hours }}</div>
-        {% endif %}
-
-        {% if cafe.description %}
-        <div class="info-description">
-            {{ cafe.description|linebreaksbr }}
+    <!-- ── INFO ── -->
+    {% if cafe.description or cafe.address or cafe.working_hours %}
+    <div class="cafe-section">
+        <div class="cafe-section__header">
+            <div class="cafe-section__kicker">О заведении</div>
+            <div class="cafe-section__title">Информация</div>
         </div>
-        {% endif %}
+        <div class="cafe-info-list">
+            {% if cafe.address %}
+            <div class="cafe-info-row">
+                <div class="cafe-info-row__icon">📍</div>
+                <div class="cafe-info-row__text">{{ cafe.address }}</div>
+            </div>
+            {% endif %}
+            {% if cafe.working_hours %}
+            <div class="cafe-info-row">
+                <div class="cafe-info-row__icon">🕒</div>
+                <div class="cafe-info-row__text">{{ cafe.working_hours }}</div>
+            </div>
+            {% endif %}
+            {% if cafe.description %}
+            <div class="cafe-info-desc">{{ cafe.description|linebreaksbr }}</div>
+            {% endif %}
+        </div>
     </div>
+    {% endif %}
+
 </div>
 
 {% if has_map_coordinates %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-    (function () {
-        const mapNode = document.getElementById('cafe-map');
-        if (!mapNode || typeof L === 'undefined') return;
-
-        const lat = parseFloat(mapNode.dataset.lat);
-        const lng = parseFloat(mapNode.dataset.lng);
-        const name = mapNode.dataset.name || 'Кафе';
-        const address = mapNode.dataset.address || '';
-
-        const map = L.map(mapNode, {
-            scrollWheelZoom: false,
-            zoomControl: true,
-        }).setView([lat, lng], 16);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap',
-        }).addTo(map);
-
-        const marker = L.marker([lat, lng]).addTo(map);
-
-        if (address) {
-            marker.bindPopup('<b>' + name + '</b><br>' + address);
-        } else {
-            marker.bindPopup('<b>' + name + '</b>');
-        }
-    })();
+(function () {
+    const el = document.getElementById('cafe-map');
+    if (!el || typeof L === 'undefined') return;
+    const lat = parseFloat(el.dataset.lat);
+    const lng = parseFloat(el.dataset.lng);
+    const map = L.map(el, { scrollWheelZoom: false, zoomControl: true }).setView([lat, lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19, attribution: '&copy; OpenStreetMap',
+    }).addTo(map);
+    const marker = L.marker([lat, lng]).addTo(map);
+    const popup = el.dataset.address
+        ? '<b>' + el.dataset.name + '</b><br>' + el.dataset.address
+        : '<b>' + el.dataset.name + '</b>';
+    marker.bindPopup(popup);
+})();
 </script>
 {% endif %}
 {% endblock %}

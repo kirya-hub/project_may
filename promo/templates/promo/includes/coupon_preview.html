@@ -1,5 +1,4 @@
-<div
-    class="coupon-preview coupon-preview--{{ item.rarity_code|default:'common' }}{% if preview_class %} {{ preview_class }}{% endif %}">
+<div class="coupon-preview coupon-preview--{{ item.rarity_code|default:'common' }}{% if preview_class %} {{ preview_class }}{% endif %}">
     <div class="coupon-preview__accent"></div>
     <div class="coupon-preview__body">
         {% if source_label or item.cafe_name %}
