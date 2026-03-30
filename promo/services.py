@@ -167,7 +167,6 @@ def accrue_points_for_order(order) -> int:
             kind=TransactionKind.ACCRUAL,
             created_at__date=today,
         )
-        .select_for_update()
         .count()
     )
     if today_count >= DAILY_ACCRUAL_LIMIT:

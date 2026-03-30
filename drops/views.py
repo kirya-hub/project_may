@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
@@ -58,6 +59,16 @@ def choose_drop(request, option_id: int):
         )
         return redirect('drops:drops_page')
 
-    choose_option(request.user, option_id)
+    try:
+        choose_option(request.user, option_id)
+    except DropOption.DoesNotExist:
+        logger.warning(
+            "choose_drop: option_id=%s не найден или не принадлежит week=%s, user=%s",
+            option_id,
+            week.pk,
+            request.user.pk,
+        )
+        return redirect('drops:drops_page')
+
     logger.debug("user=%s выбрал drop option=%s", request.user.pk, option_id)
     return redirect('drops:drops_page')

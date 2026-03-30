@@ -12,40 +12,38 @@
 {% block content %}
 <div class="cafe-page">
 
-    <!-- ── HERO ── -->
+    <!-- ── HERO (centered, like user profile) ── -->
     <div class="cafe-hero">
         <div class="cafe-hero__avatar-wrap">
             {% if cafe.avatar %}
             <img src="{{ cafe.avatar.url }}" class="cafe-hero__avatar" alt="{{ cafe.name }}">
             {% else %}
             <div class="cafe-hero__avatar cafe-hero__avatar--empty">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </div>
             {% endif %}
         </div>
 
-        <div class="cafe-hero__body">
-            <h1 class="cafe-hero__name">{{ cafe.name }}</h1>
-            {% if cafe.address %}
-            <p class="cafe-hero__address">
-                <svg class="cafe-hero__pin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                {{ cafe.address }}
-            </p>
-            {% endif %}
-            <div class="cafe-hero__meta">
-                {% if rating_value %}
-                <div class="cafe-pill cafe-pill--star">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    {{ rating_value }}
-                    <span class="cafe-pill__sub">({{ rating_count }})</span>
-                </div>
-                {% else %}
-                <div class="cafe-pill cafe-pill--dim">Нет оценок</div>
-                {% endif %}
-                {% if cafe.working_hours %}
-                <div class="cafe-pill cafe-pill--dim">🕒 {{ cafe.working_hours }}</div>
-                {% endif %}
+        <h1 class="cafe-hero__name">{{ cafe.name }}</h1>
+
+        {% if cafe.address %}
+        <p class="cafe-hero__address">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ cafe.address }}
+        </p>
+        {% endif %}
+
+        <div class="cafe-hero__pills">
+            {% if rating_value %}
+            <div class="cafe-pill cafe-pill--star">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {{ rating_value }}
+                <span class="cafe-pill__sub">({{ rating_count }})</span>
             </div>
+            {% endif %}
+            {% if cafe.working_hours %}
+            <div class="cafe-pill cafe-pill--dim">🕒 {{ cafe.working_hours }}</div>
+            {% endif %}
         </div>
 
         {% if can_edit %}
@@ -145,30 +143,26 @@
     {% endif %}
 
     <!-- ── MENU ── -->
-    {% with cats=cafe.categories.all %}
-    {% if cats %}
+    {% with cats=cafe.categories.all %}{% if cats %}
     <div class="cafe-section">
         <div class="cafe-section__header">
             <div class="cafe-section__kicker">Кафе</div>
             <div class="cafe-section__title">Меню</div>
         </div>
         <div class="cafe-menu-grid">
-            {% for category in cats %}
-            {% if category.slug %}
+            {% for category in cats %}{% if category.slug %}
             <a href="{% url 'category_detail' cafe.slug category.slug %}" class="cafe-menu-item">
                 {% if category.icon %}
                 <img src="{{ category.icon.url }}" class="cafe-menu-item__icon" alt="{{ category.title }}">
                 {% else %}
-                <div class="cafe-menu-item__icon cafe-menu-item__icon--stub">☕</div>
+                <div class="cafe-menu-item__icon--stub">☕</div>
                 {% endif %}
                 <span class="cafe-menu-item__label">{{ category.title }}</span>
             </a>
-            {% endif %}
-            {% endfor %}
+            {% endif %}{% endfor %}
         </div>
     </div>
-    {% endif %}
-    {% endwith %}
+    {% endif %}{% endwith %}
 
     <!-- ── INFO ── -->
     {% if cafe.description or cafe.address or cafe.working_hours %}
@@ -179,16 +173,10 @@
         </div>
         <div class="cafe-info-list">
             {% if cafe.address %}
-            <div class="cafe-info-row">
-                <div class="cafe-info-row__icon">📍</div>
-                <div class="cafe-info-row__text">{{ cafe.address }}</div>
-            </div>
+            <div class="cafe-info-row"><span class="cafe-info-row__icon">📍</span><span class="cafe-info-row__text">{{ cafe.address }}</span></div>
             {% endif %}
             {% if cafe.working_hours %}
-            <div class="cafe-info-row">
-                <div class="cafe-info-row__icon">🕒</div>
-                <div class="cafe-info-row__text">{{ cafe.working_hours }}</div>
-            </div>
+            <div class="cafe-info-row"><span class="cafe-info-row__icon">🕒</span><span class="cafe-info-row__text">{{ cafe.working_hours }}</span></div>
             {% endif %}
             {% if cafe.description %}
             <div class="cafe-info-desc">{{ cafe.description|linebreaksbr }}</div>
@@ -206,17 +194,10 @@
 (function () {
     const el = document.getElementById('cafe-map');
     if (!el || typeof L === 'undefined') return;
-    const lat = parseFloat(el.dataset.lat);
-    const lng = parseFloat(el.dataset.lng);
-    const map = L.map(el, { scrollWheelZoom: false, zoomControl: true }).setView([lat, lng], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19, attribution: '&copy; OpenStreetMap',
-    }).addTo(map);
-    const marker = L.marker([lat, lng]).addTo(map);
-    const popup = el.dataset.address
-        ? '<b>' + el.dataset.name + '</b><br>' + el.dataset.address
-        : '<b>' + el.dataset.name + '</b>';
-    marker.bindPopup(popup);
+    const lat = parseFloat(el.dataset.lat), lng = parseFloat(el.dataset.lng);
+    const map = L.map(el, { scrollWheelZoom: false }).setView([lat, lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'&copy; OSM' }).addTo(map);
+    L.marker([lat, lng]).addTo(map).bindPopup('<b>' + el.dataset.name + '</b>' + (el.dataset.address ? '<br>' + el.dataset.address : ''));
 })();
 </script>
 {% endif %}

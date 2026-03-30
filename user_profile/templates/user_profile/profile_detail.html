@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load level_tags %}
 
 {% block title %}Профиль{% endblock %}
 
@@ -23,11 +24,14 @@
 
     <div class="profile-names">
       <div class="profile-identity-row profile-identity-row--top">
-        <div class="username">@{{ profile.user.username }}</div>
+        {% if profile.name %}
+        <div class="username">{{ profile.name }}</div>
+        {% else %}
+        <div class="username">{{ profile.user.username }}</div>
+        {% endif %}
+        {% include "includes/level_badge.html" with user=profile.user size="hero" %}
       </div>
-      {% if profile.name %}
-      <div class="display-name">{{ profile.name }}</div>
-      {% endif %}
+      <div class="display-name">@{{ profile.user.username }}</div>
     </div>
 
     {% if request.user.is_authenticated and request.user == profile.user %}
@@ -115,9 +119,6 @@
       <div class="section-title">Купоны</div>
       <div class="profile-section-note">Активные купоны профиля</div>
     </div>
-    {% if promocodes %}
-    <div class="section-count-badge">{{ promocodes|length }}</div>
-    {% endif %}
   </div>
 
   {% if promocodes %}

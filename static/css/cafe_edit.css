@@ -186,3 +186,125 @@ body {
         gap: 16px;
     }
 }
+
+/* ── Django ClearableFileInput fix ─────────────────────── */
+.form-group .form-group {
+    gap: 4px;
+}
+
+/* Hide raw Django widget wrapper, style inner elements */
+.cafe-edit-form p,
+.cafe-edit-form .helptext { display: none; }
+
+/* Style the actual file input */
+.cafe-edit-form input[type="text"],
+.cafe-edit-form input[type="number"],
+.cafe-edit-form textarea,
+.cafe-edit-form select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fcfdff;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 14px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+    -webkit-appearance: none;
+}
+.cafe-edit-form input[type="text"]:focus,
+.cafe-edit-form input[type="number"]:focus,
+.cafe-edit-form textarea:focus {
+    border-color: #94a3b8;
+    box-shadow: 0 0 0 3px rgba(17,24,39,.06);
+}
+
+.cafe-edit-form textarea { min-height: 100px; resize: vertical; }
+
+/* File input */
+.cafe-edit-form input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    background: #f8f9fc;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+}
+.cafe-edit-form input[type="file"]::file-selector-button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    margin-right: 10px;
+    font-family: inherit;
+}
+
+/* Django clearable file widget — the anchor and checkbox */
+.cafe-edit-form .clearablefileinput,
+.cafe-edit-form a[href*="cafes/avatars"] {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+
+/* Inline clear checkbox row */
+.cafe-edit-form label[for*="avatar-clear"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+.cafe-edit-form input[type="checkbox"] {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    accent-color: #0f172a;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Labels */
+.form-group > label,
+.form-group > div > label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* Map link */
+.map-help-link {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 8px 20px rgba(15,23,42,.18);
+    transition: opacity .15s, transform .12s;
+}
+.btn-primary:hover { opacity: .92; }
+.btn-primary:active { transform: scale(.98); }
+
+.btn-secondary {
+    color: var(--muted);
+    transition: background .15s;
+}
+.btn-secondary:hover { background: #f0f2fb; }

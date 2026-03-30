@@ -5,6 +5,7 @@ from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from friends.services import friends_qs
 from user_profile.models import Profile, PromoCode
@@ -21,6 +22,13 @@ from .services import (
     create_trade_offer,
     decline_trade,
 )
+
+
+def _safe_redirect(url, request, fallback='/'):
+    """Защита от Open Redirect."""
+    if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
+        return url
+    return fallback
 
 
 def _trade_items_prefetch():
@@ -159,7 +167,7 @@ def trade_detail(request, trade_id: int):
     offered = [i.promocode for i in trade.items.all() if i.side == TradeItem.Side.OFFERED]
     requested = [i.promocode for i in trade.items.all() if i.side == TradeItem.Side.REQUESTED]
 
-    next_url = request.GET.get('next') or reverse('trades:activity')
+    next_url = _safe_redirect(request.GET.get('next'), request, fallback=reverse('trades:activity'))
 
     return render(
         request,
@@ -250,7 +258,7 @@ def trade_activity(request):
         .order_by('-created_at')[:60]
     )
 
-    next_url = request.GET.get('next') or reverse('home')
+    next_url = _safe_redirect(request.GET.get('next'), request, fallback=reverse('home'))
 
     return render(
         request,

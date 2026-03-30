@@ -97,47 +97,48 @@
 
 .profile-actions {
   position: absolute;
-  top: 4px;
+  top: 6px;
   right: 0;
   display: flex;
   gap: 6px;
   align-items: center;
-  padding: 4px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(17, 24, 39, 0.08);
+  padding: 5px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(17, 24, 39, 0.09);
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
-  backdrop-filter: blur(12px);
 }
 
 .icon-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: linear-gradient(180deg, #ffffff 0%, #f2f4fb 100%);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  background: #f5f6fa;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   text-decoration: none;
   padding: 0;
-  transition: transform .15s ease, background .15s ease;
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
 }
 
 .icon-btn:hover {
-  background: linear-gradient(180deg, #f0f2fc 0%, #e8ecf8 100%);
+  background: #eceef7;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
 .icon-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
+  background: #e4e6f2;
 }
 
 .icon-btn img {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   display: block;
-  opacity: 0.75;
+  opacity: 0.70;
 }
 
 .logout-icon-form {
@@ -258,8 +259,8 @@
   overflow: hidden;
   width: 100%;
   margin-top: 12px;
-  padding: 16px;
-  border-radius: 22px;
+  padding: 14px 16px;
+  border-radius: 20px;
   background: var(--card-bg);
   color: var(--text-primary);
   text-decoration: none;
@@ -284,28 +285,17 @@
   z-index: 1;
 }
 
-.friends-card-kicker {
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
+.friends-card-kicker { display: none; }
 
 .friends-card-title {
   margin-top: 4px;
-  font-size: 22px;
-  font-weight: 900;
+  font-size: 20px;
+  font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
-.friends-card-sub {
-  margin-top: 3px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.35;
-}
+.friends-card-sub { display: none; }
 
 .friends-avatars {
   display: flex;
@@ -337,18 +327,16 @@
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  margin-top: 22px;
-  margin-bottom: 10px;
+  margin-top: 28px;
+  margin-bottom: 14px;
 }
 
-.profile-section-header--posts {
-  margin-top: 26px;
-}
+.profile-section-header--posts { margin-top: 32px; }
 
 .profile-section-copy {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .section-kicker {
@@ -368,15 +356,15 @@
 .profile-section-note {
   margin-top: 3px;
   font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.38;
-  max-width: 280px;
+  font-weight: 600;
+  color: #94a3b8;
+  line-height: 1.4;
 }
 
 .profile-showcase-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
 }
 
@@ -583,6 +571,22 @@
   transform: translateY(1px);
 }
 
+/* ── Section count badge ─────────────────────────────────── */
+.section-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
 @media (max-width: 430px) {
   .profile-wrap {
     width: 100%;
@@ -603,42 +607,4 @@
   .profile-pill {
     min-width: 110px;
   }
-}
-
-/* ══════════════════════════════════════════════════════════
-   PROFILE REFRESH 2026-03
-   ══════════════════════════════════════════════════════════ */
-
-.profile-section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; width: 100%; margin-top: 28px; margin-bottom: 14px;
-}
-.profile-section-header--posts { margin-top: 32px; }
-.profile-section-copy { display: flex; flex-direction: column; gap: 3px; }
-.profile-section-note {
-  margin-top: 3px; font-size: 12px; font-weight: 600;
-  color: #94a3b8; line-height: 1.4;
-}
-
-.section-count-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 28px; height: 28px; padding: 0 9px; border-radius: 999px;
-  background: #0f172a; color: #fff; font-size: 13px; font-weight: 800; flex-shrink: 0;
-}
-
-.friends-card.light    { margin-top: 12px; padding: 14px 16px; border-radius: 20px; }
-.friends-card-kicker   { display: none; }
-.friends-card-title    { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
-.friends-card-sub      { display: none; }
-
-.profile-showcase-grid { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; }
-
-/* Showcase glow — matches promo.css palette */
-.profile-showcase-grid .coupon-card--legendary {
-  box-shadow: 0 18px 34px rgba(66,31,0,.28), 0 0 0 1px rgba(255,214,82,.18),
-              0 0 26px rgba(255,200,60,.10);
-}
-.profile-showcase-grid .coupon-card--rare {
-  box-shadow: 0 16px 30px rgba(31,9,58,.26), 0 0 0 1px rgba(157,98,255,.16),
-              0 0 20px rgba(157,98,255,.08);
 }

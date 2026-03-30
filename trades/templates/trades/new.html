@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load level_tags %}
 {% block title %}Новый обмен{% endblock %}
 
 {% block extra_css %}
@@ -12,7 +11,7 @@
 <div class="trades-page">
     <div class="trades-title">Новый обмен</div>
     <div class="trades-muted" style="margin-bottom: 14px;">
-        С другом: <b>@{{ to_user.username }}</b> <span class="level-badge">{% user_level to_user %}</span>
+        С другом: <b>@{{ to_user.username }}</b> {% include "includes/level_badge.html" with user=to_user %}
     </div>
 
     {% if form.errors %}

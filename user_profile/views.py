@@ -30,11 +30,15 @@ def profile_detail(request, username=None, user_id=None):
     back_url = request.GET.get('next', '').strip()
 
     today = timezone.localdate()
-    promocodes = (
-        profile.promocodes.filter(status=PromoCode.Status.ACTIVE)
-        .filter(models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today))
-        .select_related('source_offer', 'source_offer__cafe')[:3]
-    )
+    # Купоны с кодами видит только сам владелец
+    if request.user.is_authenticated and request.user == user:
+        promocodes = (
+            profile.promocodes.filter(status=PromoCode.Status.ACTIVE)
+            .filter(models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today))
+            .select_related('source_offer', 'source_offer__cafe')[:3]
+        )
+    else:
+        promocodes = PromoCode.objects.none()
 
     friends_count = friends_qs(user).count()
 

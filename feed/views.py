@@ -6,6 +6,7 @@ from django.db.models import Count, Exists, OuterRef, Prefetch
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from add_order.models import Order
@@ -13,6 +14,13 @@ from friends.services import friends_qs
 from trades.models import TradeActivity, TradeItem
 
 from .models import Comment, FeedEvent, Like
+
+
+def _safe_redirect(url, request, fallback='/'):
+    """Защита от Open Redirect."""
+    if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
+        return url
+    return fallback
 
 
 def _comments_prefetch():
@@ -98,7 +106,11 @@ def feed_home(request):
 
     orders = list(orders_qs[:40])
     events = list(events_qs)
-    trade_events = [_prepare_trade_activity(event) for event in trade_events_qs]
+    trade_events = [
+        _prepare_trade_activity(event)
+        for event in trade_events_qs
+        if event.trade.items.exists()
+    ]
 
     items: list[dict] = []
     for o in orders:
@@ -156,7 +168,7 @@ def toggle_like(request, order_id: int):
             }
         )
 
-    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'home'
+    next_url = _safe_redirect(request.POST.get('next'), request)
     return redirect(next_url)
 
 
@@ -187,7 +199,7 @@ def add_comment(request, order_id: int):
 
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
     if not is_ajax:
-        next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'home'
+        next_url = _safe_redirect(request.POST.get('next'), request)
         return redirect(next_url)
 
     return JsonResponse(

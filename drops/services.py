@@ -169,7 +169,7 @@ def ensure_week_options(user) -> DropWeek:
 
     if not week.options.exists():
         profile, _ = Profile.objects.get_or_create(user=user)
-        rng = random.Random(f'{user.pk}:{week.week_start.isoformat()}')
+        rng = random.Random(f'{user.pk}:{week.week_start.isoformat()}:{week.pk}')
         cafes = _pick_3_cafes_for_user(user, rng=rng)
 
         options: list[DropOption] = []

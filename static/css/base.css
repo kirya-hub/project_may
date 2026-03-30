@@ -197,8 +197,8 @@ img {
 
 .nav-bar-inner {
   width: min(100%, 430px);
-  min-height: 86px;
-  padding: 6px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  min-height: 82px;
+  padding: 4px 10px calc(16px + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, #ffffff 0%, #f7f7f8 100%);
   border-top: 1px solid #d9d9de;
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.09);
@@ -425,7 +425,7 @@ img {
   }
 
   .nav-bar-inner {
-    min-height: 82px;
+    min-height: 78px;
   }
 
   .nav-icon {
@@ -458,4 +458,37 @@ img {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   overflow: hidden;
+}
+
+/* ── Rarity palette (shared across promo, feed, drops) ───── */
+:root {
+  /* COMMON — teal */
+  --r-common-a:    #34ffe0;
+  --r-common-b:    #0ea5c9;
+  --r-common-bg1:  #021a15;
+  --r-common-bg2:  #03312a;
+  --r-common-bg3:  #065545;
+  --r-common-glow: rgba(52, 255, 224, .32);
+  --r-common-brd:  rgba(52, 255, 224, .28);
+  --r-common-sh:   rgba(2, 26, 21, .38);
+
+  /* RARE — violet */
+  --r-rare-a:      #d97bff;
+  --r-rare-b:      #8b2fff;
+  --r-rare-bg1:    #110528;
+  --r-rare-bg2:    #1e083d;
+  --r-rare-bg3:    #3d0080;
+  --r-rare-glow:   rgba(180, 100, 255, .32);
+  --r-rare-brd:    rgba(180, 100, 255, .28);
+  --r-rare-sh:     rgba(17, 5, 40, .40);
+
+  /* LEGENDARY — gold */
+  --r-leg-a:       #ffe866;
+  --r-leg-b:       #ff8c00;
+  --r-leg-bg1:     #200e00;
+  --r-leg-bg2:     #3d1a00;
+  --r-leg-bg3:     #7a3800;
+  --r-leg-glow:    rgba(255, 220, 80, .34);
+  --r-leg-brd:     rgba(255, 220, 80, .32);
+  --r-leg-sh:      rgba(32, 14, 0, .40);
 }

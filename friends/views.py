@@ -5,7 +5,15 @@ from django.db.models import Count
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+
+
+def _safe_redirect(url, request, fallback=None):
+    """Защита от Open Redirect: разрешаем только относительные или свои URLs."""
+    if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
+        return url
+    return fallback or reverse('friends:friends_page')
 
 from .models import Follow
 from .services import friends_qs, with_follow_flags
@@ -78,5 +86,5 @@ def follow_toggle(request, user_id: int):
     else:
         Follow.objects.create(follower=request.user, following=target)
 
-    next_url = request.POST.get('next') or reverse('friends:friends_page')
+    next_url = _safe_redirect(request.POST.get('next'), request)
     return redirect(next_url)
