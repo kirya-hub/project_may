@@ -330,7 +330,7 @@
       <div class="drop-card-divider"></div>
       <div class="drop-card-footer">
         <span class="drop-card-rarity-label">
-          {% if opt.rarity == "LEGENDARY" %}⭐ Легендарный{% elif opt.rarity == "RARE" %}💜 Редкий{% else %}Обычный{% endif %}
+          {% if opt.rarity == "LEGENDARY" %}Легендарный{% elif opt.rarity == "RARE" %}Редкий{% else %}Обычный{% endif %}
         </span>
         <form method="post" action="{% url 'drops:choose_drop' opt.id %}">
           {% csrf_token %}

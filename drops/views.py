@@ -5,6 +5,7 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from promo.services import get_active_drop_coupon
@@ -42,6 +43,7 @@ def drops_page(request):
             'options': options,
             'earned_coupon': earned_coupon,
             'show_back': True,
+            'header_back_url': reverse('home'),
         },
     )
 

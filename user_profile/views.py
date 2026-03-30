@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count, Exists, OuterRef, Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 
 from add_order.models import Order
@@ -96,7 +97,7 @@ def profile_detail(request, username=None, user_id=None):
         'can_trade': can_trade,
         'posts': posts,
         'show_back': bool(back_url) or (request.user.is_authenticated and request.user != user),
-        'header_back_url': back_url or None,
+        'header_back_url': back_url or (reverse('home') if (request.user.is_authenticated and request.user != user) else None),
         'level': level,
         'xp': xp,
         'xp_needed': xp_needed,

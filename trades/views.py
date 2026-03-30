@@ -70,7 +70,14 @@ def trade_home(request):
         .order_by('-created_at')[:30]
     )
 
-    return render(request, 'trades/home.html', {'incoming': incoming, 'outgoing': outgoing})
+    back_url = _safe_redirect(request.GET.get('next'), request, fallback=reverse('home'))
+
+    return render(request, 'trades/home.html', {
+        'incoming': incoming,
+        'outgoing': outgoing,
+        'show_back': True,
+        'header_back_url': back_url,
+    })
 
 
 @login_required
@@ -134,6 +141,8 @@ def trade_new(request, username: str):
     else:
         form = TradeOfferForm(offered_qs=offered_qs, requested_qs=requested_qs)
 
+    next_url = _safe_redirect(request.GET.get('next'), request, fallback=reverse('trades:home'))
+
     return render(
         request,
         'trades/new.html',
@@ -143,7 +152,7 @@ def trade_new(request, username: str):
             'offered_coupons': offered_qs,
             'requested_coupons': requested_qs,
             'show_back': True,
-            'header_back_url': None,
+            'header_back_url': next_url,
         },
     )
 

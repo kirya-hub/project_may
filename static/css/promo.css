@@ -398,8 +398,11 @@
   margin-top: 4px; font-size: 11px; font-weight: 600;
   color: rgba(236,241,248,.58);
 }
-.coupon-preview--trade     { min-height: 62px; border-radius: 12px; }
+.coupon-preview--trade     { min-height: 52px; border-radius: 12px; }
 .coupon-preview--trade .coupon-preview__topline { display: none; }
+.coupon-preview--trade .coupon-preview__body { padding: 7px 9px 7px 11px; }
+.coupon-preview--trade .coupon-preview__title { font-size: 12px; margin-top: 0; }
+.coupon-preview--trade .coupon-preview__meta  { font-size: 10px; margin-top: 2px; }
 .coupon-preview--picker    { border-radius: 13px; }
 
 /* ── Responsive ─────────────────────────────────────────── */

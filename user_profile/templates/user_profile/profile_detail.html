@@ -106,7 +106,7 @@
         {% endif %}
       </form>
       {% if can_trade %}
-      <a class="profile-action-btn profile-action-btn--trade" href="{% url 'trades:new' profile.user.username %}">Обмен</a>
+      <a class="profile-action-btn profile-action-btn--trade" href="{% url 'trades:new' profile.user.username %}?next={{ request.get_full_path|urlencode }}">Обмен</a>
       {% endif %}
     </div>
     {% endif %}

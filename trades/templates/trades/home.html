@@ -16,7 +16,7 @@
         <div class="trade-section-title">Входящие</div>
         <div class="trade-card-list">
             {% for t in incoming %}
-            <a href="{% url 'trades:detail' t.id %}" class="trade-card trade-card--compact">
+            <a href="{% url 'trades:detail' t.id %}?next={{ request.get_full_path|urlencode }}" class="trade-card trade-card--compact">
                 <div class="trade-card-top">
                     <div class="trade-card-userblock trade-card-userblock--rich">
                         <div class="trade-card-avatar">
@@ -45,7 +45,7 @@
         <div class="trade-section-title">Исходящие</div>
         <div class="trade-card-list">
             {% for t in outgoing %}
-            <a href="{% url 'trades:detail' t.id %}" class="trade-card trade-card--compact">
+            <a href="{% url 'trades:detail' t.id %}?next={{ request.get_full_path|urlencode }}" class="trade-card trade-card--compact">
                 <div class="trade-card-top">
                     <div class="trade-card-userblock trade-card-userblock--rich">
                         <div class="trade-card-avatar">

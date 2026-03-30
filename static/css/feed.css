@@ -321,10 +321,15 @@
 
 .post-text {
   margin-top: 12px;
-  color: #1b1b1b;
-  font-size: 15px;
-  line-height: 1.55;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: -0.012em;
   word-break: break-word;
+  word-spacing: 0.01em;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Post actions ────────────────────────────────────────── */
@@ -357,6 +362,7 @@
 /* ── Like / comment buttons ──────────────────────────────── */
 .btn-like,
 .btn-comment {
+  height: 42px;
   min-height: 42px;
   border: 1px solid rgba(17, 24, 39, .08);
   background: #f6f7fb;
@@ -372,9 +378,8 @@
   cursor: pointer;
   transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
   box-shadow: none;
+  box-sizing: border-box;
 }
-
-.btn-comment { background: #f3f5fb; }
 
 .btn-like:hover,
 .btn-comment:hover,
@@ -425,6 +430,15 @@
 .btn-comment-icon {
   font-size: 18px;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-comment-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex-shrink: 0;
 }
 
 .post-time-inline {
@@ -861,129 +875,85 @@
 
 /* ── Trade feed card ─────────────────────────────────────── */
 .trade-feed-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 14px 14px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 16px 30px rgba(15,23,42,.18);
   background:
-    radial-gradient(circle at top right, rgba(140, 120, 255, .14), transparent 34%),
-    linear-gradient(145deg, #161d35 0%, #131830 100%);
-  border: 1px solid rgba(145, 134, 255, .16);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, .14);
-  padding: 11px 11px 10px;
+    radial-gradient(circle at top right, var(--r-common-glow), transparent 38%),
+    linear-gradient(145deg, var(--r-common-bg1) 0%, var(--r-common-bg2) 50%, var(--r-common-bg3) 100%);
 }
-
-.trade-feed-card .post-avatar-link {
-  border: 1px solid rgba(255, 255, 255, .14);
-  background: rgba(255, 255, 255, .08);
-  box-shadow: none;
+.trade-feed-card--rare {
+  background:
+    radial-gradient(circle at top right, var(--r-rare-glow), transparent 38%),
+    linear-gradient(145deg, var(--r-rare-bg1) 0%, var(--r-rare-bg2) 50%, var(--r-rare-bg3) 100%);
+  border-color: var(--r-rare-brd);
 }
-
-.trade-feed-card .post-avatar-fallback { background: rgba(255, 255, 255, .92); }
+.trade-feed-card--legendary {
+  background:
+    radial-gradient(circle at top right, var(--r-leg-glow), transparent 38%),
+    linear-gradient(145deg, var(--r-leg-bg1) 0%, var(--r-leg-bg2) 50%, var(--r-leg-bg3) 100%);
+  border-color: var(--r-leg-brd);
+}
 
 .trade-feed-card__top {
-  position: relative;
-  z-index: 1;
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.trade-feed-card__users { min-width: 0; flex: 1; }
+.trade-feed-card__users { flex: 1; min-width: 0; }
 
 .trade-feed-card__kicker {
-  color: rgba(255, 255, 255, .58);
+  color: rgba(255,255,255,.50);
   font-size: 10px;
   font-weight: 900;
   letter-spacing: .12em;
   text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
-.trade-feed-card__title {
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 900;
-  line-height: 1.2;
-}
-
-.trade-feed-card__title a {
-  text-decoration: none;
-  color: #fff;
-}
-
-.trade-feed-card__time,
-.trade-feed-card__more {
-  margin-top: 8px;
-  color: rgba(255, 255, 255, .62);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* Route: two person blocks with swap arrow */
 .trade-feed-card__route {
   display: flex;
   align-items: center;
-  margin-top: 8px;
   gap: 6px;
 }
 
 .trade-feed-card__person {
   display: flex;
   align-items: center;
+  gap: 7px;
   flex: 1;
   min-width: 0;
-  padding: 8px;
-  gap: 8px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .07);
   text-decoration: none;
   color: inherit;
 }
 
-.trade-feed-card__person-meta { min-width: 0; flex: 1; overflow: hidden; }
-
-.trade-feed-card__swap {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .12);
-  font-size: 13px;
-  color: rgba(255, 255, 255, .65);
-}
-
 .trade-feed-card__person .post-avatar-img,
 .trade-feed-card__person .post-avatar-fallback {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 13px;
+  border: 1.5px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.10);
+  color: #fff;
 }
 
-.trade-feed-card__label {
-  color: rgba(255, 255, 255, .52);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
+.trade-feed-card__person-meta { min-width: 0; flex: 1; overflow: hidden; }
 
 .trade-feed-card__name {
-  margin-top: 0;
   font-size: 13px;
+  font-weight: 700;
   line-height: 1.1;
   color: #fff;
-  text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -991,45 +961,85 @@
 
 .trade-feed-card__username {
   font-size: 10px;
-  color: rgba(255, 255, 255, .65);
+  color: rgba(255,255,255,.50);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.trade-feed-card__coupons {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
-  margin-top: 9px;
-}
-
-.trade-feed-card__coupon-col { min-width: 0; gap: 6px; }
-
-.trade-feed-card__coupon-title {
-  margin-bottom: 4px;
-  font-size: 10px;
-  color: rgba(255, 255, 255, .68);
-  font-weight: 700;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-}
-
-.trade-feed-card__coupon-col--from .trade-feed-card__coupon-title { color: #c7d2fe; }
-.trade-feed-card__coupon-col--to   .trade-feed-card__coupon-title { color: #fde68a; }
-
-.trade-feed-card__bottom {
-  margin-top: 8px;
+.trade-feed-card__swap {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  font-size: 14px;
+  color: rgba(255,255,255,.70);
 }
 
-.trade-feed-card__time { margin-left: auto; text-align: right; font-size: 12px; }
-.trade-feed-card__more { font-size: 11px; }
+.trade-feed-card .event-mark {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.16);
+  box-shadow: none;
+  flex-shrink: 0;
+}
+.trade-feed-card .event-mark-ico {
+  filter: brightness(0) invert(1) opacity(.80);
+}
+
+.trade-feed-card__coupons {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  align-items: center;
+  gap: 6px;
+}
+
+.trade-feed-card__coupon-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trade-feed-card__coupon-title {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.42);
+  margin-bottom: 2px;
+}
+
+.trade-feed-card__arrow-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: rgba(255,255,255,.50);
+  align-self: center;
+}
+
+.trade-feed-card__bottom {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.trade-feed-card__time {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.42);
+}
+
+.trade-feed-card__more {
+  font-size: 10px;
+  color: rgba(255,255,255,.36);
+}
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 430px) {
@@ -1043,7 +1053,7 @@
   .post-text { font-size: 15px; }
   .btn-like, .btn-comment, .comment-submit { min-height: 40px; padding: 0 13px; font-size: 14px; }
   .comment-input { min-height: 40px; }
-  .trade-feed-card__coupons { grid-template-columns: 1fr; }
+  .trade-feed-card__coupons { grid-template-columns: 1fr 18px 1fr; }
   .feed-section-head { align-items: flex-start; flex-direction: column; }
 }
 
