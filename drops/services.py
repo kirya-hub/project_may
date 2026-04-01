@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import logging
 import random
 from datetime import timedelta
+
+logger = logging.getLogger(__name__)
 
 from django.db import transaction
 from django.utils import timezone
@@ -267,7 +270,7 @@ def try_complete_by_order(order: Order) -> bool:
 
     try:
         add_xp(order.user, 15)
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning('add_xp failed for user=%s: %s', order.user_id, exc)
 
     return True

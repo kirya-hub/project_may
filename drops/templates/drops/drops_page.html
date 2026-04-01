@@ -26,7 +26,7 @@
     font-size: 26px;
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: #0f172a;
+    color: rgba(255, 255, 255, 0.92);
     margin: 0;
   }
   .timer-pill {
@@ -35,12 +35,12 @@
     gap: 7px;
     padding: 8px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(17,24,39,.09);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.08);
     font-size: 13px;
     font-weight: 700;
-    color: #1e293b;
-    box-shadow: 0 2px 8px rgba(15,23,42,.06);
+    color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   }
   .timer-dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -53,7 +53,7 @@
     50%    { box-shadow:0 0 0 5px rgba(34,197,94,.10); }
   }
   .drop-hint {
-    font-size: 14px; color: #64748b; margin-bottom: 18px; line-height: 1.5;
+    font-size: 14px; color: rgba(255, 255, 255, 0.55); margin-bottom: 18px; line-height: 1.5;
   }
 
   /* ══ CHOOSING — option cards ══════════════════ */
@@ -276,28 +276,28 @@
 
   /* ══ COMPLETED / EXPIRED — state cards ════════ */
   .state-card {
-    border: 1px solid rgba(17,24,39,.08); border-radius: 24px; padding: 24px 20px;
-    background: linear-gradient(180deg,#fff 0%,#f8fafc 100%);
-    box-shadow: 0 14px 30px rgba(15,23,42,.07);
+    border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 24px 20px;
+    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
   }
   .state-emoji { font-size: 36px; margin-bottom: 10px; display: block; }
-  .state-title { font-weight: 800; font-size: 22px; color: #0f172a; margin: 0 0 6px; letter-spacing: -0.02em; }
-  .state-text  { margin: 0; font-size: 14px; color: #64748b; line-height: 1.55; }
+  .state-title { font-weight: 800; font-size: 22px; color: rgba(255, 255, 255, 0.92); margin: 0 0 6px; letter-spacing: -0.02em; }
+  .state-text  { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.55; }
   .state-coupon{ margin-top: 18px; }
   .state-actions { margin-top: 18px; display: flex; gap: 10px; }
   .btn-primary {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 1; padding: 14px 12px; border-radius: 16px;
     font-weight: 700; font-size: 14px; border: none;
-    background: #0f172a; color: #fff; text-decoration: none;
-    box-shadow: 0 8px 20px rgba(15,23,42,.14);
+    background: #6366f1; color: #fff; text-decoration: none;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
   }
   .btn-ghost {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 1; padding: 14px 12px; border-radius: 16px;
     font-weight: 700; font-size: 14px;
-    border: 1px solid rgba(17,24,39,.12); background: transparent;
-    color: #1e293b; text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.10); background: transparent;
+    color: rgba(255, 255, 255, 0.7); text-decoration: none;
   }
 </style>
 
@@ -417,9 +417,10 @@
     sec = Math.max(0, sec);
     const d = Math.floor(sec / 86400); sec %= 86400;
     const h = Math.floor(sec / 3600);  sec %= 3600;
-    const m = Math.floor(sec / 60);
-    if (d > 0) return `${d}д ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
-    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+    const m = Math.floor(sec / 60);    sec %= 60;
+    if (d > 0) return d + 'д · ' + String(h).padStart(2,'0') + 'ч · ' + String(m).padStart(2,'0') + 'м';
+    if (h > 0) return h + 'ч · ' + String(m).padStart(2,'0') + 'м · ' + String(sec).padStart(2,'0') + 'с';
+    return m + 'м · ' + String(sec).padStart(2,'0') + 'с';
   }
   function tick() { const t=fmt(left); els.forEach(el=>el.textContent=t); if(left>0) left--; }
   tick(); setInterval(tick, 1000);

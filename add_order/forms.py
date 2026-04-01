@@ -23,19 +23,12 @@ class OrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if 'cafe' in self.fields:
-            self.fields['cafe'].required = True
-            self.fields['cafe'].widget.attrs.update({'class': 'cafe-select'})
-
         if 'comment' in self.fields:
             self.fields['comment'].widget.attrs.update({'class': 'comment-input'})
 
-        if 'rating' in self.fields:
-            self.fields['rating'].widget.attrs.update({'class': 'cafe-select'})
-
     class Meta:
         model = Order
-        fields = ('check_image', 'dish_photo', 'comment', 'rating', 'cafe')
+        fields = ('check_image', 'dish_photo', 'comment', 'rating')
         widgets = {
             'check_image': forms.ClearableFileInput(
                 attrs={

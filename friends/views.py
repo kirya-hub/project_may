@@ -8,17 +8,16 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
-
-def _safe_redirect(url, request, fallback=None):
-    """Защита от Open Redirect: разрешаем только относительные или свои URLs."""
-    if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
-        return url
-    return fallback or reverse('friends:friends_page')
-
 from .models import Follow
 from .services import friends_qs, with_follow_flags
 
 User = get_user_model()
+
+
+def _safe_redirect(url, request, fallback=None):
+    if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
+        return url
+    return fallback or reverse('friends:friends_page')
 
 
 @login_required

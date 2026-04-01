@@ -99,10 +99,10 @@
                 <span class="nav-label">Лента</span>
             </a>
 
-            <a class="nav-item {% if request.path|slice:':9' == '/friends/' %}active{% endif %}"
+            <a class="nav-item {% if request.path|slice:':9' == '/friends/' or request.path|slice:':9' == '/profile/' and not is_own_profile and request.path != '/profile/' and request.path != '/profile/me/' and request.path != '/profile/edit/' %}active{% endif %}"
                 href="{% url 'friends:friends_page' %}">
                 <img class="nav-icon"
-                    src="{% if request.path|slice:':9' == '/friends/' %}{% static 'icons/friends_fill.svg' %}{% else %}{% static 'icons/friends.svg' %}{% endif %}"
+                    src="{% if request.path|slice:':9' == '/friends/' or request.path|slice:':9' == '/profile/' and not is_own_profile and request.path != '/profile/' and request.path != '/profile/me/' and request.path != '/profile/edit/' %}{% static 'icons/friends_fill.svg' %}{% else %}{% static 'icons/friends.svg' %}{% endif %}"
                     alt="">
                 <span class="nav-label">Друзья</span>
             </a>
@@ -121,10 +121,10 @@
                 <span class="nav-label">Промо</span>
             </a>
 
-            <a class="nav-item {% if request.path|slice:':9' == '/profile/' %}active{% endif %}"
+            <a class="nav-item {% if request.path == '/profile/' or request.path == '/profile/me/' or request.path == '/profile/edit/' or is_own_profile %}active{% endif %}"
                 href="{% url 'profile_home' %}">
                 <img class="nav-icon"
-                    src="{% if request.path|slice:':9' == '/profile/' %}{% static 'icons/profile_fill.svg' %}{% else %}{% static 'icons/profile.svg' %}{% endif %}"
+                    src="{% if request.path == '/profile/' or request.path == '/profile/me/' or request.path == '/profile/edit/' or is_own_profile %}{% static 'icons/profile_fill.svg' %}{% else %}{% static 'icons/profile.svg' %}{% endif %}"
                     alt="">
                 <span class="nav-label">Профиль</span>
             </a>

@@ -6,14 +6,11 @@
 
 :root {
   --profile-max-width: 460px;
-  --profile-bg: #ffffff;
-  --card-bg: linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%);
-  --card-border: rgba(17, 24, 39, 0.07);
-  --card-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --accent: #2563eb;
+  --profile-bg:   var(--bg-page);
+  --card-bg:      linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
+  --card-border:  var(--border-subtle);
+  --card-shadow:  0 14px 32px rgba(0, 0, 0, 0.25);
+  --accent:       var(--accent-secondary);
 }
 
 .profile-wrap {
@@ -35,9 +32,9 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: #f1f5f9;
-  border: 3px solid #fff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +57,8 @@
   width: 52%;
   height: 52%;
   object-fit: contain;
-  opacity: 0.6;
+  opacity: 0.45;
+  filter: invert(1);
   display: block;
 }
 
@@ -95,26 +93,59 @@
   letter-spacing: 0;
 }
 
-.profile-actions {
-  position: absolute;
-  top: 6px;
-  right: 0;
+.profile-settings-row {
   display: flex;
-  gap: 6px;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.profile-settings-btn {
+  display: inline-flex;
   align-items: center;
-  padding: 5px;
-  border-radius: 18px;
-  background: #ffffff;
-  border: 1px solid rgba(17, 24, 39, 0.09);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .14s, border-color .14s;
+  font-family: inherit;
+}
+
+.profile-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.profile-settings-btn:active {
+  transform: scale(0.97);
+}
+
+.profile-settings-btn--danger {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.06);
+  color: rgba(239, 68, 68, 0.7);
+}
+
+.profile-settings-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .icon-btn {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  border: 1px solid rgba(17, 24, 39, 0.07);
-  background: #f5f6fa;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -125,13 +156,13 @@
 }
 
 .icon-btn:hover {
-  background: #eceef7;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .icon-btn:active {
   transform: scale(0.92);
-  background: #e4e6f2;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .icon-btn img {
@@ -147,7 +178,7 @@
 
 .level-progress-card {
   width: 100%;
-  margin-top: 12px;
+  margin-top: 16px;
   padding: 16px;
   border-radius: 22px;
   background: var(--card-bg);
@@ -215,7 +246,7 @@
 .level-progress-bar-shell {
   padding: 3px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #e8edf6 0%, #dfe6f2 100%);
+  background: rgba(255, 255, 255, 0.06);
   position: relative;
   z-index: 1;
 }
@@ -224,7 +255,7 @@
   --p: 0%;
   height: 11px;
   border-radius: 999px;
-  background: #dce4f0;
+  background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
@@ -256,10 +287,10 @@
 
 .friends-card.light {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
-  margin-top: 12px;
-  padding: 14px 16px;
+  margin-top: 16px;
+  padding: 14px 18px;
   border-radius: 20px;
   background: var(--card-bg);
   color: var(--text-primary);
@@ -275,6 +306,8 @@
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
   background: radial-gradient(circle at right center, rgba(59, 130, 246, 0.07), transparent 30%);
   pointer-events: none;
 }
@@ -299,26 +332,25 @@
 
 .friends-avatars {
   display: flex;
+  gap: 6px;
 }
 
 .friend-ava {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #fff;
-  margin-left: -9px;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-}
-
-.friend-ava:first-child {
-  margin-left: 0;
+  border: 2px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .friend-ava.stub {
   object-fit: contain;
-  background: #f1f5f9;
-  padding: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px;
+  box-sizing: border-box;
+  filter: invert(1);
+  opacity: 0.45;
 }
 
 .profile-section-header {
@@ -327,8 +359,8 @@
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  margin-top: 28px;
-  margin-bottom: 14px;
+  margin-top: 32px;
+  margin-bottom: 16px;
 }
 
 .profile-section-header--posts { margin-top: 32px; }
@@ -357,7 +389,7 @@
   margin-top: 3px;
   font-size: 12px;
   font-weight: 600;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.35);
   line-height: 1.4;
 }
 
@@ -372,9 +404,9 @@
   margin-top: 2px;
   padding: 20px 16px;
   border-radius: 20px;
-  border: 1px solid rgba(17, 24, 39, 0.07);
-  background: linear-gradient(180deg, #ffffff 0%, #f7f8fc 100%);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 700;
@@ -403,8 +435,8 @@
   min-height: 42px;
   padding: 0 18px;
   border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: linear-gradient(180deg, #ffffff 0%, #f5f6f9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   font-size: 14px;
   font-weight: 800;
   color: var(--text-secondary);
@@ -419,23 +451,23 @@
   padding: 0 18px;
   border-radius: 999px;
   border: none;
-  background: var(--text-primary);
+  background: #6366f1;
   color: #fff;
   font-size: 14px;
   font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
 }
 
 .profile-action-btn--ghost {
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
   box-shadow: none;
 }
 
 .profile-action-btn--trade {
-  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  background: #6366f1;
 }
 
 .profile-feed {
@@ -463,7 +495,7 @@
   width: min(420px, calc(100% - 28px));
   padding: 18px;
   border-radius: 20px;
-  background: #fff;
+  background: #1c1c26;
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
 }
@@ -498,13 +530,13 @@
 #id_name {
   width: 100%;
   padding: 11px 12px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   outline: none;
   font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
-  background: #fcfdff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .avatar-row {
@@ -521,8 +553,8 @@
   min-height: 44px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
   font-weight: 800;
   font-size: 13px;
   cursor: pointer;
@@ -544,7 +576,7 @@
   min-height: 46px;
   border-radius: 999px;
   border: none;
-  background: var(--text-primary);
+  background: #7c3aed;
   color: #fff;
   font-weight: 900;
   font-size: 15px;
@@ -580,8 +612,8 @@
   height: 28px;
   padding: 0 9px;
   border-radius: 999px;
-  background: #0f172a;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 13px;
   font-weight: 800;
   flex-shrink: 0;

@@ -1,7 +1,7 @@
 import re
 from difflib import SequenceMatcher
 
-from cafes.models import MenuItem
+from cafes.models import Cafe, MenuItem
 
 
 def normalize(text: str) -> str:
@@ -19,8 +19,24 @@ def similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
 
 
+def match_cafe(parsed_cafe_name: str) -> 'Cafe | None':
+    normalized = normalize(parsed_cafe_name)
+    best_cafe = None
+    best_score = 0.0
+
+    for cafe in Cafe.objects.only('id', 'name'):
+        score = similarity(normalized, normalize(cafe.name))
+        if score > best_score:
+            best_score = score
+            best_cafe = cafe
+
+    if best_score >= 0.6:
+        return best_cafe
+    return None
+
+
 def match_items(receipt_items, cafe):
-    menu_items = MenuItem.objects.filter(category__cafe=cafe)
+    menu_items = list(MenuItem.objects.filter(category__cafe=cafe).only('id', 'name'))
 
     result = []
     matched_total = 0.0

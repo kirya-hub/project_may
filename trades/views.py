@@ -1,11 +1,17 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Prefetch, Q
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
+
+from user_profile.levels import grant_trade_xp_once_per_day
+
+logger = logging.getLogger(__name__)
 
 from friends.services import friends_qs
 from user_profile.models import Profile, PromoCode
@@ -22,35 +28,13 @@ from .services import (
     create_trade_offer,
     decline_trade,
 )
+from .utils import decorate_trade_activity, trade_items_prefetch
 
 
 def _safe_redirect(url, request, fallback='/'):
-    """Защита от Open Redirect."""
     if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
         return url
     return fallback
-
-
-def _trade_items_prefetch():
-    return Prefetch(
-        'trade__items',
-        queryset=TradeItem.objects.select_related(
-            'promocode',
-            'promocode__source_offer',
-            'promocode__source_offer__cafe',
-        ).order_by('id'),
-    )
-
-
-def _decorate_trade_activity(event: TradeActivity) -> TradeActivity:
-    items = list(event.trade.items.all())
-    offered = [item.promocode for item in items if item.side == TradeItem.Side.OFFERED]
-    requested = [item.promocode for item in items if item.side == TradeItem.Side.REQUESTED]
-    event.offered_preview = offered[:1]
-    event.requested_preview = requested[:1]
-    event.extra_offered_count = max(0, len(offered) - 1)
-    event.extra_requested_count = max(0, len(requested) - 1)
-    return event
 
 
 @login_required
@@ -202,12 +186,10 @@ def trade_accept(request, trade_id: int):
         messages.success(request, 'Обмен принят ✅ Купоны обменяны')
 
         try:
-            from user_profile.levels import grant_trade_xp_once_per_day
-
             grant_trade_xp_once_per_day(trade.from_user, 3)
             grant_trade_xp_once_per_day(trade.to_user, 3)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning('grant_trade_xp failed: %s', exc)
 
     except (CouponNotAvailable, TradeError) as e:
         messages.error(request, str(e))
@@ -257,7 +239,7 @@ def trade_activity(request):
             'trade__to_user',
             'trade__to_user__profile',
         )
-        .prefetch_related(_trade_items_prefetch())
+        .prefetch_related(trade_items_prefetch())
         .filter(
             Q(trade__from_user_id__in=friend_ids)
             | Q(trade__to_user_id__in=friend_ids)
@@ -273,7 +255,7 @@ def trade_activity(request):
         request,
         'trades/activity.html',
         {
-            'events': [_decorate_trade_activity(event) for event in events],
+            'events': [decorate_trade_activity(event) for event in events],
             'show_back': True,
             'header_back_url': next_url,
         },

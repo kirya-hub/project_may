@@ -14,8 +14,8 @@ body {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
-  background: #f3f4f6;
-  color: #111111;
+  background: var(--bg-page);
+  color: var(--text-primary);
   overflow-y: auto;
 }
 
@@ -39,8 +39,8 @@ img {
   top: 0;
   z-index: 1000;
   background: linear-gradient(180deg, #121212 0%, #171717 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-inner {
@@ -95,7 +95,7 @@ img {
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-medium);
   background: rgba(255, 255, 255, 0.07);
   display: inline-flex;
   align-items: center;
@@ -199,9 +199,9 @@ img {
   width: min(100%, 430px);
   min-height: 64px;
   padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(180deg, #ffffff 0%, #f7f7f8 100%);
-  border-top: 1px solid #d9d9de;
-  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.09);
+  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.3);
   display: grid;
   grid-template-columns: 1fr 1fr 68px 1fr 1fr;
   align-items: center;
@@ -239,7 +239,7 @@ img {
   justify-content: center;
   gap: 4px;
   padding: 0;
-  color: #2a2a2a;
+  color: rgba(255, 255, 255, 0.45);
   text-decoration: none;
   transition: transform 0.16s ease, color 0.16s ease;
 }
@@ -249,7 +249,7 @@ img {
 }
 
 .nav-item.active {
-  color: #111111;
+  color: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -264,6 +264,7 @@ img {
   height: 36px;
   object-fit: contain;
   flex: 0 0 auto;
+  filter: invert(1) brightness(0.85);
   transition: transform 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
 }
 
@@ -281,7 +282,7 @@ img {
 .add-button {
   width: 50px;
   height: 50px;
-  background: radial-gradient(circle at top, #1f1f1f 0%, #111111 68%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -291,7 +292,7 @@ img {
   -webkit-appearance: none;
   appearance: none;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.35), 0 4px 14px rgba(99, 102, 241, 0.25);
   position: relative;
   z-index: 1;
 }
@@ -300,6 +301,7 @@ img {
   width: 24px;
   height: 24px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 
@@ -331,7 +333,7 @@ img {
 .nav-item:hover .nav-icon,
 .nav-item:focus .nav-icon,
 .nav-item:active .nav-icon {
-  filter: none;
+  filter: invert(1) brightness(0.85);
 }
 
 .toast-stack {
@@ -353,9 +355,9 @@ img {
   gap: 10px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  background: #1c1c26;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-toast);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
@@ -398,13 +400,13 @@ img {
 .toast-text {
   font-size: 14px;
   font-weight: 700;
-  color: #111111;
+  color: var(--text-primary);
 }
 
 .toast-close {
   border: 0;
   background: transparent;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -460,6 +462,30 @@ img {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   overflow: hidden;
+}
+
+/* ── UI colour tokens ─────────────────────────────────────── */
+:root {
+  --bg-page:          #141418;
+  --bg-card:          #1c1c26;
+  --bg-surface:       #181822;
+
+  --text-primary:     rgba(255, 255, 255, 0.92);
+  --text-secondary:   rgba(255, 255, 255, 0.55);
+  --text-muted:       rgba(255, 255, 255, 0.35);
+  --text-disabled:    rgba(255, 255, 255, 0.25);
+
+  --border-subtle:    rgba(255, 255, 255, 0.06);
+  --border-soft:      rgba(255, 255, 255, 0.08);
+  --border-medium:    rgba(255, 255, 255, 0.12);
+
+  --shadow-sm:        0 4px 18px rgba(0, 0, 0, 0.18);
+  --shadow-md:        0 10px 24px rgba(0, 0, 0, 0.25);
+  --shadow-lg:        0 16px 30px rgba(0, 0, 0, 0.25);
+  --shadow-toast:     0 12px 24px rgba(0, 0, 0, 0.4);
+
+  --accent-primary:   #7c3aed;
+  --accent-secondary: #6366f1;
 }
 
 /* ── Rarity palette (shared across promo, feed, drops) ───── */

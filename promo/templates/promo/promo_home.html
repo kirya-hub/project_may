@@ -34,7 +34,7 @@
         <div class="promo-history-date">{{ t.created_at|date:"d M H:i" }}</div>
       </div>
       <div class="promo-history-amount">
-        {% if t.amount10 >= 0 %}+{% endif %}{{ t.amount10 }} баллов
+        {% if t.amount_points >= 0 %}+{% endif %}{{ t.amount_points }} баллов
       </div>
     </div>
     {% endfor %}

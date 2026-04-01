@@ -13,77 +13,77 @@
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #0f172a;
+  color: rgba(255, 255, 255, 0.92);
   margin-bottom: 10px;
 }
 .promo-title-no-margin { margin-bottom: 0; }
 
 /* ── Balance card ───────────────────────────────────────── */
 .promo-balance-card {
-  border: 1px solid rgba(17,24,39,.07);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
   padding: 16px;
   margin-bottom: 12px;
-  background: linear-gradient(180deg,#fff 0%,#f8f9fc 100%);
-  box-shadow: 0 8px 20px rgba(15,23,42,.05);
+  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 .promo-balance-label {
   font-size: 11px; font-weight: 700; letter-spacing: .10em;
-  text-transform: uppercase; color: #94a3b8; margin-bottom: 5px;
+  text-transform: uppercase; color: rgba(255, 255, 255, 0.35); margin-bottom: 5px;
 }
 .promo-balance-value {
-  font-size: 32px; font-weight: 800; letter-spacing: -0.04em; color: #0f172a;
+  font-size: 32px; font-weight: 800; letter-spacing: -0.04em; color: rgba(255, 255, 255, 0.92);
 }
 
 /* ── Action buttons ─────────────────────────────────────── */
 .promo-actions { display: flex; gap: 10px; margin-bottom: 14px; }
 .promo-action-btn {
   flex: 1; text-align: center; padding: 12px 10px;
-  border-radius: 14px; border: 1px solid rgba(17,24,39,.08);
+  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08);
   font-weight: 700; font-size: 14px; text-decoration: none;
-  color: #0f172a; background: linear-gradient(180deg,#fff 0%,#f5f6fa 100%);
-  box-shadow: 0 3px 8px rgba(15,23,42,.04);
+  color: rgba(255, 255, 255, 0.92); background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ── Section title ──────────────────────────────────────── */
 .promo-section-title {
   font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
-  color: #0f172a; margin: 14px 0 8px;
+  color: rgba(255, 255, 255, 0.92); margin: 14px 0 8px;
 }
 
 /* ── History ────────────────────────────────────────────── */
 .promo-history-list {
-  border: 1px solid rgba(17,24,39,.07); border-radius: 16px;
-  overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(15,23,42,.04);
+  border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px;
+  overflow: hidden; background: #1c1c26; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 .promo-history-item {
   display: flex; justify-content: space-between; gap: 12px;
-  padding: 12px 14px; border-bottom: 1px solid rgba(17,24,39,.05);
+  padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .promo-history-item:last-child { border-bottom: none; }
-.promo-history-kind   { font-weight: 700; font-size: 14px; color: #1e293b; }
-.promo-history-date   { font-size: 12px; color: #94a3b8; }
-.promo-history-amount { font-weight: 800; white-space: nowrap; color: #0f172a; }
+.promo-history-kind   { font-weight: 700; font-size: 14px; color: rgba(255, 255, 255, 0.92); }
+.promo-history-date   { font-size: 12px; color: rgba(255, 255, 255, 0.35); }
+.promo-history-amount { font-weight: 800; white-space: nowrap; color: rgba(255, 255, 255, 0.92); }
 
 /* ── Shop header ────────────────────────────────────────── */
 .promo-shop-header {
   display: flex; align-items: baseline;
   justify-content: space-between; gap: 12px; margin-bottom: 8px;
 }
-.promo-shop-points { font-weight: 800; font-size: 18px; color: #0f172a; }
-.promo-shop-note   { font-size: 13px; color: #64748b; margin-bottom: 14px; line-height: 1.5; }
+.promo-shop-points { font-weight: 800; font-size: 18px; color: rgba(255, 255, 255, 0.92); }
+.promo-shop-note   { font-size: 13px; color: rgba(255, 255, 255, 0.55); margin-bottom: 14px; line-height: 1.5; }
 
 /* ── Alert cards ────────────────────────────────────────── */
 .promo-alert-card {
-  border: 1px solid rgba(17,24,39,.08); border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 18px;
   padding: 14px 16px;
-  background: linear-gradient(180deg,#fff 0%,#f8f9fc 100%);
-  box-shadow: 0 6px 16px rgba(15,23,42,.05); margin-bottom: 12px;
+  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); margin-bottom: 12px;
 }
-.promo-alert-card-soft  { background: rgba(0,0,0,.02); box-shadow: none; }
-.promo-alert-title      { font-weight: 800; font-size: 15px; color: #0f172a; margin-bottom: 4px; }
-.promo-alert-text       { font-size: 14px; color: #475569; line-height: 1.45; }
-.promo-alert-date       { font-size: 12px; color: #94a3b8; margin-top: 5px; }
+.promo-alert-card-soft  { background: rgba(255, 255, 255, 0.02); box-shadow: none; }
+.promo-alert-title      { font-weight: 800; font-size: 15px; color: rgba(255, 255, 255, 0.92); margin-bottom: 4px; }
+.promo-alert-text       { font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.45; }
+.promo-alert-date       { font-size: 12px; color: rgba(255, 255, 255, 0.35); margin-top: 5px; }
 
 /* ── Tabs ───────────────────────────────────────────────── */
 .promo-tabs {
@@ -91,20 +91,20 @@
 }
 .promo-tab {
   padding: 8px 14px; border-radius: 999px;
-  border: 1px solid rgba(17,24,39,.08); text-decoration: none;
-  color: #374151; font-weight: 700; font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.08); text-decoration: none;
+  color: rgba(255, 255, 255, 0.7); font-weight: 700; font-size: 13px;
   display: inline-flex; align-items: center; gap: 7px;
-  background: #fff; box-shadow: 0 2px 5px rgba(15,23,42,.04);
+  background: rgba(255, 255, 255, 0.04); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .promo-tab.is-active {
-  background: #0f172a; color: #fff; border-color: #0f172a;
-  box-shadow: 0 5px 12px rgba(15,23,42,.14);
+  background: #6366f1; color: #fff; border-color: #6366f1;
+  box-shadow: 0 5px 12px rgba(99, 102, 241, 0.3);
 }
 .promo-tab-count { opacity: .8; font-weight: 800; }
 
 .promo-coupons { display: flex; flex-direction: column; gap: 10px; }
 .promo-empty {
-  color: #94a3b8; font-size: 14px; font-weight: 600;
+  color: rgba(255, 255, 255, 0.35); font-size: 14px; font-weight: 600;
   text-align: center; padding: 20px 0;
 }
 
@@ -133,7 +133,7 @@
   position: absolute;
   right: -8px; width: 16px; height: 16px;
   border-radius: 50%;
-  background: #0f172a;
+  background: #141418;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
 }
 .coupon-card__cut--top    { top:    42px; }

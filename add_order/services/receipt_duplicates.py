@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import logging
 import re
 from decimal import Decimal, InvalidOperation
 from typing import Any
@@ -11,6 +12,8 @@ from django.db.models import Q
 from PIL import Image, ImageOps
 
 from add_order.models import Order
+
+logger = logging.getLogger(__name__)
 
 DHASH_SIZE = 8
 AHASH_SIZE = 8
@@ -576,7 +579,8 @@ def find_similar_image_duplicate(
     for candidate in candidates:
         try:
             candidate_variants = image_hash_variants(candidate.check_image.path)
-        except Exception:
+        except Exception as exc:
+            logger.debug('Пропуск кандидата #%s при хешировании: %s', candidate.pk, exc)
             continue
 
         for current_kind, current_hash in current_variants:

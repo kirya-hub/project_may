@@ -1,8 +1,12 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 from user_profile.models import Profile, PromoCode
 
@@ -85,7 +89,8 @@ def buy_coupon(request, offer_id: int):
         )
     except NotEnoughPoints:
         messages.error(request, 'Не хватает баллов')
-    except Exception:
+    except Exception as exc:
+        logger.error('buy_coupon failed offer=%s user=%s: %s', offer_id, request.user.pk, exc)
         messages.error(request, 'Не получилось купить купон. Попробуй ещё раз.')
 
     return redirect('promo:shop')

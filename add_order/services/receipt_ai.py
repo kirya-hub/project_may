@@ -12,12 +12,6 @@ client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 
 def preprocess_image(image_path: str) -> bytes:
-    """
-    Подготавливает изображение чека перед отправкой в Gemini:
-    - поворачивает по EXIF
-    - убирает проблемы PNG/RGBA -> RGB
-    - усиливает контраст и резкость
-    """
     img = Image.open(image_path)
 
     img = ImageOps.exif_transpose(img)

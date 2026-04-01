@@ -28,24 +28,21 @@ def profile_detail(request, username=None, user_id=None):
         user = get_object_or_404(User, id=user_id)
 
     profile = get_object_or_404(Profile, user=user)
+    is_other_user = request.user.is_authenticated and request.user != user
     back_url = request.GET.get('next', '').strip()
+    if back_url.startswith('/trade/new/') or (not back_url and is_other_user):
+        back_url = reverse('friends:friends_page')
 
     today = timezone.localdate()
-    # Купоны с кодами видит только сам владелец
-    if request.user.is_authenticated and request.user == user:
-        promocodes = (
-            profile.promocodes.filter(status=PromoCode.Status.ACTIVE)
-            .filter(models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today))
-            .select_related('source_offer', 'source_offer__cafe')[:3]
-        )
-    else:
-        promocodes = PromoCode.objects.none()
+    promocodes = (
+        profile.promocodes.filter(status=PromoCode.Status.ACTIVE)
+        .filter(models.Q(expires_at__isnull=True) | models.Q(expires_at__gte=today))
+        .select_related('source_offer', 'source_offer__cafe')[:3]
+    )
 
     friends_count = friends_qs(user).count()
 
-    friends_preview = []
-    if request.user.is_authenticated and request.user == user:
-        friends_preview = friends_qs(request.user).select_related('profile')[:3]
+    friends_preview = friends_qs(user).select_related('profile')[:3]
 
     is_following = False
     is_friend = False
@@ -96,14 +93,15 @@ def profile_detail(request, username=None, user_id=None):
         'is_friend': is_friend,
         'can_trade': can_trade,
         'posts': posts,
-        'show_back': bool(back_url) or (request.user.is_authenticated and request.user != user),
-        'header_back_url': back_url or (reverse('home') if (request.user.is_authenticated and request.user != user) else None),
+        'show_back': bool(back_url) or is_other_user,
+        'header_back_url': back_url or None,
         'level': level,
         'xp': xp,
         'xp_needed': xp_needed,
         'xp_in_level': xp,
         'level_progress_percent': level_progress_percent,
         'next_level': level + 1,
+        'is_own_profile': request.user.is_authenticated and request.user == user,
     }
 
     return render(request, 'user_profile/profile_detail.html', context)

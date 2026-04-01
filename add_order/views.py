@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-import os
+from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -16,12 +16,8 @@ from .services.receipt_validator import process_order_receipt
 
 logger = logging.getLogger(__name__)
 
-def _delete_order_files(order: Order) -> None:
-    """Удаляет медиафайлы заказа с диска перед удалением объекта.
 
-    Django НЕ удаляет файлы автоматически при delete() — без этого
-    каждый дубликат оставлял бы чек и фото блюда навсегда в media/.
-    """
+def _delete_order_files(order: Order) -> None:
     paths: list[str] = []
     if order.check_image:
         try:
@@ -38,12 +34,13 @@ def _delete_order_files(order: Order) -> None:
 
     for path in paths:
         try:
-            if os.path.exists(path):
-                os.remove(path)
-                logger.debug("Удалён медиафайл: %s", path)
+            p = Path(path)
+            if p.exists():
+                p.unlink()
+                logger.debug('Удалён медиафайл: %s', path)
         except OSError as exc:
+            logger.warning('Не удалось удалить файл %s: %s', path, exc)
 
-            logger.warning("Не удалось удалить файл %s: %s", path, exc)
 
 @login_required
 def add_order_page(request):
@@ -59,7 +56,7 @@ def add_order_page(request):
                 process_order_receipt(order)
             except Exception as exc:
                 logger.error(
-                    "Ошибка обработки чека для заказа #%s user=%s: %s",
+                    'Ошибка обработки чека для заказа #%s user=%s: %s',
                     order.pk,
                     request.user.pk,
                     exc,
@@ -82,7 +79,7 @@ def add_order_page(request):
                     'Этот чек уже был загружен раньше.',
                 )
                 logger.info(
-                    "Дубликат чека: заказ #%s reason=%s user=%s",
+                    'Дубликат чека: заказ #%s reason=%s user=%s',
                     order.pk,
                     order.duplicate_reason,
                     request.user.pk,
@@ -90,6 +87,11 @@ def add_order_page(request):
 
                 _delete_order_files(order)
                 messages.warning(request, f'{message} Пост в ленте не создан.')
+                return redirect('add_order')
+
+            if order.total_sum is None:
+                _delete_order_files(order)
+                messages.warning(request, 'Позиции чека не совпали с меню кафе. Пост не создан.')
                 return redirect('add_order')
 
             accrue_points_for_order(order)

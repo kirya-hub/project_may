@@ -11,13 +11,13 @@ from django.views.decorators.http import require_POST
 
 from add_order.models import Order
 from friends.services import friends_qs
-from trades.models import TradeActivity, TradeItem
+from trades.models import TradeActivity
+from trades.utils import decorate_trade_activity, trade_items_prefetch
 
 from .models import Comment, FeedEvent, Like
 
 
 def _safe_redirect(url, request, fallback='/'):
-    """Защита от Open Redirect."""
     if url and url_has_allowed_host_and_scheme(url, allowed_hosts={request.get_host()}):
         return url
     return fallback
@@ -28,28 +28,6 @@ def _comments_prefetch():
         'comments',
         queryset=Comment.objects.select_related('user', 'user__profile').order_by('created_at'),
     )
-
-
-def _trade_items_prefetch():
-    return Prefetch(
-        'trade__items',
-        queryset=TradeItem.objects.select_related(
-            'promocode',
-            'promocode__source_offer',
-            'promocode__source_offer__cafe',
-        ).order_by('id'),
-    )
-
-
-def _prepare_trade_activity(activity: TradeActivity) -> TradeActivity:
-    trade_items = list(activity.trade.items.all())
-    offered = [item.promocode for item in trade_items if item.side == TradeItem.Side.OFFERED]
-    requested = [item.promocode for item in trade_items if item.side == TradeItem.Side.REQUESTED]
-    activity.offered_preview = offered[:1]
-    activity.requested_preview = requested[:1]
-    activity.extra_offered_count = max(0, len(offered) - 1)
-    activity.extra_requested_count = max(0, len(requested) - 1)
-    return activity
 
 
 def _item_key(item: dict) -> tuple[str, int]:
@@ -100,14 +78,14 @@ def feed_home(request):
             'trade__to_user',
             'trade__to_user__profile',
         )
-        .prefetch_related(_trade_items_prefetch())
+        .prefetch_related(trade_items_prefetch())
         .order_by('-created_at')[:30]
     )
 
     orders = list(orders_qs[:40])
     events = list(events_qs)
     trade_events = [
-        _prepare_trade_activity(event)
+        decorate_trade_activity(event)
         for event in trade_events_qs
         if event.trade.items.exists()
     ]

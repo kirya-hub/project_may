@@ -55,7 +55,8 @@ class PointsTransaction(models.Model):
 
     @property
     def amount_points(self) -> int:
-        return (self.amount10 or 0) // 10
+        a = self.amount10 or 0
+        return a // 10 if a >= 0 else -((-a) // 10)
 
     class Meta:
         ordering = ['-created_at']

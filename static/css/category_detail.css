@@ -19,10 +19,10 @@
 }
 
 .item-card {
-    background: #fff;
+    background: #1c1c26;
     border-radius: 14px;
     padding: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     overflow: hidden;
     text-align: center;
     transition: 0.2s ease;
@@ -44,16 +44,17 @@
     font-size: 15px;
     font-weight: 600;
     display: block;
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .item-price {
     font-size: 14px;
-    color: #555;
+    color: rgba(255, 255, 255, 0.55);
 }
 
 .empty {
     text-align: center;
     margin-top: 30px;
-    color: #777;
+    color: rgba(255, 255, 255, 0.35);
     font-size: 15px;
 }

@@ -9,14 +9,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-secret-key-change-me')
+_secret_key = os.getenv('SECRET_KEY')
+if not _secret_key:
+    if DEBUG:
+        _secret_key = 'dev-insecure-secret-key-change-me'
+    else:
+        raise RuntimeError('SECRET_KEY environment variable is not set')
+SECRET_KEY = _secret_key
 DEBUG = os.getenv('DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
 
 _allowed_hosts = os.getenv('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',') if h.strip()] or (
-    ['*'] if DEBUG else []
+    ['localhost', '127.0.0.1'] if DEBUG else []
 )
-# ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

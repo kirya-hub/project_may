@@ -1,11 +1,11 @@
 :root {
-    --bg: #f6f7fb;
-    --card: #ffffff;
-    --text: #121212;
-    --muted: #6f7280;
-    --line: #ececf3;
-    --accent: #111111;
-    --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --bg:       var(--bg-page);
+    --card:     var(--bg-card);
+    --text:     var(--text-primary);
+    --muted:    var(--text-muted);
+    --line:     var(--border-subtle);
+    --accent:   var(--accent-secondary);
+    --shadow:   var(--shadow-md);
     --radius-xl: 24px;
     --radius-lg: 18px;
 }
@@ -71,7 +71,7 @@ body {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text);
     font-size: 15px;
     padding: 14px 16px;
@@ -91,7 +91,7 @@ body {
 .map-help-card {
     border: 1px solid var(--line);
     border-radius: 18px;
-    background: #f8f9fc;
+    background: rgba(255, 255, 255, 0.04);
     padding: 14px;
 }
 
@@ -117,7 +117,7 @@ body {
     min-height: 40px;
     padding: 0 14px;
     border-radius: 12px;
-    background: #111111;
+    background: #6366f1;
     color: #ffffff;
     text-decoration: none;
     font-size: 14px;
@@ -125,10 +125,10 @@ body {
 }
 
 .form-errors {
-    border: 1px solid #ffd8d8;
+    border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 16px;
-    background: #fff4f4;
-    color: #8c2020;
+    background: rgba(239, 68, 68, 0.08);
+    color: #fca5a5;
     padding: 12px 14px;
     font-size: 14px;
     line-height: 1.45;
@@ -163,7 +163,7 @@ body {
 
 .btn-secondary {
     border: 1px solid var(--line);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text);
 }
 
@@ -204,7 +204,7 @@ body {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: #fcfdff;
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text);
     font-size: 15px;
     font-weight: 500;
@@ -217,8 +217,8 @@ body {
 .cafe-edit-form input[type="text"]:focus,
 .cafe-edit-form input[type="number"]:focus,
 .cafe-edit-form textarea:focus {
-    border-color: #94a3b8;
-    box-shadow: 0 0 0 3px rgba(17,24,39,.06);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
 }
 
 .cafe-edit-form textarea { min-height: 100px; resize: vertical; }
@@ -229,7 +229,7 @@ body {
     padding: 10px 12px;
     border: 1px dashed var(--line);
     border-radius: 14px;
-    background: #f8f9fc;
+    background: rgba(255, 255, 255, 0.04);
     color: var(--muted);
     font-size: 13px;
     cursor: pointer;
@@ -238,7 +238,7 @@ body {
     padding: 6px 12px;
     border-radius: 8px;
     border: 1px solid var(--line);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.08);
     font-size: 13px;
     font-weight: 700;
     color: var(--text);
@@ -271,7 +271,7 @@ body {
 .cafe-edit-form input[type="checkbox"] {
     width: 16px; height: 16px;
     border-radius: 4px;
-    accent-color: #0f172a;
+    accent-color: #6366f1;
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -296,8 +296,8 @@ body {
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    box-shadow: 0 8px 20px rgba(15,23,42,.18);
+    background: #6366f1;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
     transition: opacity .15s, transform .12s;
 }
 .btn-primary:hover { opacity: .92; }
@@ -307,4 +307,4 @@ body {
     color: var(--muted);
     transition: background .15s;
 }
-.btn-secondary:hover { background: #f0f2fb; }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.07); }

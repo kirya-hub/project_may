@@ -25,7 +25,7 @@
   position: sticky;
   top: 92px;
   z-index: 50;
-  background: #fff;
+  background: #141418;
   padding: 10px 0;
   margin: 0 0 10px;
 }
@@ -34,7 +34,7 @@
   position: sticky;
   top: 146px;
   z-index: 49;
-  background: #fff;
+  background: #141418;
   padding: 6px 0 10px;
   margin: 0 0 14px;
   display: flex;
@@ -49,7 +49,7 @@
   right: -12px;
   top: 0;
   bottom: 0;
-  background: #fff;
+  background: #141418;
   z-index: -1;
 }
 
@@ -62,12 +62,13 @@
   width: 100%;
   height: 44px;
   padding: 0 44px 0 14px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   outline: none;
   font-size: 14px;
   font-weight: 700;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .search-clear {
@@ -77,8 +78,8 @@
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   font-size: 18px;
   line-height: 1;
   padding: 0;
@@ -101,16 +102,19 @@
 .friends-tabs a {
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
-  color: #000;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
   opacity: .8;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .friends-tabs a.active {
   opacity: 1;
+  background: #6366f1;
+  color: #fff;
+  border-color: #6366f1;
 }
 
 .popular-block {
@@ -135,10 +139,10 @@
   justify-content: space-between;
   gap: 10px;
   padding: 12px;
-  border: 1px solid #ededed;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
-  background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .user-left {
@@ -146,7 +150,7 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #000;
+  color: rgba(255, 255, 255, 0.92);
   min-width: 0;
   flex: 1;
 }
@@ -207,28 +211,36 @@
   opacity: .75;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .btn {
   padding: 8px 12px;
   border-radius: 999px;
   border: 0;
-  background: #000;
+  background: #6366f1;
   color: #fff;
   font-weight: 800;
 }
 
 .btn-outline {
-  background: #fff;
-  color: #000;
-  border: 1px solid #e6e6e6;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .empty {
   padding: 18px 10px;
   opacity: .7;
   text-align: center;
+}
+
+.user-ava[src*="profile.svg"] {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px;
+  opacity: 0.5;
+  filter: invert(1);
 }
 
 @media (max-width: 430px) {

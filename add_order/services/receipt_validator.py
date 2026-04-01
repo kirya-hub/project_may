@@ -13,7 +13,7 @@ from .receipt_duplicates import (
     find_similar_image_duplicate,
     image_dhash,
 )
-from .receipt_matcher import match_items
+from .receipt_matcher import match_cafe, match_items
 
 
 def _clean_text(value: Any) -> str:
@@ -69,6 +69,9 @@ def process_order_receipt(order):
     order.parsed_data = data if isinstance(data, dict) else {}
     if place_name:
         order.place_name = place_name
+        matched_cafe = match_cafe(place_name)
+        if matched_cafe:
+            order.cafe = matched_cafe
     order.total_sum = total_sum
     order.receipt_date = receipt_date
     order.receipt_time = receipt_time
@@ -79,6 +82,11 @@ def process_order_receipt(order):
     matches, matched_total = match_items(items, order.cafe)
     order.parsed_data['matches'] = matches
     order.parsed_data['matched_total'] = matched_total
+
+    if matched_total > 0:
+        order.total_sum = Decimal(str(matched_total)).quantize(Decimal('0.01'))
+    else:
+        order.total_sum = None
 
     order.parsed_data['cafe_name'] = order.place_name or order.parsed_data.get('cafe_name')
     order.parsed_data['receipt_date'] = order.receipt_date
@@ -97,6 +105,7 @@ def process_order_receipt(order):
         update_fields=[
             'parsed_data',
             'place_name',
+            'cafe',
             'total_sum',
             'receipt_date',
             'receipt_time',
