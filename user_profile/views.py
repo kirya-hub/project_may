@@ -107,10 +107,9 @@ def profile_detail(request, username=None, user_id=None):
     return render(request, 'user_profile/profile_detail.html', context)
 
 
+@login_required
 def profile_home(request):
-    if request.user.is_authenticated:
-        return redirect('my_profile')
-    return render(request, 'user_profile/profile_guest.html')
+    return redirect('my_profile')
 
 
 @login_required

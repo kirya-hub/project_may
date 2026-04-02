@@ -3,9 +3,11 @@
 
 {% block title %}Профиль{% endblock %}
 
-{% block content %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+{% endblock %}
 
+{% block content %}
 <div class="profile-wrap">
 
   <div class="profile-top">

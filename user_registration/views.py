@@ -43,9 +43,7 @@ class AuthRegisterView(FormView):
         profile.save()
 
         token = EmailConfirmationToken.objects.create(user=user)
-        confirm_url = self.request.build_absolute_uri(
-            reverse('confirm_email', args=[token.token])
-        )
+        confirm_url = self.request.build_absolute_uri(reverse('confirm_email', args=[token.token]))
 
         html_message = f"""
 <!DOCTYPE html>
@@ -57,12 +55,12 @@ class AuthRegisterView(FormView):
         <table width="480" cellpadding="0" cellspacing="0" style="background:#1c1c26;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.06);">
           <tr>
             <td style="color:#fff;font-size:22px;font-weight:800;padding-bottom:12px;">
-              CafeRewards
+              Share
             </td>
           </tr>
           <tr>
             <td style="color:rgba(255,255,255,0.7);font-size:15px;padding-bottom:24px;line-height:1.6;">
-              Вы почти у цели! Подтвердите ваш email, чтобы начать пользоваться CafeRewards.
+              Вы почти у цели! Подтвердите ваш email, чтобы начать пользоваться Share.
             </td>
           </tr>
           <tr>
@@ -74,7 +72,7 @@ class AuthRegisterView(FormView):
           </tr>
           <tr>
             <td style="color:rgba(255,255,255,0.4);font-size:13px;">
-              Ссылка действительна 24 часа. Если вы не регистрировались — просто проигнорируйте это письмо.
+              Ссылка действительна 24 часа. Если вы не регистрировались - просто проигнорируйте это письмо.
             </td>
           </tr>
         </table>

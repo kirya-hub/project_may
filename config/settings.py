@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / '.env')
 
+DEBUG = os.getenv('DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
+
 _secret_key = os.getenv('SECRET_KEY')
 if not _secret_key:
     if DEBUG:
@@ -16,7 +18,6 @@ if not _secret_key:
     else:
         raise RuntimeError('SECRET_KEY environment variable is not set')
 SECRET_KEY = _secret_key
-DEBUG = os.getenv('DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
 
 _allowed_hosts = os.getenv('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',') if h.strip()] or (
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'user_registration',
     'drops',
     'trades',
-    'django_stubs_ext',
 ]
 
 MIDDLEWARE = [
