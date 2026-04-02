@@ -35,28 +35,45 @@
 
 /* ── upload areas ── */
 .upload-area {
-  border: 1.5px dashed rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #2a2a3a;
+  border-radius: 14px;
+  background: #1c1c26;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: border-color .18s, background .18s;
-  gap: 4px;
+  gap: 8px;
 }
 .upload-area:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.big-upload  { height: 130px; width: 100%; }
+.big-upload  { height: 120px; width: 100%; }
 .small-upload {
   width: 80px;
   height: 80px;
   position: relative;
   flex-shrink: 0;
+}
+
+.upload-gallery-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(127, 92, 191, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.upload-gallery-text {
+  font-size: 13px;
+  color: #8a82b8;
+  font-weight: 500;
 }
 
 .file-input { display: none; }
@@ -209,7 +226,7 @@
   display: flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
-  gap: 3px;
+  gap: 10px;
   align-items: center;
 }
 .rating-stars input { display: none; }
@@ -218,46 +235,56 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   font-size: 0;
   transition: transform .14s;
 }
-.rating-stars label::before {
-  content: "★";
-  font-size: 30px;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.15);
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+.rating-stars label svg {
+  width: 32px;
+  height: 32px;
+  display: block;
 }
+.rating-stars label::before {
+  content: none;
+}
+
+/* SVG star — empty by default */
+.star-empty { display: block; }
+.star-filled { display: none; }
+
+.rating-stars label:hover .star-empty,
+.rating-stars label:hover ~ label .star-empty { display: none; }
+.rating-stars label:hover .star-filled,
+.rating-stars label:hover ~ label .star-filled { display: block; }
+
+.rating-stars input:checked ~ label .star-empty { display: none; }
+.rating-stars input:checked ~ label .star-filled { display: block; }
+
 .rating-stars label:hover,
 .rating-stars label:hover ~ label { transform: scale(1.10); }
 
-.rating-stars label:hover::before,
-.rating-stars label:hover ~ label::before,
-.rating-stars input:checked ~ label::before {
-  color: #facc15;
-  -webkit-text-stroke: 1px #ca8a04;
+/* ── publish button ── */
+.publish-container {
+  margin-top: 4px;
+  text-align: center;
 }
 
-/* ── publish button ── */
-.publish-container { margin-top: 4px; }
-
 .publish-btn {
-  width: 100%;
-  height: 54px;
-  background: #6366f1;
+  display: inline-block;
+  padding: 14px 56px;
+  background: #7c5cbf;
   border: none;
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
   font-family: inherit;
-  font-weight: 800;
-  border-radius: 16px;
+  font-weight: 600;
+  border-radius: 14px;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 10px 24px rgba(124, 92, 191, 0.25);
   transition: opacity .15s, transform .12s;
-  letter-spacing: -0.01em;
+  width: auto;
 }
 .publish-btn:active {
   opacity: .88;

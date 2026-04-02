@@ -96,7 +96,7 @@
 .profile-settings-row {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   margin-top: 10px;
 }
@@ -106,23 +106,23 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
+  height: 36px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid #25253a;
+  background: #1c1c26;
   font-size: 13px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  color: #e0dfe8;
   text-decoration: none;
   cursor: pointer;
   transition: background .14s, border-color .14s;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .profile-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .profile-settings-btn:active {
@@ -130,14 +130,13 @@
 }
 
 .profile-settings-btn--danger {
-  border-color: rgba(239, 68, 68, 0.2);
-  background: rgba(239, 68, 68, 0.06);
-  color: rgba(239, 68, 68, 0.7);
+  border-color: #3a2020;
+  background: none;
+  color: #e24b4a;
 }
 
 .profile-settings-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.10);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(226, 75, 74, 0.06);
 }
 
 .icon-btn {
@@ -179,11 +178,10 @@
 .level-progress-card {
   width: 100%;
   margin-top: 16px;
-  padding: 16px;
-  border-radius: 22px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #1c1c26;
+  border: 1px solid #25253a;
   position: relative;
   overflow: hidden;
 }
@@ -244,27 +242,26 @@
 }
 
 .level-progress-bar-shell {
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  padding: 0;
+  border-radius: 3px;
+  background: #25253a;
   position: relative;
   z-index: 1;
 }
 
 .level-progress-bar {
   --p: 0%;
-  height: 11px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 6px;
+  border-radius: 3px;
+  background: #25253a;
   overflow: hidden;
 }
 
 .level-progress-fill {
   height: 100%;
   width: var(--p);
-  border-radius: 999px;
-  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 50%, #6366f1 100%);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.32);
+  border-radius: 3px;
+  background: linear-gradient(90deg, #7c5cbf, #534ab7);
   transition: width .3s ease;
 }
 
@@ -290,16 +287,15 @@
   overflow: visible;
   width: 100%;
   margin-top: 16px;
-  padding: 14px 18px;
-  border-radius: 20px;
-  background: var(--card-bg);
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #1c1c26;
   color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
+  border: 1px solid #25253a;
 }
 
 .friends-card.light::before {

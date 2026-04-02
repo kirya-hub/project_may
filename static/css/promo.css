@@ -20,29 +20,51 @@
 
 /* ── Balance card ───────────────────────────────────────── */
 .promo-balance-card {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 18px;
-  padding: 16px;
+  border: 1px solid #35305a;
+  border-radius: 16px;
+  padding: 20px;
   margin-bottom: 12px;
-  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #2a2248, #1c1c30);
 }
 .promo-balance-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .10em;
-  text-transform: uppercase; color: rgba(255, 255, 255, 0.35); margin-bottom: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: #8a82b8;
+  margin-bottom: 4px;
 }
 .promo-balance-value {
-  font-size: 32px; font-weight: 800; letter-spacing: -0.04em; color: rgba(255, 255, 255, 0.92);
+  font-size: 28px;
+  font-weight: 700;
+  color: #e8e7f0;
+}
+.promo-balance-value .promo-balance-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: #8a82b8;
+  margin-left: 4px;
 }
 
 /* ── Action buttons ─────────────────────────────────────── */
 .promo-actions { display: flex; gap: 10px; margin-bottom: 14px; }
 .promo-action-btn {
-  flex: 1; text-align: center; padding: 12px 10px;
-  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08);
-  font-weight: 700; font-size: 14px; text-decoration: none;
-  color: rgba(255, 255, 255, 0.92); background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #25253a;
+  font-weight: 500;
+  font-size: 13px;
+  text-decoration: none;
+  color: #8a82b8;
+  background: #1c1c26;
+}
+.promo-action-btn.active,
+.promo-action-btn:focus,
+.promo-action-btn[aria-current="page"] {
+  background: #25253a;
+  border-color: #35305a;
+  color: #e0dfe8;
 }
 
 /* ── Section title ──────────────────────────────────────── */
@@ -53,24 +75,46 @@
 
 /* ── History ────────────────────────────────────────────── */
 .promo-history-list {
-  border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px;
-  overflow: hidden; background: #1c1c26; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: none;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.promo-history-date-group { margin-bottom: 4px; }
+.promo-history-date-label {
+  font-size: 12px;
+  color: #5a5a70;
+  margin-bottom: 6px;
+  margin-top: 12px;
 }
 .promo-history-item {
-  display: flex; justify-content: space-between; gap: 12px;
-  padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #1e1e2e;
 }
 .promo-history-item:last-child { border-bottom: none; }
-.promo-history-kind   { font-weight: 700; font-size: 14px; color: rgba(255, 255, 255, 0.92); }
-.promo-history-date   { font-size: 12px; color: rgba(255, 255, 255, 0.35); }
-.promo-history-amount { font-weight: 800; white-space: nowrap; color: rgba(255, 255, 255, 0.92); }
+.promo-history-kind   { font-size: 13px; color: #e0dfe8; font-weight: 400; }
+.promo-history-date   { font-size: 11px; color: #5a5a70; margin-top: 2px; }
+.promo-history-amount { font-weight: 500; white-space: nowrap; font-size: 14px; }
+.promo-history-amount--earn { color: #5dcaa5; }
+.promo-history-amount--spend { color: #e24b4a; }
 
 /* ── Shop header ────────────────────────────────────────── */
 .promo-shop-header {
-  display: flex; align-items: baseline;
-  justify-content: space-between; gap: 12px; margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
-.promo-shop-points { font-weight: 800; font-size: 18px; color: rgba(255, 255, 255, 0.92); }
+.promo-shop-points {
+  font-weight: 500;
+  font-size: 15px;
+  color: #e0dfe8;
+}
 .promo-shop-note   { font-size: 13px; color: rgba(255, 255, 255, 0.55); margin-bottom: 14px; line-height: 1.5; }
 
 /* ── Alert cards ────────────────────────────────────────── */

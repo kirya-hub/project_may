@@ -20,10 +20,17 @@
     {% endif %}
 
     <section class="block">
-      <h2 class="block-title">Чек</h2>
+      <h2 class="block-title">Новый заказ</h2>
       <div class="upload-wrapper-big">
         <label for="check_input" class="upload-area big-upload" id="check-label">
-          <span class="plus-icon">+</span>
+          <div class="upload-gallery-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="18" height="18" rx="4" stroke="#7c5cbf" stroke-width="1.5"/>
+              <circle cx="8.5" cy="8.5" r="1.5" stroke="#7c5cbf" stroke-width="1.5"/>
+              <path d="M3 15l5-5 4 4 3-3 6 6" stroke="#7c5cbf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="upload-gallery-text">Выбрать из галереи</span>
         </label>
         <img id="check-preview" class="preview-img" style="display:none;">
         {{ form.check_image }}
@@ -31,33 +38,38 @@
     </section>
 
     <section class="block">
-      <h2 class="block-title">Отзыв</h2>
-      <div class="review-row">
-        <div class="upload-wrapper-small">
-          <label for="dish_input" class="upload-area small-upload" id="dish-label">
-            <span class="plus-icon">+</span>
-            <span class="upload-text">Фото</span>
-          </label>
-          <img id="dish-preview" class="preview-img-small" style="display:none;">
-          {{ form.dish_photo }}
-        </div>
-        {{ form.comment }}
-      </div>
+      <div style="font-size:12px;color:#6b6b80;font-weight:500;margin-bottom:8px;">Ваш отзыв</div>
+      {{ form.comment }}
     </section>
 
     <section class="block">
       <h2 class="block-title">Оценка</h2>
       <div class="rating-stars">
         <input type="radio" id="rating-5" name="rating" value="5">
-        <label for="rating-5">★</label>
+        <label for="rating-5">
+          <svg class="star-empty" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" stroke="#3a3a50" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="star-filled" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" fill="#ef9f27" stroke="#ef9f27" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </label>
         <input type="radio" id="rating-4" name="rating" value="4">
-        <label for="rating-4">★</label>
+        <label for="rating-4">
+          <svg class="star-empty" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" stroke="#3a3a50" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="star-filled" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" fill="#ef9f27" stroke="#ef9f27" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </label>
         <input type="radio" id="rating-3" name="rating" value="3">
-        <label for="rating-3">★</label>
+        <label for="rating-3">
+          <svg class="star-empty" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" stroke="#3a3a50" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="star-filled" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" fill="#ef9f27" stroke="#ef9f27" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </label>
         <input type="radio" id="rating-2" name="rating" value="2">
-        <label for="rating-2">★</label>
+        <label for="rating-2">
+          <svg class="star-empty" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" stroke="#3a3a50" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="star-filled" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" fill="#ef9f27" stroke="#ef9f27" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </label>
         <input type="radio" id="rating-1" name="rating" value="1">
-        <label for="rating-1">★</label>
+        <label for="rating-1">
+          <svg class="star-empty" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" stroke="#3a3a50" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="star-filled" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4l3.09 6.26L26 11.27l-5 4.87 1.18 6.86L16 19.77l-6.18 3.23L11 16.14 6 11.27l6.91-1.01L16 4z" fill="#ef9f27" stroke="#ef9f27" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </label>
       </div>
     </section>
 

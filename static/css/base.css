@@ -13,7 +13,7 @@ body {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
   overflow-y: auto;
@@ -83,39 +83,32 @@ img {
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  color: #ffffff;
-  font-weight: 900;
+  color: #e8e7f0;
+  font-weight: 700;
   letter-spacing: 3px;
-  font-size: 30px;
+  font-size: 20px;
   line-height: 1;
 }
 
 .header-back,
 .header-action {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid var(--border-medium);
-  background: rgba(255, 255, 255, 0.07);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #8a8a9e;
   text-decoration: none;
   padding: 0;
   cursor: pointer;
-  transition:
-    transform 0.14s ease,
-    background 0.14s ease,
-    border-color 0.14s ease,
-    box-shadow 0.14s ease;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: opacity 0.14s ease;
 }
 
 .header-back:hover,
 .header-action:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.18);
+  opacity: 0.75;
 }
 
 .header-back:active,
@@ -127,10 +120,10 @@ img {
 
 .header-back-ico,
 .header-action-ico {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: block;
-  background: #ffffff;
+  background: #8a8a9e;
   -webkit-mask-image: var(--ico-url);
   mask-image: var(--ico-url);
   -webkit-mask-repeat: no-repeat;
@@ -141,35 +134,41 @@ img {
   mask-size: contain;
 }
 
+.header-back-ico {
+  width: 22px;
+  height: 22px;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
 }
 
 .drop-badge,
 .inbox-badge {
   position: absolute;
-  top: -3px;
+  top: -2px;
   right: -2px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #ff3b30;
-  color: #ffffff;
-  border: 2px solid #171717;
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 900;
-  text-align: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e24b4a;
+  border: 2px solid #141418;
+}
+
+.inbox-badge {
+  min-width: 8px;
+  height: 8px;
+  padding: 0;
+  font-size: 0;
 }
 
 .drop-badge {
-  min-width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
   padding: 0;
-  line-height: 12px;
 }
 
 .header-action {
@@ -424,8 +423,8 @@ img {
   }
 
   .header-logo {
-    font-size: 31px;
-    letter-spacing: 2.6px;
+    font-size: 20px;
+    letter-spacing: 3px;
   }
 
   .nav-bar-inner {

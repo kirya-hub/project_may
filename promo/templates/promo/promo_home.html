@@ -13,11 +13,11 @@
 
   <div class="promo-balance-card">
     <div class="promo-balance-label">Баланс</div>
-    <div class="promo-balance-value">{{ points }} баллов</div>
+    <div class="promo-balance-value">{{ points }}<span class="promo-balance-unit">баллов</span></div>
   </div>
 
   <div class="promo-actions">
-    <a href="{% url 'promo:shop' %}" class="promo-action-btn">Магазин купонов</a>
+    <a href="{% url 'promo:shop' %}" class="promo-action-btn">Магазин</a>
     <a href="{% url 'promo:my_coupons' %}" class="promo-action-btn">Мои купоны</a>
   </div>
 
@@ -25,17 +25,23 @@
 
   {% if transactions %}
   <div class="promo-history-list">
-    {% for t in transactions %}
-    <div class="promo-history-item">
-      <div>
-        <div class="promo-history-kind">
-          {{ t.get_kind_display }}{% if t.order %} • Заказ #{{ t.order.id }}{% endif %}
+    {% regroup transactions by created_at.date as transactions_by_date %}
+    {% for day in transactions_by_date %}
+    <div class="promo-history-date-group">
+      <div class="promo-history-date-label">{{ day.grouper|date:"j E" }}</div>
+      {% for t in day.list %}
+      <div class="promo-history-item">
+        <div>
+          <div class="promo-history-kind">
+            {{ t.get_kind_display }}{% if t.order %} · Заказ #{{ t.order.id }}{% endif %}
+          </div>
+          <div class="promo-history-date">{{ t.created_at|date:"H:i" }}</div>
         </div>
-        <div class="promo-history-date">{{ t.created_at|date:"d M H:i" }}</div>
+        <div class="promo-history-amount {% if t.amount_points >= 0 %}promo-history-amount--earn{% else %}promo-history-amount--spend{% endif %}">
+          {% if t.amount_points >= 0 %}+{% endif %}{{ t.amount_points }}
+        </div>
       </div>
-      <div class="promo-history-amount">
-        {% if t.amount_points >= 0 %}+{% endif %}{{ t.amount_points }} баллов
-      </div>
+      {% endfor %}
     </div>
     {% endfor %}
   </div>
