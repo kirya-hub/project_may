@@ -241,29 +241,20 @@
   font-size: 0;
   transition: transform .14s;
 }
-.rating-stars label svg {
-  width: 32px;
-  height: 32px;
-  display: block;
-}
 .rating-stars label::before {
-  content: none;
+  content: "★";
+  font-size: 30px;
+  line-height: 1;
+  color: #3a3a50;
 }
-
-/* SVG star — empty by default */
-.star-empty { display: block; }
-.star-filled { display: none; }
-
-.rating-stars label:hover .star-empty,
-.rating-stars label:hover ~ label .star-empty { display: none; }
-.rating-stars label:hover .star-filled,
-.rating-stars label:hover ~ label .star-filled { display: block; }
-
-.rating-stars input:checked ~ label .star-empty { display: none; }
-.rating-stars input:checked ~ label .star-filled { display: block; }
-
 .rating-stars label:hover,
 .rating-stars label:hover ~ label { transform: scale(1.10); }
+
+.rating-stars label:hover::before,
+.rating-stars label:hover ~ label::before,
+.rating-stars input:checked ~ label::before {
+  color: #ef9f27;
+}
 
 /* ── publish button ── */
 .publish-container {
