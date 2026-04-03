@@ -5,6 +5,7 @@ from django.db.models import Count, Exists, OuterRef, Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from add_order.models import Order
 from feed.models import Comment, Like
@@ -30,6 +31,8 @@ def profile_detail(request, username=None, user_id=None):
     profile = get_object_or_404(Profile, user=user)
     is_other_user = request.user.is_authenticated and request.user != user
     back_url = request.GET.get('next', '').strip()
+    if back_url and not url_has_allowed_host_and_scheme(back_url, allowed_hosts={request.get_host()}):
+        back_url = ''
     if back_url.startswith('/trade/new/') or (not back_url and is_other_user):
         back_url = reverse('friends:friends_page')
 
@@ -55,7 +58,7 @@ def profile_detail(request, username=None, user_id=None):
     can_trade = request.user.is_authenticated and request.user != user and is_friend
 
     posts = (
-        Order.objects.filter(user=user)
+        Order.objects.filter(user=user, is_duplicate=False)
         .select_related('user', 'user__profile', 'cafe')
         .prefetch_related(
             Prefetch(

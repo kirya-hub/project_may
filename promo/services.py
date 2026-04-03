@@ -15,11 +15,11 @@ from add_order.models import Order as OrderModel
 from user_profile.levels import add_xp
 from user_profile.models import Profile, PromoCode
 
-from .models import CouponOffer, PointsBalance, PointsTransaction, TransactionKind
+from .models import CouponOffer, PointsTransaction, TransactionKind
 
 logger = logging.getLogger(__name__)
 
-BASE_CASHBACK_PERCENT = Decimal('0.05')
+BASE_CASHBACK_PERCENT = Decimal('0.10')
 DAILY_ACCRUAL_LIMIT = 2
 MIN_TOTAL_SUM = Decimal('1.00')
 MAX_POINTS10_PER_ORDER = 5000
@@ -34,9 +34,9 @@ class ActiveShopCouponExists(Exception):
 def _cashback_percent_for_profile(profile: Profile | None) -> Decimal:
     level = int(getattr(profile, 'level', 1) or 1) if profile else 1
     if level >= 10:
-        return Decimal('0.07')
+        return Decimal('0.15')
     if level >= 5:
-        return Decimal('0.06')
+        return Decimal('0.12')
     return BASE_CASHBACK_PERCENT
 
 def _to_points10(total_sum: Decimal, percent: Decimal) -> int:
@@ -46,9 +46,6 @@ def _to_points10(total_sum: Decimal, percent: Decimal) -> int:
 
 def _get_or_create_profile(user) -> Profile:
     return Profile.objects.select_for_update().get_or_create(user=user)[0]
-
-def _get_or_create_balance(user) -> PointsBalance:
-    return PointsBalance.objects.select_for_update().get_or_create(user=user)[0]
 
 def _active_coupon_q(profile: Profile):
     today = timezone.localdate()

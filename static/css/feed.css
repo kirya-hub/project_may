@@ -128,35 +128,20 @@
 .feed-section-title,
 .feed-section-link { display: none; }
 
-.feed-friends-block,
-.feed-rest-block,
-.feed-friends-list {
+.feed-section-label {
+  padding: 0 10px;
+  color: rgba(255, 255, 255, 0.554);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.feed-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
-.feed-section-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0;
-}
-.feed-section-divider-line {
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.06);
-}
-.feed-section-divider-text {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.25);
-  white-space: nowrap;
-}
-
-.feed-friends-block { margin-top: 2px; }
 
 /* ── Post card ───────────────────────────────────────────── */
 .post-card {

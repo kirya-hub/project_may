@@ -25,29 +25,10 @@
     </a>
   </section>
 
-  {% if friend_items %}
-  <section class="feed-friends-block">
-    <div class="feed-friends-list">
-      {% for item in friend_items %}
-      {% if item.type == "order" %}
-      {% include "feed/_post_card.html" with o=item.obj %}
-      {% elif item.type == "event" %}
-      {% include "feed/_event_card.html" with e=item.obj %}
-      {% else %}
-      {% include "feed/_trade_activity_card.html" with e=item.obj %}
-      {% endif %}
-      {% endfor %}
-    </div>
-    <div class="feed-section-divider">
-      <span class="feed-section-divider-line"></span>
-      <span class="feed-section-divider-text">Все события</span>
-      <span class="feed-section-divider-line"></span>
-    </div>
-  </section>
-  {% endif %}
+  <div class="feed-section-label">Недавние события</div>
 
-  <section class="feed-rest-block">
-    {% for item in items %}
+  <section class="feed-list">
+    {% for item in combined_items %}
     {% if item.type == "order" %}
     {% include "feed/_post_card.html" with o=item.obj %}
     {% elif item.type == "event" %}

@@ -45,7 +45,8 @@ def _is_friend_item(item: dict, friend_ids: set[int]) -> bool:
 
 def feed_home(request):
     orders_qs = (
-        Order.objects.select_related('user', 'user__profile', 'cafe')
+        Order.objects.filter(is_duplicate=False)
+        .select_related('user', 'user__profile', 'cafe')
         .prefetch_related(_comments_prefetch())
         .order_by('-created_at')
         .annotate(
@@ -111,13 +112,17 @@ def feed_home(request):
             pinned_keys = {_item_key(item) for item in friend_items}
             main_items = [item for item in items if _item_key(item) not in pinned_keys]
 
+    main_items_slice = main_items[:50]
+    combined_items = friend_items + main_items_slice
+
     return render(
         request,
         'feed/feed_home.html',
         {
-            'items': main_items[:50],
+            'items': main_items_slice,
             'friend_items': friend_items,
-            'total_items_count': len(friend_items) + len(main_items[:50]),
+            'combined_items': combined_items,
+            'total_items_count': len(combined_items),
         },
     )
 

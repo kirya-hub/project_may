@@ -151,14 +151,7 @@
         </div>
         <div class="cafe-menu-grid">
             {% for category in cats %}{% if category.slug %}
-            <a href="{% url 'category_detail' cafe.slug category.slug %}" class="cafe-menu-item">
-                {% if category.icon %}
-                <img src="{{ category.icon.url }}" class="cafe-menu-item__icon" alt="{{ category.title }}">
-                {% else %}
-                <div class="cafe-menu-item__icon--stub">☕</div>
-                {% endif %}
-                <span class="cafe-menu-item__label">{{ category.title }}</span>
-            </a>
+            <a href="{% url 'category_detail' cafe.slug category.slug %}" class="cafe-menu-item"><span class="cafe-menu-item__label">{{ category.title }}</span></a>
             {% endif %}{% endfor %}
         </div>
     </div>

@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
