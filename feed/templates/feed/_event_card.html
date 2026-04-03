@@ -21,7 +21,7 @@
                 </div>
 
                 {% if e.cafe %}
-                <a href="{% url 'cafe_detail' e.cafe.slug %}" class="post-cafe-link post-cafe-link-row">
+                <a href="{% url 'cafe_detail' e.cafe.slug %}?next={{ request.get_full_path|urlencode }}" class="post-cafe-link post-cafe-link-row">
                     {{ e.cafe.name }}
                 </a>
                 {% endif %}

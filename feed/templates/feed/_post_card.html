@@ -27,7 +27,7 @@
 
         <div class="post-meta-row">
           {% if o.cafe %}
-          <a class="post-cafe-link post-cafe-link-row" href="{% url 'cafe_detail' o.cafe.slug %}">
+          <a class="post-cafe-link post-cafe-link-row" href="{% url 'cafe_detail' o.cafe.slug %}?next={{ request.get_full_path|urlencode }}">
             {{ o.cafe.name }}
           </a>
           {% elif o.place_name %}

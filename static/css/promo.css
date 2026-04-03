@@ -10,7 +10,7 @@
 }
 
 .promo-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: rgba(255, 255, 255, 0.92);
@@ -34,12 +34,12 @@
   margin-bottom: 4px;
 }
 .promo-balance-value {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   color: #e8e7f0;
 }
 .promo-balance-value .promo-balance-unit {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   color: #8a82b8;
   margin-left: 4px;
@@ -50,11 +50,11 @@
 .promo-action-btn {
   flex: 1;
   text-align: center;
-  padding: 10px;
+  padding: 12px;
   border-radius: 10px;
   border: 1px solid #25253a;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
   color: #8a82b8;
   background: #1c1c26;
@@ -69,7 +69,7 @@
 
 /* ── Section title ──────────────────────────────────────── */
 .promo-section-title {
-  font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+  font-size: 20px; font-weight: 800; letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.92); margin: 14px 0 8px;
 }
 
@@ -82,23 +82,23 @@
 }
 .promo-history-date-group { margin-bottom: 4px; }
 .promo-history-date-label {
-  font-size: 12px;
-  color: #5a5a70;
+  font-size: 14px;
+  color: #6f6f8c;
   margin-bottom: 6px;
-  margin-top: 12px;
+  margin-top: 13px;
 }
 .promo-history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid #1e1e2e;
 }
 .promo-history-item:last-child { border-bottom: none; }
-.promo-history-kind   { font-size: 13px; color: #e0dfe8; font-weight: 400; }
-.promo-history-date   { font-size: 11px; color: #5a5a70; margin-top: 2px; }
-.promo-history-amount { font-weight: 500; white-space: nowrap; font-size: 14px; }
+.promo-history-kind   { font-size: 16px; color: #e0dfe8; font-weight: 410; }
+.promo-history-date   { font-size: 12px; color: #5a5a70; margin-top: 2px; }
+.promo-history-amount { font-weight: 600; white-space: nowrap; font-size: 16px; }
 .promo-history-amount--earn { color: #5dcaa5; }
 .promo-history-amount--spend { color: #e24b4a; }
 
@@ -112,10 +112,10 @@
 }
 .promo-shop-points {
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
   color: #e0dfe8;
 }
-.promo-shop-note   { font-size: 13px; color: rgba(255, 255, 255, 0.55); margin-bottom: 14px; line-height: 1.5; }
+.promo-shop-note   { font-size: 14px; color: rgba(255, 255, 255, 0.55); margin-bottom: 14px; line-height: 1.5; }
 
 /* ── Alert cards ────────────────────────────────────────── */
 .promo-alert-card {
@@ -125,8 +125,8 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); margin-bottom: 12px;
 }
 .promo-alert-card-soft  { background: rgba(255, 255, 255, 0.02); box-shadow: none; }
-.promo-alert-title      { font-weight: 800; font-size: 15px; color: rgba(255, 255, 255, 0.92); margin-bottom: 4px; }
-.promo-alert-text       { font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.45; }
+.promo-alert-title      { font-weight: 800; font-size: 16px; color: rgba(255, 255, 255, 0.92); margin-bottom: 4px; }
+.promo-alert-text       { font-size: 15px; color: rgba(255, 255, 255, 0.55); line-height: 1.45; }
 .promo-alert-date       { font-size: 12px; color: rgba(255, 255, 255, 0.35); margin-top: 5px; }
 
 /* ── Tabs ───────────────────────────────────────────────── */

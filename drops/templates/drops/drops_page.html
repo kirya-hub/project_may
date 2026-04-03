@@ -285,6 +285,7 @@
   .state-text  { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.55; }
   .state-coupon{ margin-top: 18px; }
   .state-actions { margin-top: 18px; display: flex; gap: 10px; }
+  .mission-card-divider { height: 1px; margin: 16px 0; background: linear-gradient(90deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.03) 100%); }
   .btn-primary {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 1; padding: 14px 12px; border-radius: 16px;
@@ -382,20 +383,56 @@
   {% endwith %}
 
   {% elif drop_week.status == "COMPLETED" %}
-  <div class="state-card">
-    <span class="state-emoji">🎉</span>
-    <p class="state-title">Миссия выполнена!</p>
-    <p class="state-text">Купон уже в твоей коллекции.</p>
-    {% if earned_coupon %}
-    <div class="state-coupon">
-      {% include "promo/includes/coupon_card.html" with item=earned_coupon source_label=earned_coupon.get_origin_display show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code %}
-    </div>
-    {% endif %}
-    <div class="state-actions">
-      <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Все купоны</a>
-      <a class="btn-ghost"   href="/promo/">Промо</a>
+  {% with opt=drop_week.chosen_option %}
+  <div class="mission-card mission-card-{{ opt.rarity|lower }}">
+    <div class="mission-body">
+      <!-- Status row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0"></span>
+          <span style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Выполнено</span>
+        </div>
+        <span style="font-size:12px;color:rgba(255,255,255,.35)">{{ opt.get_rarity_display }}</span>
+      </div>
+
+      <!-- Cafe name -->
+      <p class="mission-cafe" style="margin-bottom:10px">{{ opt.cafe.name }}</p>
+
+      <!-- Reward block -->
+      {% if opt.reward_offer %}
+      {% if opt.rarity == "COMMON" %}
+      <div style="padding:14px 16px;border-radius:14px;margin-top:0;background:linear-gradient(135deg,rgba(52,255,224,.06),rgba(52,255,224,.12));border:1px solid rgba(52,255,224,.15)">
+      {% elif opt.rarity == "RARE" %}
+      <div style="padding:14px 16px;border-radius:14px;margin-top:0;background:linear-gradient(135deg,rgba(157,98,255,.06),rgba(157,98,255,.12));border:1px solid rgba(157,98,255,.15)">
+      {% else %}
+      <div style="padding:14px 16px;border-radius:14px;margin-top:0;background:linear-gradient(135deg,rgba(255,214,82,.06),rgba(255,214,82,.12));border:1px solid rgba(255,214,82,.15)">
+      {% endif %}
+        <div style="font-size:17px;font-weight:800;color:#fff">{{ opt.reward_offer.benefit_text }}</div>
+        {% if earned_coupon %}
+        <div style="margin-top:8px;display:flex;align-items:center;gap:6px">
+          {% if opt.rarity == "COMMON" %}
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(52,255,224,.15);color:#34ffe0">{{ earned_coupon.get_status_display }}</span>
+          {% elif opt.rarity == "RARE" %}
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(157,98,255,.15);color:#cb63ff">{{ earned_coupon.get_status_display }}</span>
+          {% else %}
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,214,82,.15);color:#ffd95a">{{ earned_coupon.get_status_display }}</span>
+          {% endif %}
+          <span style="font-size:11px;color:rgba(255,255,255,.35)">до {{ earned_coupon.expires_at_display }}</span>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="mission-card-divider"></div>
+
+      <!-- Кнопки -->
+      <div class="state-actions">
+        <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Мои купоны</a>
+        <a class="btn-ghost" href="/promo/">Промо</a>
+      </div>
     </div>
   </div>
+  {% endwith %}
 
   {% elif drop_week.status == "EXPIRED" %}
   <div class="state-card">

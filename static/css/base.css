@@ -43,6 +43,13 @@ img {
   box-shadow: var(--shadow-sm);
 }
 
+.header::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #7c3aed 30%, #6366f1 70%, transparent);
+}
+
 .header-inner {
   width: min(100%, 430px);
   min-height: 58px;
@@ -83,10 +90,10 @@ img {
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  color: #e8e7f0;
-  font-weight: 700;
-  letter-spacing: 3px;
-  font-size: 20px;
+  color: #ffffffec;
+  font-weight: 740;
+  letter-spacing: 5px;
+  font-size: 28px;
   line-height: 1;
 }
 
@@ -95,7 +102,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #8a8a9e;
+  color: #c4c4d8;
   text-decoration: none;
   padding: 0;
   cursor: pointer;
@@ -120,10 +127,10 @@ img {
 
 .header-back-ico,
 .header-action-ico {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: block;
-  background: #8a8a9e;
+  background: #c4c4d8;
   -webkit-mask-image: var(--ico-url);
   mask-image: var(--ico-url);
   -webkit-mask-repeat: no-repeat;
@@ -135,14 +142,19 @@ img {
 }
 
 .header-back-ico {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
+}
+
+.header-action-ico {
+  width: 26px;
+  height: 26px;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .drop-badge,
@@ -158,8 +170,8 @@ img {
 }
 
 .inbox-badge {
-  min-width: 8px;
-  height: 8px;
+  min-width: 10px;
+  height: 10px;
   padding: 0;
   font-size: 0;
 }
@@ -423,7 +435,7 @@ img {
   }
 
   .header-logo {
-    font-size: 20px;
+    font-size: 28px;
     letter-spacing: 3px;
   }
 
