@@ -1,14 +1,17 @@
-<div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}">
+<div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}{% if item.background_image %} coupon-card--has-bg{% endif %}"{% if item.background_image %} style="position:relative;overflow:hidden;"{% endif %}>
+    {% if item.background_image %}
+    <div class="coupon-card__bg" style="position:absolute;inset:0;z-index:0;background-image:url('{{ item.background_image.url }}');background-size:cover;background-position:{{ item.background_focus }};"></div>
+    <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.5);"></div>
+    {% endif %}
+
     <div class="coupon-card__accent"></div>
     <div class="coupon-card__cut coupon-card__cut--top"></div>
     <div class="coupon-card__cut coupon-card__cut--bottom"></div>
 
-    <div class="coupon-card__top">
-        <div class="coupon-card__eyebrow-row">
-            {% if source_label %}<span class="coupon-card__eyebrow">{{ source_label }}</span>{% endif %}
-            {% if item.cafe_name %}<span class="coupon-card__eyebrow coupon-card__eyebrow--soft">{{ item.cafe_name }}</span>{% endif %}
+    <div class="coupon-card__top" style="position:relative;z-index:2;">
+        <div style="flex:1;min-width:0;">
+            <div style="font-size:18px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-0.01em;">{{ item.benefit_text }}</div>
         </div>
-
         <div class="coupon-card__top-right">
             {% if price_label %}
             <div class="coupon-card__price">{{ price_label }}</div>
@@ -20,18 +23,15 @@
         </div>
     </div>
 
-    <div class="coupon-card__title">{{ item.display_title }}</div>
-    <div class="coupon-card__benefit">{{ item.benefit_text }}</div>
-
-    <div class="coupon-card__meta-row">
-        <span class="coupon-chip coupon-chip--{{ item.rarity_code|default:'common' }}">{{ item.reward_type_label }}</span>
-        <span class="coupon-chip coupon-chip--outline">{{ item.rarity_display }}</span>
+    <div class="coupon-card__meta-row" style="position:relative;z-index:2;">
+        {% if item.cafe_name %}<span class="coupon-chip coupon-chip--outline">{{ item.cafe_name }}</span>{% endif %}
+        <span class="coupon-chip coupon-chip--{{ item.rarity_code|default:'common' }}">{{ item.rarity_display }}</span>
         {% if extra_chip %}<span class="coupon-chip coupon-chip--outline">{{ extra_chip }}</span>{% endif %}
     </div>
 
-    <div class="coupon-card__divider"></div>
+    <div class="coupon-card__divider" style="position:relative;z-index:2;"></div>
 
-    <div class="coupon-card__bottom">
+    <div class="coupon-card__bottom" style="position:relative;z-index:2;">
         <div class="coupon-card__info">
             {% if footer_label %}<div class="coupon-card__footer-label">{{ footer_label }}</div>{% endif %}
             {% if footer_value %}<div class="coupon-card__footer-value">{{ footer_value }}</div>{% endif %}
@@ -50,6 +50,5 @@
         {% endif %}
     </div>
 
-    {% if helper_text %}<div class="coupon-card__helper">{{ helper_text }}</div>{% endif %}
-    {% if used_text %}<div class="coupon-card__helper">{{ used_text }}</div>{% endif %}
+    {% if used_text %}<div class="coupon-card__helper" style="position:relative;z-index:2;">{{ used_text }}</div>{% endif %}
 </div>

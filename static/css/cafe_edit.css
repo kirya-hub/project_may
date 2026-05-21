@@ -220,6 +220,9 @@ body {
     border-color: rgba(255, 255, 255, 0.18);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
 }
+.cafe-edit-form select:focus {
+    border-color: rgba(123,47,247,0.6);
+}
 
 .cafe-edit-form textarea { min-height: 100px; resize: vertical; }
 

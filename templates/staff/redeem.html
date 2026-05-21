@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Активация купона{% endblock %}
+
+{% block content %}
+<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:24px 16px 100px;">
+  <div style="width:100%;max-width:380px;">
+
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:26px;font-weight:900;color:rgba(255,255,255,0.95);letter-spacing:-0.03em;">
+        Активация купона
+      </div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.45);margin-top:6px;">
+        Введите 4-значный код с экрана гостя
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <input
+          type="text"
+          name="code"
+          maxlength="4"
+          placeholder="XXXX"
+          autofocus
+          required
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          style="
+            width:100%;
+            text-align:center;
+            font-size:40px;
+            font-weight:900;
+            letter-spacing:0.25em;
+            padding:20px 16px;
+            border-radius:18px;
+            border:2px solid rgba(123,47,247,0.4);
+            background:rgba(123,47,247,0.06);
+            color:#fff;
+            outline:none;
+            text-transform:uppercase;
+            caret-color:#7b2ff7;
+            transition:border-color 0.18s,box-shadow 0.18s;
+          "
+          onfocus="this.style.borderColor='#7b2ff7';this.style.boxShadow='0 0 0 4px rgba(123,47,247,0.18)'"
+          onblur="this.style.borderColor='rgba(123,47,247,0.4)';this.style.boxShadow='none'"
+        >
+
+        <button
+          type="submit"
+          style="
+            width:100%;
+            padding:16px;
+            border-radius:16px;
+            border:none;
+            background:linear-gradient(135deg,#7b2ff7,#6366f1);
+            color:#fff;
+            font-size:16px;
+            font-weight:800;
+            cursor:pointer;
+            letter-spacing:0.01em;
+            transition:opacity 0.18s,transform 0.12s;
+          "
+          onmousedown="this.style.transform='scale(0.97)'"
+          onmouseup="this.style.transform=''"
+          onmouseleave="this.style.transform=''"
+        >
+          Активировать
+        </button>
+      </div>
+    </form>
+
+    {% if error %}
+    <div style="
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      background:rgba(239,68,68,0.1);
+      border:1px solid rgba(239,68,68,0.3);
+      color:#f87171;
+      font-size:14px;
+      font-weight:600;
+      text-align:center;
+    ">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div style="
+      margin-top:16px;
+      padding:20px;
+      border-radius:18px;
+      background:rgba(34,197,94,0.08);
+      border:1px solid rgba(34,197,94,0.3);
+    ">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;">✓</div>
+        <div style="font-size:17px;font-weight:800;color:#4ade80;">Купон активирован!</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;gap:8px;">
+          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Купон</span>
+          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.display_title }}</span>
+        </div>
+        {% if result.cafe_name %}
+        <div style="display:flex;justify-content:space-between;gap:8px;">
+          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Кафе</span>
+          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.cafe_name }}</span>
+        </div>
+        {% endif %}
+        <div style="display:flex;justify-content:space-between;gap:8px;">
+          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Владелец</span>
+          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.profile.user.username }}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

@@ -40,6 +40,7 @@ class AuthRegisterView(FormView):
 
         profile, _ = Profile.objects.get_or_create(user=user)
         profile.name = form.cleaned_data.get('name', '') or user.username
+        profile.city = form.cleaned_data.get('city')
         profile.save()
 
         token = EmailConfirmationToken.objects.create(user=user)
@@ -84,7 +85,7 @@ class AuthRegisterView(FormView):
 """
 
         send_mail(
-            subject='CafeRewards — Подтвердите email',
+            subject='SHARE — Подтвердите email',
             message=f'Перейдите по ссылке для подтверждения аккаунта: {confirm_url}',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],

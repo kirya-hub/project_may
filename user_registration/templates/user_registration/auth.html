@@ -59,6 +59,24 @@
       </div>
 
       <div class="field">
+        <label>Город</label>
+        <div style="display:none">{{ form.city }}</div>
+        <div class="custom-select" id="city-select">
+          <div class="custom-select__trigger" id="city-trigger">
+            <span id="city-label">Не выбран</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="custom-select__dropdown" id="city-dropdown" hidden>
+            <div class="custom-select__option" data-value="">Не выбран</div>
+            {% for city in form.city.field.queryset %}
+            <div class="custom-select__option" data-value="{{ city.pk }}">{{ city.name }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        {{ form.city.errors }}
+      </div>
+
+      <div class="field">
         <label>Пароль</label>
         {{ form.password1 }}
         {{ form.password1.errors }}
@@ -75,4 +93,56 @@
   {% endif %}
 
 </div>
+
+<style>
+.custom-select { position: relative; }
+.custom-select__trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--input-bg, #1e1e2e); color: var(--text, #fff);
+  border: 1.5px solid var(--border, #333); border-radius: 12px;
+  padding: 12px 16px; cursor: pointer; font-size: 15px;
+}
+.custom-select__dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 100;
+  background: var(--card-bg, #1e1e2e); border: 1.5px solid var(--border, #333);
+  border-radius: 12px; overflow: hidden;
+}
+.custom-select__option {
+  padding: 12px 16px; cursor: pointer; font-size: 15px;
+}
+.custom-select__option:hover, .custom-select__option--active {
+  background: var(--accent, #7c3aed); color: #fff;
+}
+</style>
+<script>
+(function(){
+  const trigger = document.getElementById('city-trigger');
+  const dropdown = document.getElementById('city-dropdown');
+  const label = document.getElementById('city-label');
+  const realSelect = document.querySelector('[name="city"]');
+
+  if (!trigger) return;
+
+  trigger.addEventListener('click', function(e){
+    e.stopPropagation();
+    dropdown.hidden = !dropdown.hidden;
+  });
+
+  dropdown.querySelectorAll('.custom-select__option').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      const val = this.dataset.value;
+      const text = this.textContent;
+      label.textContent = text;
+      if (realSelect) realSelect.value = val;
+      dropdown.querySelectorAll('.custom-select__option').forEach(function(o){ o.classList.remove('custom-select__option--active'); });
+      this.classList.add('custom-select__option--active');
+      dropdown.hidden = true;
+    });
+  });
+
+  document.addEventListener('click', function(){
+    dropdown.hidden = true;
+  });
+})();
+</script>
 {% endblock %}

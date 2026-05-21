@@ -29,7 +29,82 @@
         {% else %}
         <div class="username">{{ profile.user.username }}</div>
         {% endif %}
-        {% include "includes/level_badge.html" with user=profile.user size="hero" %}
+        <div style="position:relative;display:inline-flex;align-items:center;">
+          <span id="level-badge-trigger" style="cursor:pointer;" aria-label="Информация об уровне">
+            {% include "includes/level_badge.html" with user=profile.user size="hero" %}
+          </span>
+          <div id="level-popup" style="
+            display:none;
+            position:absolute;
+            top:calc(100% + 8px);
+            right:0;
+            z-index:300;
+            width:260px;
+            background:#1c1c2e;
+            border:1px solid rgba(123,47,247,0.35);
+            border-radius:16px;
+            padding:16px;
+            box-shadow:0 12px 40px rgba(0,0,0,0.5);
+            text-align:left;
+          ">
+            <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:12px;letter-spacing:-0.02em;">Уровень {{ level }}</div>
+
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Текущие бонусы</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Кэшбэк баллами</span>
+                <span style="font-size:13px;font-weight:800;color:#c4b5fd;">+{{ cashback_pct }}%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Множитель для дропа</span>
+                <span style="font-size:13px;font-weight:800;color:#c4b5fd;">+{{ level_bonus_pct }}%</span>
+              </div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:-4px;margin-bottom:2px;">
+                Недельная сумма × N для участия в лиге
+              </div>
+              {% if tier_label %}
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Тир</span>
+                <span style="font-size:13px;font-weight:800;color:{% if tier_label == 'Gold' %}#fbbf24{% else %}#cd7f32{% endif %};">{{ tier_label }}</span>
+              </div>
+              {% endif %}
+              {% if tier_chances_gold.RARE %}
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Шанс Rare (Gold)</span>
+                <span style="font-size:13px;font-weight:800;color:#a78bfa;">{{ tier_chances_gold.RARE }}%</span>
+              </div>
+              {% endif %}
+              {% if tier_chances_gold.LEGENDARY %}
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Шанс Legendary (Gold)</span>
+                <span style="font-size:13px;font-weight:800;color:#fbbf24;">{{ tier_chances_gold.LEGENDARY }}%</span>
+              </div>
+              {% endif %}
+            </div>
+
+            <div style="height:1px;background:rgba(255,255,255,0.07);margin-bottom:12px;"></div>
+
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Максимум (уровень {{ max_level }})</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Кэшбэк баллами</span>
+                <span style="font-size:13px;font-weight:800;color:#86efac;">+{{ max_cashback_pct }}%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Множитель для дропа</span>
+                <span style="font-size:13px;font-weight:800;color:#86efac;">+{{ max_level_bonus_pct }}%</span>
+              </div>
+              {% if max_chances_gold.RARE %}<div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Шанс Rare (Gold)</span>
+                <span style="font-size:13px;font-weight:800;color:#86efac;">{{ max_chances_gold.RARE }}%</span>
+              </div>{% endif %}
+              {% if max_chances_gold.LEGENDARY %}<div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">Шанс Legendary (Gold)</span>
+                <span style="font-size:13px;font-weight:800;color:#86efac;">{{ max_chances_gold.LEGENDARY }}%</span>
+              </div>{% endif %}
+            </div>
+          </div>
+        </div>
       </div>
       <div class="display-name">@{{ profile.user.username }}</div>
     </div>
@@ -172,4 +247,25 @@
   <div class="profile-empty-card">Пока нет публикаций</div>
   {% endif %}
 </div>
+
+<script>
+(function () {
+  var trigger = document.getElementById('level-badge-trigger');
+  var popup = document.getElementById('level-popup');
+  if (!trigger || !popup) return;
+
+  trigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    popup.style.display = popup.style.display === 'none' || popup.style.display === '' ? 'block' : 'none';
+  });
+
+  document.addEventListener('click', function () {
+    popup.style.display = 'none';
+  });
+
+  popup.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
+})();
+</script>
 {% endblock %}

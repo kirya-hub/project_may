@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'user_registration',
     'drops',
     'trades',
+    'staff',
 ]
 
 MIDDLEWARE = [

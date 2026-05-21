@@ -22,12 +22,23 @@
             </div>
 
             <div class="form-group">
-                <label for="{{ form.avatar.id_for_label }}">Аватар</label>
-                {{ form.avatar }}
+                <label>Аватар</label>
+                <input type="file" name="avatar" id="id_avatar" accept="image/*" hidden>
+                <div class="avatar-row">
+                    <label for="id_avatar" class="file-btn">Выбрать фото</label>
+                    <div id="cafe-file-name" class="file-name">
+                        {% if cafe.avatar %}Текущее фото{% else %}Файл не выбран{% endif %}
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="{{ form.address.id_for_label }}">Адрес</label>
+                <label for="{{ form.city.id_for_label }}">Город</label>
+                {{ form.city }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Улица и номер дома</label>
                 {{ form.address }}
             </div>
 
@@ -84,4 +95,13 @@
         </form>
     </div>
 </div>
+<script>
+const cafeAvatarInput = document.getElementById('id_avatar');
+const cafeFileName = document.getElementById('cafe-file-name');
+if (cafeAvatarInput) {
+  cafeAvatarInput.addEventListener('change', function() {
+    cafeFileName.textContent = this.files.length ? this.files[0].name : 'Файл не выбран';
+  });
+}
+</script>
 {% endblock %}

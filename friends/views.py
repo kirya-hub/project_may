@@ -52,9 +52,10 @@ def friends_page(request):
         User.objects.exclude(id=request.user.id)
         .select_related('profile')
         .annotate(followers_count=Count('follower_relations'))
-        .order_by('-followers_count', 'username')[:10]
+        .order_by('-followers_count', 'username')
     )
     popular = with_follow_flags(popular, request.user)
+    popular = popular.filter(is_following=False, is_follower=False)[:10]
 
     friends_count = friends_qs(request.user).count()
 

@@ -1,0 +1,9 @@
+from django.urls import path
+
+from . import views
+
+app_name = 'staff'
+
+urlpatterns = [
+    path('redeem/', views.staff_redeem, name='redeem'),
+]

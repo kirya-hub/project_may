@@ -9,15 +9,35 @@ from django.urls import reverse
 from django.utils import timezone
 
 from cafes.forms import CafeEditForm
-from cafes.models import Cafe, MenuCategory
+from cafes.models import Cafe, City, MenuCategory
 from feed.models import FeedEvent
 from friends.services import friends_qs
 
 
 def cafes_list(request):
     q = (request.GET.get('q') or '').strip()
+    city_param = request.GET.get('city', '').strip()
 
     cafes = Cafe.objects.all()
+    active_city = None
+
+    if not q:
+        if city_param == 'all':
+            active_city = None
+        elif city_param:
+            try:
+                active_city = City.objects.get(pk=int(city_param))
+                cafes = cafes.filter(city=active_city)
+            except (City.DoesNotExist, ValueError):
+                pass
+        elif request.user.is_authenticated:
+            try:
+                user_city = request.user.profile.city
+                if user_city:
+                    active_city = user_city
+                    cafes = cafes.filter(city=user_city)
+            except Exception:
+                pass
 
     if q:
         cafes = cafes.filter(name__icontains=q)
@@ -27,12 +47,16 @@ def cafes_list(request):
         visitors_count=Count('orders__user', filter=Q(orders__is_duplicate=False), distinct=True),
     ).order_by('-checks_count', 'name')
 
+    all_cities = City.objects.all()
+
     return render(
         request,
         'cafes/cafes_list.html',
         {
             'cafes': cafes,
             'q': q,
+            'active_city': active_city,
+            'all_cities': all_cities,
             'show_back': True,
             'header_back_url': reverse('home'),
         },

@@ -1,11 +1,19 @@
 from django.contrib import admin
 
-from .models import Cafe, CafeStaff, MenuCategory, MenuItem
+from .models import Cafe, CafeStaff, City, MenuCategory, MenuItem
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
 
 
 class MenuItemInline(admin.TabularInline):
     model = MenuItem
     extra = 1
+    fields = ('name', 'price', 'image', 'image_focus')
 
 
 @admin.register(MenuCategory)
@@ -29,6 +37,11 @@ class CafeStaffInline(admin.TabularInline):
 class CafeAdmin(admin.ModelAdmin):
     list_display = ('name', 'address', 'working_hours')
     search_fields = ('name', 'address')
+    fieldsets = (
+        (None, {'fields': ('name', 'slug', 'city', 'address', 'working_hours', 'description')}),
+        ('Медиа', {'fields': ('avatar', 'coupon_bg')}),
+        ('Координаты', {'fields': ('latitude', 'longitude')}),
+    )
     inlines = [MenuCategoryInline, CafeStaffInline]
 
 
@@ -42,3 +55,4 @@ class CafeStaffAdmin(admin.ModelAdmin):
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'price')
+    fields = ('category', 'name', 'price', 'image', 'image_focus')

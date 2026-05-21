@@ -57,20 +57,6 @@
     <a class="{% if tab == 'followers' %}active{% endif %}" href="?tab=followers{% if q %}&q={{ q }}{% endif %}">Подписчики</a>
   </div>
 
-  {% if not q %}
-    <div class="popular-block">
-      <div class="popular-title">Популярные</div>
-      <div class="user-list">
-        {% for u in popular %}
-          {% include "friends/user_card.html" with u=u show_reply=False %}
-        {% empty %}
-          <div class="empty">Нет результатов</div>
-        {% endfor %}
-
-      </div>
-    </div>
-  {% endif %}
-
   <div class="list-title">
     {% if q %}
       Результаты поиска
@@ -92,6 +78,17 @@
       {% endif %}
     {% endfor %}
   </div>
+
+  {% if not q and popular %}
+    <div class="popular-block">
+      <div class="popular-title">Популярные пользователи</div>
+      <div class="user-list">
+        {% for u in popular %}
+          {% include "friends/user_card.html" with u=u show_reply=False %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 
 </div>
 {% endblock %}

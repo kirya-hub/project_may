@@ -49,15 +49,30 @@ class DropWeek(models.Model):
 
     @property
     def expires_at(self):
+        """Конец фазы ACCUMULATE (граница с CLAIM)."""
         return self.week_start + timedelta(days=7)
 
     @property
-    def seconds_left(self) -> int:
+    def claim_expires_at(self):
+        """Конец фазы CLAIM — после этого дроп сгорает."""
+        return self.week_start + timedelta(days=14)
+
+    def _seconds_until(self, target_date) -> int:
         now = timezone.now()
         end = timezone.make_aware(
-            timezone.datetime.combine(self.expires_at, timezone.datetime.min.time())
+            timezone.datetime.combine(target_date, timezone.datetime.min.time())
         )
         return max(0, int((end - now).total_seconds()))
+
+    @property
+    def seconds_left(self) -> int:
+        """Секунд до конца недели (ACCUMULATE → CLAIM). Таймер лендинга."""
+        return self._seconds_until(self.expires_at)
+
+    @property
+    def claim_seconds_left(self) -> int:
+        """Секунд до конца окна выбора (CLAIM → EXPIRED). Таймер grab-страницы."""
+        return self._seconds_until(self.claim_expires_at)
 
     @property
     def time_left_display(self) -> str:

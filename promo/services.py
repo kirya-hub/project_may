@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from add_order.models import Order as OrderModel
-from user_profile.levels import add_xp
+from user_profile.levels import add_xp, grant_order_xp_once_per_day
 from user_profile.models import Profile, PromoCode
 
 from .models import CouponOffer, PointsTransaction, TransactionKind
@@ -20,10 +20,22 @@ from .models import CouponOffer, PointsTransaction, TransactionKind
 logger = logging.getLogger(__name__)
 
 BASE_CASHBACK_PERCENT = Decimal('0.10')
-DAILY_ACCRUAL_LIMIT = 2
+WEEKLY_ACCRUAL_LIMIT = 5
 MIN_TOTAL_SUM = Decimal('1.00')
 MAX_POINTS10_PER_ORDER = 5000
 SHOP_REFRESH_HOURS = 72
+
+def get_weekly_accrual_status(user) -> tuple[int, int]:
+    """Возвращает (использовано, лимит) для текущей недели."""
+    today = timezone.localdate()
+    week_start = today - timedelta(days=today.weekday())
+    used = PointsTransaction.objects.filter(
+        user=user,
+        kind=TransactionKind.ACCRUAL,
+        created_at__date__gte=week_start,
+    ).count()
+    return used, WEEKLY_ACCRUAL_LIMIT
+
 
 class NotEnoughPoints(Exception):
     pass
@@ -66,7 +78,7 @@ def expire_profile_coupons(profile: Profile, *, origin: str | None = None) -> in
 def get_active_coupons(profile: Profile, *, origin: str | None = None):
     expire_profile_coupons(profile, origin=origin)
     qs = PromoCode.objects.filter(_active_coupon_q(profile)).select_related(
-        'source_offer', 'source_offer__cafe'
+        'source_offer', 'source_offer__cafe', 'source_offer__menu_item'
     )
     if origin:
         qs = qs.filter(origin=origin)
@@ -84,18 +96,16 @@ def _current_shop_window_key(now=None) -> str:
     return str(hours)
 
 def _pick_deterministic_offer(qs, seed_key: str) -> CouponOffer | None:
-    offers = list(qs.order_by('id')[:200])
-    if not offers:
+    total = qs.count()
+    if not total:
         return None
-    if len(offers) == 1:
-        return offers[0]
     digest = hashlib.sha256(seed_key.encode('utf-8')).hexdigest()
-    index = int(digest[:12], 16) % len(offers)
-    return offers[index]
+    index = int(digest[:12], 16) % total
+    return qs.order_by('id')[index:index + 1].first()
 
 def get_rotating_shop_offers(now=None) -> list[CouponOffer]:
     seed = _current_shop_window_key(now=now)
-    base_qs = CouponOffer.objects.filter(is_active=True, available_in_shop=True)
+    base_qs = CouponOffer.objects.filter(is_active=True, available_in_shop=True).select_related('cafe', 'menu_item')
     slots = [
         (
             'coffee',
@@ -120,11 +130,9 @@ def get_rotating_shop_offers(now=None) -> list[CouponOffer]:
         ),
         (
             'rare',
-            base_qs.filter(
-                reward_type=CouponOffer.RewardType.DISCOUNT,
-                rarity=CouponOffer.Rarity.RARE,
-            ),
+            base_qs.filter(rarity=CouponOffer.Rarity.RARE),
         ),
+        ('legendary', base_qs.filter(rarity=CouponOffer.Rarity.LEGENDARY)),
     ]
 
     offers: list[CouponOffer] = []
@@ -157,20 +165,20 @@ def accrue_points_for_order(order) -> int:
         return 0
 
     today = timezone.localdate()
-
-    today_count = (
+    week_start = today - timedelta(days=today.weekday())
+    weekly_count = (
         PointsTransaction.objects.filter(
             user=order.user,
             kind=TransactionKind.ACCRUAL,
-            created_at__date=today,
+            created_at__date__gte=week_start,
         )
         .count()
     )
-    if today_count >= DAILY_ACCRUAL_LIMIT:
+    if weekly_count >= WEEKLY_ACCRUAL_LIMIT:
         logger.debug(
-            "accrue_points: лимит дня достигнут для user=%s (count=%d)",
+            "accrue_points: недельный лимит достигнут для user=%s (count=%d)",
             order.user_id,
-            today_count,
+            weekly_count,
         )
         return 0
 
@@ -211,9 +219,9 @@ def accrue_points_for_order(order) -> int:
     )
 
     try:
-        add_xp(order.user, 10)
+        grant_order_xp_once_per_day(order.user)
     except Exception as exc:
-        logger.warning("add_xp не удался для user=%s: %s", order.user_id, exc)
+        logger.warning("grant_order_xp не удался для user=%s: %s", order.user_id, exc)
 
     return points10
 

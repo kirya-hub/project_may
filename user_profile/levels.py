@@ -15,15 +15,15 @@ LEGENDARY_BY_LEVEL = [4, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8]
 
 def xp_needed_for_level(level: int) -> int:
     if level <= 1:
-        return 40
+        return 30
     if level == 2:
-        return 60
+        return 50
     if level == 3:
-        return 85
+        return 70
     if level == 4:
-        return 120
+        return 100
     x = level - 4
-    return 120 + x * 55 + x * x * 10
+    return 100 + x * 40 + x * x * 6
 
 def get_or_create_profile(user) -> Profile:
     profile, _ = Profile.objects.get_or_create(user=user)
@@ -61,6 +61,48 @@ def add_xp(user, amount: int) -> Profile:
             )
 
         return profile
+
+def grant_order_xp_once_per_day(user, amount: int = 25) -> bool:
+    if amount <= 0:
+        return False
+
+    today = timezone.localdate()
+
+    with transaction.atomic():
+        profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
+
+        if profile.last_order_xp_date == today:
+            logger.debug("grant_order_xp: пропущено для user=%s — XP за сегодня уже начислен", user.pk)
+            return False
+
+        profile.last_order_xp_date = today
+        profile.save(update_fields=['last_order_xp_date'])
+
+    add_xp(user, amount)
+    logger.debug("grant_order_xp: начислено %d XP для user=%s", amount, user.pk)
+    return True
+
+
+def grant_post_xp_once_per_day(user, amount: int = 40) -> bool:
+    if amount <= 0:
+        return False
+
+    today = timezone.localdate()
+
+    with transaction.atomic():
+        profile = Profile.objects.select_for_update().get_or_create(user=user)[0]
+
+        if profile.last_post_xp_date == today:
+            logger.debug("grant_post_xp: пропущено для user=%s — XP за сегодня уже начислен", user.pk)
+            return False
+
+        profile.last_post_xp_date = today
+        profile.save(update_fields=['last_post_xp_date'])
+
+    add_xp(user, amount)
+    logger.debug("grant_post_xp: начислено %d XP для user=%s", amount, user.pk)
+    return True
+
 
 def grant_trade_xp_once_per_day(user, amount: int) -> bool:
     if amount <= 0:

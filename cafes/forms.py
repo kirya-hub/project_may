@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Cafe
+from .models import Cafe, City
 
 
 class CafeEditForm(forms.ModelForm):
@@ -10,6 +10,7 @@ class CafeEditForm(forms.ModelForm):
             'name',
             'avatar',
             'address',
+            'city',
             'latitude',
             'longitude',
             'working_hours',
@@ -63,20 +64,5 @@ class CafeEditForm(forms.ModelForm):
 
         if (latitude is not None or longitude is not None) and not address:
             raise forms.ValidationError('Сначала укажи адрес, потом координаты.')
-
-        if self.instance.pk:
-            address_changed = address != (self.instance.address or '').strip()
-            same_lat = latitude == self.instance.latitude
-            same_lon = longitude == self.instance.longitude
-
-            if (
-                address_changed
-                and not (latitude is None and longitude is None)
-                and same_lat
-                and same_lon
-            ):
-                raise forms.ValidationError(
-                    'Ты изменил адрес, значит нужно обновить координаты тоже, чтобы точка на карте не уехала.'
-                )
 
         return cleaned_data

@@ -90,7 +90,7 @@ def trade_new(request, username: str):
             profile=from_profile,
             status=PromoCode.Status.ACTIVE,
         )
-        .select_related('source_offer', 'source_offer__cafe')
+        .select_related('source_offer', 'source_offer__cafe', 'source_offer__menu_item')
         .filter(Q(expires_at__isnull=True) | Q(expires_at__gte=today))
         .exclude(id__in=busy_ids)
         .order_by('-acquired_at')
@@ -101,7 +101,7 @@ def trade_new(request, username: str):
             profile=to_profile,
             status=PromoCode.Status.ACTIVE,
         )
-        .select_related('source_offer', 'source_offer__cafe')
+        .select_related('source_offer', 'source_offer__cafe', 'source_offer__menu_item')
         .filter(Q(expires_at__isnull=True) | Q(expires_at__gte=today))
         .exclude(id__in=busy_ids)
         .order_by('-acquired_at')
@@ -149,6 +149,7 @@ def trade_detail(request, trade_id: int):
             'items__promocode',
             'items__promocode__source_offer',
             'items__promocode__source_offer__cafe',
+            'items__promocode__source_offer__menu_item',
         ),
         id=trade_id,
     )
@@ -186,8 +187,8 @@ def trade_accept(request, trade_id: int):
         messages.success(request, 'Обмен принят ✅ Купоны обменяны')
 
         try:
-            grant_trade_xp_once_per_day(trade.from_user, 3)
-            grant_trade_xp_once_per_day(trade.to_user, 3)
+            grant_trade_xp_once_per_day(trade.from_user, 10)
+            grant_trade_xp_once_per_day(trade.to_user, 10)
         except Exception as exc:
             logger.warning('grant_trade_xp failed: %s', exc)
 

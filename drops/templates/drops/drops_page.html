@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Drop{% endblock %}
+{% block title %}Дроп недели{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/promo.css' %}">
@@ -9,485 +9,434 @@
 
 {% block content %}
 <style>
-  .drop-wrap {
+  .dn-wrap {
     max-width: 520px;
     margin: 0 auto;
-    padding: 14px 14px 120px;
+    padding: 0 0 140px;
   }
 
-  /* ── Header ───────────────────────────────────── */
-  .drop-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  /* ── Шапка ── */
+  .dn-title-block {
+    padding: 22px 18px 6px;
   }
-  .drop-title {
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: rgba(255, 255, 255, 0.92);
-    margin: 0;
+  .dn-title {
+    font-size: 28px; font-weight: 900; color: #fff;
+    letter-spacing: -0.6px; line-height: 1; margin: 0 0 9px;
   }
-  .timer-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background: rgba(255, 255, 255, 0.08);
-    font-size: 13px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  .dn-subtitle {
+    font-size: 13px; color: #5a5478; line-height: 1.55; margin: 0 0 20px;
   }
-  .timer-dot {
+  .dn-how-link {
+    font-size: 12px; font-weight: 500; color: #5a5478;
+    text-decoration: none; margin-left: 10px;
+  }
+  .dn-how-link:hover { color: #8b8aaa; }
+
+  /* ── Таймер ── */
+  .dn-timer-card {
+    margin: 0 14px 22px;
+    background: linear-gradient(145deg, #1e1b38 0%, #241f45 100%);
+    border-radius: 20px;
+    border: 1px solid #332f58;
+    padding: 18px 16px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dn-timer-accent {
+    position: absolute; top: 0; left: 8%; right: 8%; height: 1.5px;
+    background: linear-gradient(90deg, transparent 0%, #6d28d9 35%, #9d6bf8 65%, transparent 100%);
+    border-radius: 2px;
+  }
+  .dn-timer-live {
+    display: flex; align-items: center; justify-content: center;
+    gap: 7px; margin-bottom: 20px;
+  }
+  .dn-live-dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,.18);
-    animation: pdot 1.8s ease-in-out infinite;
+    background: #4ade80; flex-shrink: 0;
+    animation: dn-live-pulse 2s ease-in-out infinite;
   }
-  @keyframes pdot {
-    0%,100%{ box-shadow:0 0 0 3px rgba(34,197,94,.18); }
-    50%    { box-shadow:0 0 0 5px rgba(34,197,94,.10); }
+  @keyframes dn-live-pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%    { opacity:.45; transform:scale(.75); }
   }
-  .drop-hint {
-    font-size: 14px; color: rgba(255, 255, 255, 0.55); margin-bottom: 18px; line-height: 1.5;
+  .dn-live-text {
+    font-size: 10px; font-weight: 700; color: #4ade80; letter-spacing: .14em;
   }
-
-  /* ══ CHOOSING — option cards ══════════════════ */
-  .drop-grid { display: flex; flex-direction: column; gap: 14px; }
-
-  .drop-card {
-    position: relative; overflow: hidden;
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,.08);
-    padding: 0;
-    color: #fff;
-    box-shadow: 0 16px 32px rgba(15,23,42,.22);
-    animation: dce .4s cubic-bezier(.2,.8,.2,1) both;
+  .dn-timer-digits {
+    display: flex; align-items: center; justify-content: center; gap: 2px;
   }
-  @keyframes dce {
-    from{ opacity:0; transform:translateY(10px) scale(.98); }
-    to  { opacity:1; transform:translateY(0)    scale(1);   }
+  .dn-timer-unit {
+    display: flex; flex-direction: column; align-items: center; flex: 1;
   }
-
-  .drop-card-common {
-    background:
-      radial-gradient(ellipse at top right, rgba(52,255,224,.32), transparent 50%),
-      linear-gradient(150deg, #021a15 0%, #03312a 55%, #065545 100%);
-    border-color: rgba(52,255,224,.30);
-    box-shadow: 0 16px 32px rgba(2,26,21,.36), 0 0 0 1px rgba(52,255,224,.12);
+  .dn-timer-num {
+    font-size: 46px; font-weight: 900; color: #fff; line-height: 1;
+    letter-spacing: -2px; font-variant-numeric: tabular-nums;
   }
-  .drop-card-rare {
-    background:
-      radial-gradient(ellipse at top right, rgba(157,98,255,.28), transparent 50%),
-      linear-gradient(150deg, #17072f 0%, #220943 52%, #43007a 100%);
-    border-color: rgba(157,98,255,.26);
-    box-shadow: 0 16px 32px rgba(31,9,58,.30), 0 0 0 1px rgba(157,98,255,.12);
+  .dn-timer-label {
+    font-size: 9px; font-weight: 700; color: #4e4870;
+    letter-spacing: .13em; text-transform: uppercase; margin-top: 8px;
   }
-  .drop-card-legendary {
-    background:
-      radial-gradient(ellipse at top right, rgba(255,214,82,.30), transparent 50%),
-      linear-gradient(150deg, #2b1400 0%, #5a2700 52%, #9a5a00 100%);
-    border-color: rgba(255,214,82,.30);
-    box-shadow: 0 16px 32px rgba(66,31,0,.30), 0 0 0 1px rgba(255,214,82,.14);
+  .dn-timer-sep {
+    color: #2c2848; font-size: 38px; font-weight: 800; line-height: 1;
+    padding-bottom: 14px; flex-shrink: 0; user-select: none;
   }
 
-  /* Left accent */
-  .drop-card::before {
-    content: ""; position: absolute; inset: 0 auto 0 0;
-    width: 6px; border-radius: 24px 0 0 24px;
+  /* ── Сумма юзера ── */
+  .dn-sum-block {
+    margin: 0 14px 22px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 14px;
+    padding: 14px 16px;
   }
-  .drop-card-common::before    { background: linear-gradient(180deg,#34ffe0,#0ea5c9); }
-  .drop-card-rare::before      { background: linear-gradient(180deg,#cb63ff,#7b2cff); }
-  .drop-card-legendary::before { background: linear-gradient(180deg,#ffd95a,#ff9f0a); }
+  .dn-sum-kicker {
+    font-size: 10px; font-weight: 700; letter-spacing: .10em;
+    text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 5px;
+  }
+  .dn-sum-value {
+    font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.5px; line-height: 1;
+  }
+  .dn-sum-hint {
+    font-size: 11px; color: rgba(255,255,255,.32); margin-top: 4px;
+  }
 
-  /* Card body */
-  .drop-card-body { padding: 18px 18px 18px 22px; }
+  /* ── Секция-заголовок ── */
+  .dn-section-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .12em; color: #6b6898;
+    text-transform: uppercase; margin-bottom: 11px;
+  }
 
-  .drop-card-head {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 12px;
+  /* ── Карточки лиг ── */
+  .dn-tiers-wrap { padding: 0 14px; }
+  .dn-tiers-row {
+    display: flex; gap: 8px; padding-top: 14px; margin-bottom: 28px;
+  }
+  .dn-tier {
+    flex: 1; border-radius: 13px; padding: 13px 9px;
+    position: relative;
+  }
+  .dn-tier--none {
+    background: rgba(255,255,255,.025);
+    border: 1.5px solid #1f1d32;
+  }
+  .dn-tier--bronze {
+    background: rgba(255,255,255,.025);
+    border: 1.5px solid #e8924a;
+  }
+  .dn-tier--bronze.dn-tier--active {
+    background: linear-gradient(155deg, rgba(232,146,74,.16) 0%, rgba(180,88,20,.09) 100%);
+    border: none;
+    animation: dn-bronze-glow 3s ease-in-out infinite;
+  }
+  .dn-tier--gold {
+    background: linear-gradient(155deg, rgba(212,160,23,.07) 0%, rgba(180,130,10,.04) 100%);
+    border: 1.5px solid #d4a017;
+  }
+  .dn-tier--gold.dn-tier--active {
+    background: linear-gradient(155deg, rgba(212,160,23,.16) 0%, rgba(170,120,10,.09) 100%);
+    border: none;
+    animation: dn-gold-glow 3s ease-in-out infinite;
+  }
+  @keyframes dn-bronze-glow {
+    0%,100%{ box-shadow:0 0 0 1.5px #e8924a, 0 0 18px rgba(232,146,74,.28), 0 0 40px rgba(232,146,74,.1); }
+    50%    { box-shadow:0 0 0 1.5px #f0a868, 0 0 28px rgba(232,146,74,.48), 0 0 60px rgba(232,146,74,.18); }
+  }
+  @keyframes dn-gold-glow {
+    0%,100%{ box-shadow:0 0 0 1.5px #d4a017, 0 0 18px rgba(212,160,23,.25), 0 0 40px rgba(212,160,23,.08); }
+    50%    { box-shadow:0 0 0 1.5px #e0b530, 0 0 28px rgba(212,160,23,.40), 0 0 60px rgba(212,160,23,.15); }
+  }
+  .dn-tier-badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; font-weight: 900; letter-spacing: .05em;
+    padding: 3px 9px; border-radius: 100px; white-space: nowrap;
+    color: #0e0800;
+  }
+  .dn-tier--bronze .dn-tier-badge { background: #e8924a; }
+  .dn-tier--gold   .dn-tier-badge { background: #d4a017; }
+  .dn-tier--none   .dn-tier-badge { background: #888; color: #111; }
+  .dn-tier-emoji { font-size: 20px; margin-bottom: 7px; line-height: 1; }
+  .dn-tier-name {
+    font-size: 12.5px; font-weight: 800; margin-bottom: 3px; letter-spacing: -.1px;
+  }
+  .dn-tier--none   .dn-tier-name { color: #3d3856; }
+  .dn-tier--bronze .dn-tier-name { color: #e8924a; }
+  .dn-tier--gold   .dn-tier-name { color: #a07820; }
+  .dn-tier--bronze.dn-tier--active .dn-tier-name { color: #f0a060; }
+  .dn-tier--gold.dn-tier--active   .dn-tier-name { color: #ddb030; }
+  .dn-tier-range {
+    font-size: 10.5px; font-weight: 600; line-height: 1.45;
+  }
+  .dn-tier--none   .dn-tier-range { color: #332f4f; }
+  .dn-tier--bronze .dn-tier-range { color: #9a5a28; }
+  .dn-tier--bronze.dn-tier--active .dn-tier-range { color: rgba(232,146,74,.62); }
+  .dn-tier--gold   .dn-tier-range { color: #5a4a18; }
+  .dn-tier--gold.dn-tier--active   .dn-tier-range { color: rgba(212,160,23,.62); }
+  .dn-tier-note { font-size: 9.5px; color: #2e2b44; margin-top: 5px; line-height: 1.5; }
+
+  /* ── Таблицы ── */
+  .dn-tables-wrap { padding: 0 14px; }
+  .dn-table {
+    margin-bottom: 28px;
+  }
+  .dn-table-head {
+    display: flex; align-items: center;
+    padding-bottom: 9px; border-bottom: 1px solid #282540;
+  }
+  .dn-table-head-cell {
+    font-size: 10px; font-weight: 700; color: #5a5680; letter-spacing: .09em;
+  }
+  .dn-table-row {
+    display: flex; align-items: center;
+    padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.035);
+  }
+  .dn-table-row:last-child { border-bottom: none; }
+  .dn-table-col-lvl  { flex: 1.3; font-size: 13px; font-weight: 500; color: #8582a5; }
+  .dn-table-col-val  { flex: 1; text-align: right; font-size: 13px; font-weight: 700; }
+  .dn-table-col-center { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #c0bdd8; }
+  .dn-table-col-head-center { flex: 1; text-align: center; }
+  .dn-table-col-head-right  { flex: 1; text-align: right; }
+  .val-bonus    { color: #3dd68c; }
+  .val-zero     { color: #36325a; }
+  .val-common   { color: #c0bdd8; }
+  .val-rare     { color: #a78bfa; font-weight: 700; }
+  .val-legendary{ color: #f59e0b; font-weight: 700; }
+
+  /* ── Блок «дроп получен» ── */
+  .dn-received-block { padding: 0 14px; margin-bottom: 24px; }
+  .dn-received-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(255,255,255,.38);
     margin-bottom: 12px;
   }
 
-  .drop-cafe-name {
-    font-size: 22px; font-weight: 800;
-    letter-spacing: -0.02em; color: #fff;
-    margin: 0; line-height: 1.15;
+  /* ── Sticky CTA ── */
+  .dn-cta-wrap {
+    position: fixed; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0;
+    padding: 18px 16px 16px;
+    background: linear-gradient(to top, #111018 55%, rgba(17,16,24,0) 100%);
+    z-index: 30;
   }
-
-  .drop-rarity-badge {
-    display: inline-flex; align-items: center;
-    padding: 5px 13px; border-radius: 999px;
-    font-size: 11px; font-weight: 700; letter-spacing: .03em;
-    white-space: nowrap; flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.10);
-    color: rgba(255,255,255,.92);
+  .dn-cta-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 17px 24px;
+    border: none; border-radius: 15px;
+    color: #fff; font-size: 17px; font-weight: 800;
+    letter-spacing: .01em; cursor: pointer;
+    transition: transform .1s, opacity .12s;
+    text-decoration: none;
   }
-
-  .drop-reward-block {
-    padding: 11px 14px; border-radius: 14px;
-    background: rgba(0,0,0,.18);
-    border: 1px solid rgba(255,255,255,.08);
-    margin-bottom: 14px;
+  .dn-cta-btn:active { transform: scale(.98); opacity: .88; }
+  .dn-cta-btn--active-bronze {
+    background: linear-gradient(130deg, rgba(232,146,74,.8) 0%, #e8924a 50%, rgba(232,146,74,.87) 100%);
+    box-shadow: 0 8px 32px rgba(232,146,74,.34), 0 2px 10px rgba(0,0,0,.35);
   }
-  .drop-reward-kicker {
-    font-size: 10px; font-weight: 700; letter-spacing: .10em;
-    text-transform: uppercase; color: rgba(236,241,248,.55);
-    margin-bottom: 3px;
+  .dn-cta-btn--active-gold {
+    background: linear-gradient(130deg, rgba(212,160,23,.8) 0%, #d4a017 50%, rgba(212,160,23,.87) 100%);
+    box-shadow: 0 8px 32px rgba(212,160,23,.34), 0 2px 10px rgba(0,0,0,.35);
   }
-  .drop-reward-val {
-    font-size: 16px; font-weight: 800; color: #fff; line-height: 1.25;
+  .dn-cta-btn--active-purple {
+    background: linear-gradient(130deg, rgba(139,92,246,.8) 0%, #8b5cf6 50%, rgba(139,92,246,.87) 100%);
+    box-shadow: 0 8px 32px rgba(139,92,246,.34), 0 2px 10px rgba(0,0,0,.35);
   }
-
-  /* Divider */
-  .drop-card-divider {
-    height: 1px; margin: 0 18px 0 22px;
-    background: linear-gradient(90deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,.04) 100%);
+  .dn-cta-btn--disabled {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.10);
+    color: rgba(255,255,255,.38);
+    cursor: default; pointer-events: none;
   }
-
-  /* Footer with button */
-  .drop-card-footer {
-    padding: 14px 18px 16px 22px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  .dn-cta-hint {
+    text-align: center; font-size: 11px; color: rgba(255,255,255,.28);
+    margin-top: 7px;
   }
-
-  .drop-card-rarity-label {
-    font-size: 12px; color: rgba(236,241,248,.60); font-weight: 600;
-  }
-
-  .btn-choose {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 130px; height: 44px; padding: 0 20px;
-    border-radius: 14px; font-weight: 700; font-size: 14px;
-    border: 0; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    transition: opacity .15s, transform .12s;
-    box-shadow: 0 8px 20px rgba(0,0,0,.22);
-  }
-  .btn-choose:active { opacity:.82; transform:scale(.97); }
-
-  .drop-card-common    .btn-choose { background: linear-gradient(180deg,#34ffe0,#0ea5c9); color: #011a14; }
-  .drop-card-rare      .btn-choose { background: linear-gradient(180deg,#cb63ff,#7b2cff); color: #fff; }
-  .drop-card-legendary .btn-choose { background: linear-gradient(180deg,#ffd95a,#ff9f0a); color: #1f1300; }
-
-  /* ══ ACTIVE / COMPLETED — mission card ════════ */
-  .mission-card {
-    position: relative; overflow: hidden;
-    border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
-    color: #fff;
-    box-shadow: 0 20px 40px rgba(15,23,42,.24);
-  }
-  .mission-card::before {
-    content: ""; position: absolute; inset: 0 auto 0 0;
-    width: 7px; border-radius: 24px 0 0 24px;
-  }
-  .mission-card-common {
-    background:
-      radial-gradient(ellipse at top right, rgba(52,255,224,.32), transparent 50%),
-      linear-gradient(150deg, #021a15 0%, #03312a 52%, #065545 100%);
-    border-color: rgba(52,255,224,.30);
-    box-shadow: 0 20px 40px rgba(2,26,21,.36), 0 0 0 1px rgba(52,255,224,.14);
-  }
-  .mission-card-common::before   { background: linear-gradient(180deg,#34ffe0,#0ea5c9); }
-  .mission-card-rare {
-    background:
-      radial-gradient(ellipse at top right, rgba(157,98,255,.28), transparent 50%),
-      linear-gradient(150deg, #17072f 0%, #220943 50%, #43007a 100%);
-    border-color: rgba(157,98,255,.26);
-    box-shadow: 0 20px 40px rgba(31,9,58,.30), 0 0 0 1px rgba(157,98,255,.12);
-  }
-  .mission-card-rare::before     { background: linear-gradient(180deg,#cb63ff,#7b2cff); }
-  .mission-card-legendary {
-    background:
-      radial-gradient(ellipse at top right, rgba(255,214,82,.30), transparent 50%),
-      linear-gradient(150deg, #2b1400 0%, #5a2700 50%, #9a5a00 100%);
-    border-color: rgba(255,214,82,.30);
-    box-shadow: 0 20px 40px rgba(66,31,0,.30), 0 0 0 1px rgba(255,214,82,.14);
-  }
-  .mission-card-legendary::before{ background: linear-gradient(180deg,#ffd95a,#ff9f0a); }
-
-  .mission-body { padding: 20px 20px 20px 26px; }
-
-  .mission-status-row {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-  }
-  .mission-status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,.22);
-    animation: pdot 1.8s ease-in-out infinite;
-  }
-  .mission-status-text {
-    font-size: 11px; font-weight: 700; letter-spacing: .10em;
-    text-transform: uppercase; color: rgba(236,241,248,.62);
-  }
-
-  .mission-cafe {
-    font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
-    color: #fff; margin: 0 0 6px; line-height: 1.1;
-  }
-  .mission-rarity {
-    display: inline-flex; align-items: center;
-    padding: 4px 13px; border-radius: 999px;
-    font-size: 11px; font-weight: 700;
-    border: 1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.10); color: rgba(255,255,255,.92);
-    margin-bottom: 16px;
-  }
-  .mission-reward-block {
-    padding: 12px 15px; border-radius: 14px;
-    background: rgba(0,0,0,.20); border: 1px solid rgba(255,255,255,.08);
-    margin-bottom: 14px;
-  }
-  .mission-reward-kicker {
-    font-size: 10px; font-weight: 700; letter-spacing: .10em;
-    text-transform: uppercase; color: rgba(236,241,248,.52); margin-bottom: 3px;
-  }
-  .mission-reward-text {
-    font-size: 18px; font-weight: 800; color: #fff; line-height: 1.2;
-  }
-  .mission-instruction {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 12px 14px; border-radius: 14px;
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08);
-    margin-bottom: 16px;
-  }
-  .mission-instruction-icon { font-size: 18px; flex-shrink: 0; }
-  .mission-instruction-text { font-size: 13px; color: rgba(236,241,248,.80); line-height: 1.5; font-weight: 500; }
-
-  .mission-footer {
+  .dn-cta-arrow {
     display: flex; align-items: center;
-    justify-content: space-between; gap: 12px;
-    padding-top: 4px;
-  }
-  .mission-timer {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 700; color: rgba(236,241,248,.68);
-  }
-  .mission-earned-label {
-    font-size: 10px; font-weight: 700; letter-spacing: .12em;
-    text-transform: uppercase; color: rgba(236,241,248,.52);
-    margin: 18px 0 10px;
-  }
-
-  /* ══ COMPLETED / EXPIRED — state cards ════════ */
-  .state-card {
-    border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 24px 20px;
-    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
-  }
-  .state-emoji { font-size: 36px; margin-bottom: 10px; display: block; }
-  .state-title { font-weight: 800; font-size: 22px; color: rgba(255, 255, 255, 0.92); margin: 0 0 6px; letter-spacing: -0.02em; }
-  .state-text  { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.55; }
-  .state-coupon{ margin-top: 18px; }
-  .state-actions { margin-top: 18px; display: flex; gap: 10px; }
-  .mission-card-divider { height: 1px; margin: 16px 0; background: linear-gradient(90deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.03) 100%); }
-
-  /* ══ COMPLETED — status row ═══════════════════ */
-  .completed-status-row {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
-  }
-  .completed-status-left {
-    display: flex; align-items: center; gap: 6px;
-  }
-  .completed-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #22c55e; flex-shrink: 0;
-  }
-  .completed-status-label {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.5);
-  }
-  .completed-rarity-label {
-    font-size: 11px; color: rgba(255,255,255,.35);
-  }
-  .completed-reward-block {
-    padding: 14px 16px; border-radius: 14px; margin-bottom: 14px;
-  }
-  .mission-card-common .completed-reward-block {
-    background: linear-gradient(135deg, rgba(52,255,224,.06), rgba(52,255,224,.12));
-    border: 1px solid rgba(52,255,224,.15);
-  }
-  .mission-card-rare .completed-reward-block {
-    background: linear-gradient(135deg, rgba(157,98,255,.06), rgba(157,98,255,.12));
-    border: 1px solid rgba(157,98,255,.15);
-  }
-  .mission-card-legendary .completed-reward-block {
-    background: linear-gradient(135deg, rgba(255,214,82,.06), rgba(255,214,82,.12));
-    border: 1px solid rgba(255,214,82,.15);
-  }
-  .completed-reward-text {
-    font-size: 17px; font-weight: 800; color: #fff;
-  }
-  .completed-coupon-row {
-    margin-top: 8px; display: flex; align-items: center; gap: 6px;
-  }
-  .completed-coupon-badge {
-    font-size: 11px; padding: 3px 8px; border-radius: 6px;
-  }
-  .mission-card-common .completed-coupon-badge { background: rgba(52,255,224,.15); color: #34ffe0; }
-  .mission-card-rare .completed-coupon-badge { background: rgba(157,98,255,.15); color: #cb63ff; }
-  .mission-card-legendary .completed-coupon-badge { background: rgba(255,214,82,.15); color: #ffd95a; }
-  .completed-coupon-expires {
-    font-size: 11px; color: rgba(255,255,255,.35);
-  }
-  .btn-primary {
-    display: inline-flex; align-items: center; justify-content: center;
-    flex: 1; padding: 14px 12px; border-radius: 16px;
-    font-weight: 700; font-size: 14px; border: none;
-    background: #6366f1; color: #fff; text-decoration: none;
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
-  }
-  .btn-ghost {
-    display: inline-flex; align-items: center; justify-content: center;
-    flex: 1; padding: 14px 12px; border-radius: 16px;
-    font-weight: 700; font-size: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.10); background: transparent;
-    color: rgba(255, 255, 255, 0.7); text-decoration: none;
   }
 </style>
 
-<div class="drop-wrap">
-  <div class="drop-header">
-    <h2 class="drop-title">Drop недели</h2>
-    <div class="timer-pill">
-      <span class="timer-dot"></span>
-      <span id="dropTimer">—</span>
+<div class="dn-wrap">
+
+  <div class="dn-title-block">
+    <h1 class="dn-title">Дроп недели</h1>
+    <p class="dn-subtitle">Делай покупки, попади в лигу и получи бесплатный промокод</p>
+  </div>
+
+  <!-- Таймер текущей недели -->
+  <div class="dn-timer-card">
+    <div class="dn-timer-accent"></div>
+    <div class="dn-timer-live">
+      <span class="dn-live-dot"></span>
+      <span class="dn-live-text">НЕДЕЛЯ АКТИВНА</span>
+    </div>
+    <div class="dn-timer-digits">
+      <div class="dn-timer-unit">
+        <span class="dn-timer-num" id="dn-td-d">00</span>
+        <span class="dn-timer-label">Дней</span>
+      </div>
+      <div class="dn-timer-sep">:</div>
+      <div class="dn-timer-unit">
+        <span class="dn-timer-num" id="dn-td-h">00</span>
+        <span class="dn-timer-label">Часов</span>
+      </div>
+      <div class="dn-timer-sep">:</div>
+      <div class="dn-timer-unit">
+        <span class="dn-timer-num" id="dn-td-m">00</span>
+        <span class="dn-timer-label">Минут</span>
+      </div>
+      <div class="dn-timer-sep">:</div>
+      <div class="dn-timer-unit">
+        <span class="dn-timer-num" id="dn-td-s">00</span>
+        <span class="dn-timer-label">Сек</span>
+      </div>
     </div>
   </div>
 
-  {% if drop_week.status == "CHOOSING" %}
-  <p class="drop-hint">Выбери один из трёх — сделай чек до конца недели и получишь купон:</p>
-  <div class="drop-grid">
-    {% for opt in options %}
-    <div class="drop-card drop-card-{{ opt.rarity|lower }}">
-      <div class="drop-card-body">
-        <div class="drop-card-head">
-          <p class="drop-cafe-name">{{ opt.cafe.name }}</p>
-          <span class="drop-rarity-badge">{{ opt.get_rarity_display }}</span>
-        </div>
-        {% if opt.reward_offer %}
-        <div class="drop-reward-block">
-          <div class="drop-reward-kicker">Твоя награда</div>
-          <div class="drop-reward-val">{{ opt.reward_offer.benefit_text }}</div>
-        </div>
-        {% endif %}
+  <!-- Сумма юзера -->
+  <div style="padding: 0 14px;">
+    <div class="dn-sum-block">
+      <div class="dn-sum-kicker">Ваша сумма за неделю</div>
+      <div class="dn-sum-value">{{ adjusted_sum|floatformat:0 }} ₽</div>
+      <div class="dn-sum-hint">с учётом множителя уровня</div>
+    </div>
+  </div>
+
+  <!-- Карточки лиг -->
+  <div class="dn-tiers-wrap">
+    <div class="dn-section-label" style="margin-top: 6px;">Лиги недели</div>
+    <div class="dn-tiers-row">
+
+      <div class="dn-tier dn-tier--none{% if not tier %} dn-tier--active{% endif %}">
+        {% if not tier %}<span class="dn-tier-badge">ВАША ЛИГА</span>{% endif %}
+        <div class="dn-tier-name">Нет тира</div>
+        <div class="dn-tier-range">&lt;&nbsp;500₽&nbsp;в&nbsp;неделю</div>
+        <div class="dn-tier-note">дроп не генерируется</div>
       </div>
-      <div class="drop-card-divider"></div>
-      <div class="drop-card-footer">
-        <span class="drop-card-rarity-label">
-          {% if opt.rarity == "LEGENDARY" %}Легендарный{% elif opt.rarity == "RARE" %}Редкий{% else %}Обычный{% endif %}
+
+      <div class="dn-tier dn-tier--bronze{% if tier == 'BRONZE' %} dn-tier--active{% endif %}">
+        {% if tier == 'BRONZE' %}<span class="dn-tier-badge">ВАША ЛИГА</span>{% endif %}
+        <div class="dn-tier-emoji">🔥</div>
+        <div class="dn-tier-name">Bronze</div>
+        <div class="dn-tier-range">500 — 1999₽</div>
+      </div>
+
+      <div class="dn-tier dn-tier--gold{% if tier == 'GOLD' %} dn-tier--active{% endif %}">
+        {% if tier == 'GOLD' %}<span class="dn-tier-badge">ВАША ЛИГА</span>{% endif %}
+        <div class="dn-tier-emoji">🥇</div>
+        <div class="dn-tier-name">Gold</div>
+        <div class="dn-tier-range">2000₽+</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Таблицы -->
+  <div class="dn-tables-wrap">
+
+    <!-- Бонус уровня -->
+    <div class="dn-section-label">Бонус уровня к сумме чеков</div>
+    <div class="dn-table">
+      <div class="dn-table-head">
+        <span class="dn-table-head-cell" style="flex:1.3;">УРОВЕНЬ</span>
+        <span class="dn-table-head-cell dn-table-col-head-right">БОНУС</span>
+      </div>
+      {% for row in level_bonuses %}
+      <div class="dn-table-row">
+        <span class="dn-table-col-lvl">{{ row.range }}</span>
+        <span class="dn-table-col-val {% if row.bonus > 0 %}val-bonus{% else %}val-zero{% endif %}">
+          +{{ row.bonus }}%
         </span>
-        <form method="post" action="{% url 'drops:choose_drop' opt.id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn-choose">Выбрать</button>
-        </form>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+
+    <!-- Bronze шансы -->
+    <div class="dn-section-label">🔥 Bronze — шансы купонов</div>
+    <div class="dn-table">
+      <div class="dn-table-head">
+        <span class="dn-table-head-cell" style="flex:1.3;">УРОВЕНЬ</span>
+        <span class="dn-table-head-cell dn-table-col-head-center">Common</span>
+        <span class="dn-table-head-cell dn-table-col-head-right" style="color:#a78bfa;">Rare</span>
+      </div>
+      {% for row in tier_table.BRONZE.levels %}
+      <div class="dn-table-row">
+        <span class="dn-table-col-lvl">{{ row.range }}</span>
+        <span class="dn-table-col-center val-common">{{ row.COMMON }}%</span>
+        <span class="dn-table-col-val val-rare">{{ row.RARE }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Gold шансы -->
+    <div class="dn-section-label">🥇 Gold — шансы купонов</div>
+    <div class="dn-table" style="margin-bottom: 16px;">
+      <div class="dn-table-head">
+        <span class="dn-table-head-cell" style="flex:1.3;">УРОВЕНЬ</span>
+        <span class="dn-table-head-cell dn-table-col-head-center">Common</span>
+        <span class="dn-table-head-cell dn-table-col-head-center" style="color:#a78bfa;">Rare</span>
+        <span class="dn-table-head-cell dn-table-col-head-right" style="color:#f59e0b;">Legend</span>
+      </div>
+      {% for row in tier_table.GOLD.levels %}
+      <div class="dn-table-row">
+        <span class="dn-table-col-lvl">{{ row.range }}</span>
+        <span class="dn-table-col-center val-common">{{ row.COMMON }}%</span>
+        <span class="dn-table-col-center val-rare">{{ row.RARE }}%</span>
+        <span class="dn-table-col-val val-legendary">{{ row.LEGENDARY }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+
   </div>
 
-  {% elif drop_week.status == "ACTIVE" %}
-  {% with opt=drop_week.chosen_option %}
-  <div class="mission-card mission-card-{{ opt.rarity|lower }}">
-    <div class="mission-body">
-      <div class="mission-status-row">
-        <span class="mission-status-dot"></span>
-        <span class="mission-status-text">Активная миссия</span>
-      </div>
-      <p class="mission-cafe">{{ opt.cafe.name }}</p>
-      <span class="mission-rarity">{{ opt.get_rarity_display }}</span>
-
-      {% if opt.reward_offer %}
-      <div class="mission-reward-block">
-        <div class="mission-reward-kicker">Твоя награда</div>
-        <div class="mission-reward-text">{{ opt.reward_offer.benefit_text }}</div>
-      </div>
-      {% endif %}
-
-      <div class="mission-instruction">
-        <span class="mission-instruction-icon">🧾</span>
-        <span class="mission-instruction-text">
-          Сделай чек в <strong>{{ opt.cafe.name }}</strong> — купон начислится автоматически.
-        </span>
-      </div>
-
-      <div class="mission-footer">
-        <div class="mission-timer">
-          <span class="timer-dot"></span>
-          Осталось: <span id="dropTimer2">—</span>
-        </div>
-      </div>
-
-      {% if earned_coupon %}
-      <div class="mission-earned-label">Уже в копилке</div>
-      {% include "promo/includes/coupon_card.html" with item=earned_coupon source_label=earned_coupon.get_origin_display show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code card_class="coupon-card--profile" %}
-      {% endif %}
-    </div>
+  <!-- Блок «дроп получен» если уже выбрали -->
+  {% if earned_coupon %}
+  <div class="dn-received-block">
+    <div class="dn-received-label">Ваш дроп этой недели</div>
+    {% include "promo/includes/coupon_card.html" with item=earned_coupon show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code card_class="coupon-card--profile" %}
   </div>
-  {% endwith %}
+  {% endif %}
 
-  {% elif drop_week.status == "COMPLETED" %}
-  {% with opt=drop_week.chosen_option %}
-  <div class="mission-card mission-card-{{ opt.rarity|lower }}">
-    <div class="mission-body">
-      <div class="completed-status-row">
-        <div class="completed-status-left">
-          <span class="completed-dot"></span>
-          <span class="completed-status-label">Выполнено</span>
-        </div>
-        <span class="completed-rarity-label">{{ opt.get_rarity_display }}</span>
-      </div>
-      <p class="mission-cafe">{{ opt.cafe.name }}</p>
-      {% if opt.reward_offer %}
-      <div class="completed-reward-block">
-        <div class="completed-reward-text">{{ opt.reward_offer.benefit_text }}</div>
-        {% if earned_coupon %}
-        <div class="completed-coupon-row">
-          <span class="completed-coupon-badge">{{ earned_coupon.get_status_display }}</span>
-          <span class="completed-coupon-expires">до {{ earned_coupon.expires_at_display }}</span>
-        </div>
-        {% endif %}
-      </div>
-      {% endif %}
-      <div class="mission-card-divider"></div>
-      <div class="state-actions">
-        <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Мои купоны</a>
-        <a class="btn-ghost" href="/promo/">Промо</a>
-      </div>
-    </div>
-  </div>
-  {% endwith %}
+</div>
 
-  {% elif drop_week.status == "EXPIRED" %}
-  <div class="state-card">
-    <span class="state-emoji">⏰</span>
-    <p class="state-title">Drop истёк</p>
-    <p class="state-text">Неделя закончилась. Обнови — и мы подберём новый Drop.</p>
-    <div class="state-actions">
-      <a class="btn-primary" href="/drops/?refresh=1">Обновить</a>
-    </div>
-  </div>
+<!-- Sticky кнопка «Забрать дроп» -->
+<div class="dn-cta-wrap">
+  {% if cta_active %}
+    <a href="{% url 'drops:grab' %}"
+       class="dn-cta-btn {% if tier == 'BRONZE' %}dn-cta-btn--active-bronze{% elif tier == 'GOLD' %}dn-cta-btn--active-gold{% else %}dn-cta-btn--active-purple{% endif %}">
+      Забрать дроп
+      <span class="dn-cta-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </span>
+    </a>
+  {% else %}
+    <button class="dn-cta-btn dn-cta-btn--disabled" disabled>Забрать дроп</button>
+    <div class="dn-cta-hint">Доступно после окончания недели</div>
   {% endif %}
 </div>
 
 <script>
 (function () {
-  let left = Number("{{ drop_week.seconds_left|default:'0' }}") || 0;
-  const els = [document.getElementById("dropTimer"), document.getElementById("dropTimer2")].filter(Boolean);
-  function fmt(sec) {
-    sec = Math.max(0, sec);
-    const d = Math.floor(sec / 86400); sec %= 86400;
-    const h = Math.floor(sec / 3600);  sec %= 3600;
-    const m = Math.floor(sec / 60);    sec %= 60;
-    if (d > 0) return d + 'д · ' + String(h).padStart(2,'0') + 'ч · ' + String(m).padStart(2,'0') + 'м';
-    if (h > 0) return h + 'ч · ' + String(m).padStart(2,'0') + 'м · ' + String(sec).padStart(2,'0') + 'с';
-    return m + 'м · ' + String(sec).padStart(2,'0') + 'с';
+  let left = {{ current_week.seconds_left|default:0 }};
+  const d = document.getElementById('dn-td-d');
+  const h = document.getElementById('dn-td-h');
+  const m = document.getElementById('dn-td-m');
+  const s = document.getElementById('dn-td-s');
+  const p2 = n => String(Math.max(0, n)).padStart(2, '0');
+  function tick() {
+    const total = Math.max(0, left);
+    const days  = Math.floor(total / 86400);
+    const hours = Math.floor((total % 86400) / 3600);
+    const mins  = Math.floor((total % 3600) / 60);
+    const secs  = total % 60;
+    if (d) d.textContent = p2(days);
+    if (h) h.textContent = p2(hours);
+    if (m) m.textContent = p2(mins);
+    if (s) s.textContent = p2(secs);
+    if (left > 0) left--;
   }
-  function tick() { const t=fmt(left); els.forEach(el=>el.textContent=t); if(left>0) left--; }
-  tick(); setInterval(tick, 1000);
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
 {% endblock %}

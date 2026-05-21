@@ -15,6 +15,7 @@ urlpatterns = [
     path('promo/', include('promo.urls')),
     path('drops/', include('drops.urls')),
     path('trade/', include('trades.urls')),
+    path('staff/', include('staff.urls')),
 ]
 
 if settings.DEBUG:

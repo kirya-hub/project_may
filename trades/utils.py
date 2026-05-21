@@ -12,6 +12,7 @@ def trade_items_prefetch() -> Prefetch:
             'promocode',
             'promocode__source_offer',
             'promocode__source_offer__cafe',
+            'promocode__source_offer__menu_item',
         ).order_by('id'),
     )
 

@@ -107,7 +107,7 @@ def my_coupons(request):
         status = PromoCode.Status.ACTIVE
 
     coupons_qs = PromoCode.objects.filter(profile=profile).select_related(
-        'source_offer', 'source_offer__cafe'
+        'source_offer', 'source_offer__cafe', 'source_offer__menu_item'
     )
 
     counts = {

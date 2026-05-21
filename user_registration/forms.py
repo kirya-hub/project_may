@@ -2,10 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from cafes.models import City
+
 
 class RegisterForm(UserCreationForm):
     name = forms.CharField(required=True, label='Имя', max_length=50)
     email = forms.EmailField(required=True, label='Email')
+    city = forms.ModelChoiceField(
+        queryset=City.objects.all(),
+        required=False,
+        label='Город',
+        empty_label='Не выбран',
+    )
 
     class Meta(UserCreationForm.Meta):
         model = User

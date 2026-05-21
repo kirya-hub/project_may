@@ -90,8 +90,8 @@ class CouponOffer(models.Model):
         RARE = 'RARE', 'Редкий'
         LEGENDARY = 'LEGENDARY', 'Легендарный'
 
-    title = models.CharField('Название', max_length=120)
-    description = models.TextField('Описание', blank=True)
+    title = models.CharField('Название', max_length=120, blank=True, default='')
+    description = models.TextField('Описание')
 
     reward_type = models.CharField(
         'Тип награды',
@@ -108,17 +108,45 @@ class CouponOffer(models.Model):
 
     cafe = models.ForeignKey(
         'cafes.Cafe',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
         related_name='coupon_offers',
-        verbose_name='Кафе (если привязан)',
+        verbose_name='Кафе',
+    )
+
+    menu_item = models.ForeignKey(
+        'cafes.MenuItem',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='coupon_offers',
+        verbose_name='Блюдо меню',
+    )
+
+    image = models.ImageField(
+        upload_to='coupon_offers/',
+        null=True, blank=True,
+        verbose_name='Фон купона',
     )
 
     cost_points10 = models.PositiveIntegerField('Цена (баллы x10)', default=100)
 
     available_in_shop = models.BooleanField('Доступен в магазине', default=True)
     available_in_drop = models.BooleanField('Доступен в Drop', default=True)
+
+    @property
+    def background_image(self):
+        if self.image:
+            return self.image
+        if self.menu_item_id and self.menu_item.image:
+            return self.menu_item.image
+        if self.cafe_id and self.cafe.coupon_bg:
+            return self.cafe.coupon_bg
+        return None
+
+    @property
+    def background_focus(self):
+        if not self.image and self.menu_item_id and self.menu_item.image:
+            return self.menu_item.image_focus or 'center'
+        return 'center'
 
     @property
     def rarity_code(self) -> str:
@@ -134,11 +162,11 @@ class CouponOffer(models.Model):
 
     @property
     def display_title(self) -> str:
-        return self.title or self.get_reward_type_display()
+        return self.description.strip() or self.get_reward_type_display()
 
     @property
     def benefit_text(self) -> str:
-        return self.description.strip() if self.description else self.display_title
+        return self.description.strip() or self.get_reward_type_display()
 
     @property
     def cafe_name(self) -> str:
@@ -168,6 +196,11 @@ class CouponOffer(models.Model):
     is_active = models.BooleanField('В продаже', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.title and self.description:
+            self.title = self.description[:120]
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'Купон (магазин)'
@@ -178,4 +211,4 @@ class CouponOffer(models.Model):
         ]
 
     def __str__(self) -> str:
-        return self.title
+        return self.description[:60] or f'Купон #{self.pk}'

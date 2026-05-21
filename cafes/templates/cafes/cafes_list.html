@@ -21,6 +21,26 @@
                 </button>
             </div>
         </form>
+
+        {% if not q %}
+        <div class="city-chip-row" id="city-chip-row">
+            <div class="city-chip" id="city-chip-trigger">
+                <span class="city-chip-pin">📍</span>
+                <span class="city-chip-name">{% if active_city %}{{ active_city.name }}{% else %}Все города{% endif %}</span>
+                <span class="city-chip-change">Изменить</span>
+            </div>
+            <div class="city-dropdown" id="city-dropdown" hidden>
+                <a href="?city=all" class="city-dropdown-item {% if not active_city %}city-dropdown-item--active{% endif %}">
+                    Все города
+                </a>
+                {% for city in all_cities %}
+                <a href="?city={{ city.pk }}" class="city-dropdown-item {% if active_city.pk == city.pk %}city-dropdown-item--active{% endif %}">
+                    {{ city.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div class="cafes-list">
@@ -94,6 +114,32 @@
         });
 
         sync();
+
+        const trigger = document.getElementById('city-chip-trigger');
+        const dropdown = document.getElementById('city-dropdown');
+
+        if (trigger && dropdown) {
+            // Гарантируем что при загрузке дропдаун скрыт
+            dropdown.hidden = true;
+
+            trigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdown.hidden = !dropdown.hidden;
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target) && e.target !== trigger) {
+                    dropdown.hidden = true;
+                }
+            });
+
+            // При клике на пункт — закрыть дропдаун до навигации
+            dropdown.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    dropdown.hidden = true;
+                });
+            });
+        }
     })();
 </script>
 {% endblock %}

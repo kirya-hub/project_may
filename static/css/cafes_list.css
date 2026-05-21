@@ -218,6 +218,90 @@ body {
     color: rgba(255, 255, 255, 0.3);
 }
 
+/* ── City chip ────────────────────────────────────────────── */
+.city-chip-row {
+    position: relative;
+    margin-top: 10px;
+}
+
+.city-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(123, 47, 247, 0.12);
+    border: 1px solid rgba(123, 47, 247, 0.35);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.city-chip:hover {
+    background: rgba(123, 47, 247, 0.18);
+    border-color: rgba(123, 47, 247, 0.55);
+}
+
+.city-chip-pin {
+    font-size: 13px;
+    line-height: 1;
+}
+
+.city-chip-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.city-chip-change {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(123, 47, 247, 0.85);
+    margin-left: 2px;
+}
+
+.city-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 200;
+    background: #1c1c2e;
+    border: 1px solid rgba(123, 47, 247, 0.3);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    min-width: 180px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.city-dropdown[hidden] {
+    display: none;
+}
+
+.city-dropdown-item {
+    display: block;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: background 0.14s, color 0.14s;
+}
+
+.city-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.city-dropdown-item--active {
+    background: rgba(123, 47, 247, 0.15);
+    color: #c4b5fd;
+    font-weight: 800;
+}
+
 .cafes-empty {
     padding: 20px 16px;
     border: 1px solid var(--cafes-line);

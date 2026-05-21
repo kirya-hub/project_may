@@ -7,8 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from drops.services import try_complete_by_order
-from promo.services import accrue_points_for_order
+from promo.services import accrue_points_for_order, get_weekly_accrual_status
+from user_profile.levels import grant_post_xp_once_per_day
 
 from .forms import OrderForm
 from .models import Order
@@ -94,10 +94,27 @@ def add_order_page(request):
                 messages.warning(request, 'Позиции чека не совпали с меню кафе. Пост не создан.')
                 return redirect('add_order')
 
-            accrue_points_for_order(order)
-            try_complete_by_order(order)
+            points_earned = accrue_points_for_order(order)
+            weekly_used, weekly_limit = get_weekly_accrual_status(request.user)
 
-            messages.success(request, 'Заказ опубликован!')
+            try:
+                grant_post_xp_once_per_day(request.user)
+            except Exception as exc:
+                logger.warning('grant_post_xp failed for user=%s: %s', request.user.pk, exc)
+
+            if points_earned > 0:
+                points_display = points_earned // 10
+                messages.success(
+                    request,
+                    f'Заказ опубликован! +{points_display} баллов. Чеков с кэшбэком на этой неделе: {weekly_used}/{weekly_limit}.'
+                )
+            elif weekly_used >= weekly_limit:
+                messages.success(
+                    request,
+                    f'Заказ опубликован! Лимит кэшбэка на этой неделе исчерпан ({weekly_limit}/{weekly_limit}).'
+                )
+            else:
+                messages.success(request, 'Заказ опубликован!')
             return redirect('add_order')
         else:
             messages.error(request, 'Проверь поля формы — есть ошибки.')

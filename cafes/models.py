@@ -5,13 +5,49 @@ from django.utils.text import slugify
 User = get_user_model()
 
 
+class City(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name) or 'city'
+            slug = base_slug
+            index = 2
+            while City.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f'{base_slug}-{index}'
+                index += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+
 class Cafe(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     avatar = models.ImageField(upload_to='cafes/avatars/', blank=True, null=True)
+    coupon_bg = models.ImageField(
+        upload_to='cafes/coupon_bg/',
+        blank=True, null=True,
+        verbose_name='Фон купонов кафе',
+    )
     address = models.CharField(max_length=255, blank=True)
     working_hours = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    city = models.ForeignKey(
+        City,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='cafes',
+        verbose_name='Город',
+    )
     latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
 
@@ -84,6 +120,19 @@ class MenuItem(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=7, decimal_places=2)
     image = models.ImageField(upload_to='cafes/menu_items/', blank=True, null=True)
+    image_focus = models.CharField(
+        max_length=20,
+        default='center',
+        choices=[
+            ('center', 'Центр'),
+            ('top', 'Сверху'),
+            ('bottom', 'Снизу'),
+            ('left', 'Слева'),
+            ('right', 'Справа'),
+        ],
+        verbose_name='Фокус фото',
+        help_text='Где находится блюдо на фото',
+    )
 
     class Meta:
         verbose_name = 'Позиция меню'

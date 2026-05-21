@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="drops-info-page">
+
+  <h2 class="drops-info-title">Система дропов</h2>
+
+  <!-- Тиры -->
+  <div class="drops-info-card">
+    <div class="drops-info-card__header">Тиры недели</div>
+    <div class="drops-tier-row">
+      <div class="drops-tier drops-tier--none">
+        <div class="drops-tier__name">Нет тира</div>
+        <div class="drops-tier__desc">&lt;500₽ в неделю</div>
+        <div class="drops-tier__note">дроп не генерируется</div>
+      </div>
+      <div class="drops-tier drops-tier--bronze">
+        <div class="drops-tier__name">🥉 Bronze</div>
+        <div class="drops-tier__desc">500–1999₽</div>
+      </div>
+      <div class="drops-tier drops-tier--gold">
+        <div class="drops-tier__name">🥇 Gold</div>
+        <div class="drops-tier__desc">2000₽+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Бонус уровня -->
+  <div class="drops-info-card">
+    <div class="drops-info-card__header">Бонус уровня к сумме чеков</div>
+    <div class="drops-table">
+      <div class="drops-table__row drops-table__row--head">
+        <span>Уровень</span><span>Бонус</span>
+      </div>
+      {% for row in level_bonuses %}
+      <div class="drops-table__row">
+        <span>{{ row.range }}</span><span class="drops-table__bonus">+{{ row.bonus }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Bronze шансы -->
+  <div class="drops-info-card">
+    <div class="drops-info-card__header">🥉 Bronze — шансы купонов</div>
+    <div class="drops-table">
+      <div class="drops-table__row drops-table__row--head">
+        <span>Уровень</span><span class="rarity-common">Common</span><span class="rarity-rare">Rare</span>
+      </div>
+      {% for row in tier_table.BRONZE.levels %}
+      <div class="drops-table__row">
+        <span>{{ row.range }}</span>
+        <span class="rarity-common">{{ row.COMMON }}%</span>
+        <span class="rarity-rare">{{ row.RARE }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Gold шансы -->
+  <div class="drops-info-card">
+    <div class="drops-info-card__header">🥇 Gold — шансы купонов</div>
+    <div class="drops-table">
+      <div class="drops-table__row drops-table__row--head">
+        <span>Уровень</span><span class="rarity-common">Common</span><span class="rarity-rare">Rare</span><span class="rarity-legendary">Legendary</span>
+      </div>
+      {% for row in tier_table.GOLD.levels %}
+      <div class="drops-table__row">
+        <span>{{ row.range }}</span>
+        <span class="rarity-common">{{ row.COMMON }}%</span>
+        <span class="rarity-rare">{{ row.RARE }}%</span>
+        <span class="rarity-legendary">{{ row.LEGENDARY }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<style>
+.drops-info-page { padding: 0 0 32px; }
+.drops-info-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+.drops-info-card {
+  background: var(--card-bg, #1a1a2e); border-radius: 16px;
+  padding: 16px; margin-bottom: 12px;
+}
+.drops-info-card__header {
+  font-size: 14px; font-weight: 600; color: var(--text-muted, #aaa);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;
+}
+.drops-tier-row { display: flex; gap: 8px; }
+.drops-tier {
+  flex: 1; border-radius: 12px; padding: 12px 8px; text-align: center;
+}
+.drops-tier--none { background: rgba(255,255,255,0.05); }
+.drops-tier--bronze { background: rgba(180,100,30,0.2); border: 1px solid rgba(180,100,30,0.4); }
+.drops-tier--gold { background: rgba(220,180,0,0.15); border: 1px solid rgba(220,180,0,0.4); }
+.drops-tier__name { font-weight: 700; font-size: 13px; }
+.drops-tier__desc { font-size: 12px; color: var(--text-muted, #aaa); margin-top: 4px; }
+.drops-tier__note { font-size: 11px; color: var(--text-muted, #888); margin-top: 4px; }
+.drops-table { display: flex; flex-direction: column; gap: 2px; }
+.drops-table__row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px;
+}
+.drops-table__row:last-child { border-bottom: none; }
+.drops-table__row--head { color: var(--text-muted, #888); font-size: 12px; font-weight: 600; }
+.drops-table__bonus { color: #4ade80; font-weight: 600; }
+.rarity-common { color: #d1d5db; }
+.rarity-rare { color: #818cf8; font-weight: 600; }
+.rarity-legendary { color: #f59e0b; font-weight: 700; }
+</style>
+{% endblock %}
