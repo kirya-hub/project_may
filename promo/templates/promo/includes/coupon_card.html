@@ -1,37 +1,39 @@
-<div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}{% if item.background_image %} coupon-card--has-bg{% endif %}"{% if item.background_image %} style="position:relative;overflow:hidden;"{% endif %}>
+<div class="coupon-card coupon-card--{{ item.rarity_code|default:'common' }}{% if card_class %} {{ card_class }}{% endif %}{% if item.background_image %} coupon-card--has-bg{% endif %}">
     {% if item.background_image %}
-    <div class="coupon-card__bg" style="position:absolute;inset:0;z-index:0;background-image:url('{{ item.background_image.url }}');background-size:cover;background-position:{{ item.background_focus }};"></div>
-    <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.5);"></div>
+    <div class="coupon-card__bg" style="background-image:url('{{ item.background_image.url }}');background-position:{{ item.background_focus }};"></div>
+    <div class="coupon-card__bg-overlay"></div>
     {% endif %}
 
     <div class="coupon-card__accent"></div>
-    <div class="coupon-card__cut coupon-card__cut--top"></div>
-    <div class="coupon-card__cut coupon-card__cut--bottom"></div>
 
-    <div class="coupon-card__top" style="position:relative;z-index:2;">
-        <div style="flex:1;min-width:0;">
-            <div style="font-size:18px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-0.01em;">{{ item.benefit_text }}</div>
+    <div class="coupon-card__top">
+        <div class="coupon-card__title-wrap">
+            <div class="coupon-card__benefit">{{ item.benefit_text }}</div>
         </div>
         <div class="coupon-card__top-right">
-            {% if price_label %}
+            {% if price_value %}
+            <div class="coupon-card__price-block coupon-card__price-block--{{ item.rarity_code|default:'common' }}">
+                <div class="coupon-card__price-num">{{ price_value }}</div>
+                <div class="coupon-card__price-unit">БАЛЛОВ</div>
+            </div>
+            {% elif price_label %}
             <div class="coupon-card__price">{{ price_label }}</div>
             {% elif show_status %}
-            <div class="coupon-status coupon-status--{{ item.rarity_code|default:'common' }}{% if item.status == 'USED' %} coupon-status--used{% elif item.status == 'EXPIRED' %} coupon-status--expired{% endif %}">
-                {{ item.get_status_display }}
-            </div>
+            <div class="coupon-status coupon-status--{{ item.rarity_code|default:'common' }}{% if item.status == 'USED' %} coupon-status--used{% elif item.status == 'EXPIRED' %} coupon-status--expired{% endif %}">{{ item.get_status_display }}</div>
             {% endif %}
         </div>
     </div>
 
-    <div class="coupon-card__meta-row" style="position:relative;z-index:2;">
+    <div class="coupon-card__meta-row">
         {% if item.cafe_name %}<span class="coupon-chip coupon-chip--outline">{{ item.cafe_name }}</span>{% endif %}
         <span class="coupon-chip coupon-chip--{{ item.rarity_code|default:'common' }}">{{ item.rarity_display }}</span>
+        {% if source_label %}<span class="coupon-chip coupon-chip--source">{{ source_label }}</span>{% endif %}
         {% if extra_chip %}<span class="coupon-chip coupon-chip--outline">{{ extra_chip }}</span>{% endif %}
     </div>
 
-    <div class="coupon-card__divider" style="position:relative;z-index:2;"></div>
+    <div class="coupon-card__divider"></div>
 
-    <div class="coupon-card__bottom" style="position:relative;z-index:2;">
+    <div class="coupon-card__bottom">
         <div class="coupon-card__info">
             {% if footer_label %}<div class="coupon-card__footer-label">{{ footer_label }}</div>{% endif %}
             {% if footer_value %}<div class="coupon-card__footer-value">{{ footer_value }}</div>{% endif %}
@@ -42,13 +44,14 @@
         {% if action_url %}
         <form method="post" action="{{ action_url }}">
             {% csrf_token %}
-            <button type="submit" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}" {% if action_disabled %}disabled{% endif %}>{{ action_label }}</button>
+            <button type="submit" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}"{% if action_disabled %} disabled{% endif %}>{{ action_label }}</button>
         </form>
         {% else %}
-        <button type="button" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}" {% if action_disabled %}disabled{% endif %}>{{ action_label }}</button>
+        <button type="button" class="coupon-btn coupon-btn--{{ item.rarity_code|default:'common' }}{% if action_disabled %} is-disabled{% endif %}"{% if action_disabled %} disabled{% endif %}>{{ action_label }}</button>
         {% endif %}
         {% endif %}
     </div>
 
-    {% if used_text %}<div class="coupon-card__helper" style="position:relative;z-index:2;">{{ used_text }}</div>{% endif %}
+    {% if helper_text %}<div class="coupon-card__helper">{{ helper_text }}</div>{% endif %}
+    {% if used_text %}<div class="coupon-card__helper">{{ used_text }}</div>{% endif %}
 </div>

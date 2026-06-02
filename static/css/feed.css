@@ -755,7 +755,7 @@
 
 .event-head {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -808,7 +808,7 @@
   filter: brightness(0) invert(1);
 }
 
-.event-body { position: relative; z-index: 1; margin-top: 14px; }
+.event-body { position: relative; z-index: 2; margin-top: 14px; }
 
 .event-topline {
   display: flex;

@@ -35,11 +35,11 @@
         {% url 'promo:buy_coupon' o.id as buy_coupon_url %}
 
         {% if active_shop_coupon %}
-        {% include "promo/includes/coupon_card.html" with item=o price_label=o.price_display footer_label="Срок" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url action_disabled='1' helper_text="Сначала используй текущий магазинный купон" %}
+        {% include "promo/includes/coupon_card.html" with item=o price_value=o.cost_points footer_label="СРОК" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url action_disabled='1' helper_text="Сначала используй текущий купон" %}
         {% elif points10 < o.cost_points10 %}
-        {% include "promo/includes/coupon_card.html" with item=o price_label=o.price_display footer_label="Срок" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url action_disabled='1' helper_text="Не хватает баллов" %}
+        {% include "promo/includes/coupon_card.html" with item=o price_value=o.cost_points footer_label="СРОК" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url action_disabled='1' helper_text="Не хватает баллов" %}
         {% else %}
-        {% include "promo/includes/coupon_card.html" with item=o price_label=o.price_display footer_label="Срок" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url %}
+        {% include "promo/includes/coupon_card.html" with item=o price_value=o.cost_points footer_label="СРОК" footer_value=o.expires_hint action_label="Купить" action_url=buy_coupon_url %}
         {% endif %}
 
         {% empty %}

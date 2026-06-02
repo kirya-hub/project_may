@@ -175,7 +175,7 @@ class CouponOffer(models.Model):
     @property
     def expires_hint(self) -> str:
         if self.expires_in_days:
-            return f'Срок: {self.expires_in_days} дн. после покупки'
+            return f'{self.expires_in_days} дн. после покупки'
         return 'Без срока'
 
     @property
