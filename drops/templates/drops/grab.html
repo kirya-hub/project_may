@@ -12,16 +12,17 @@
   .grab-wrap {
     max-width: 520px;
     margin: 0 auto;
-    padding: 14px 14px 40px;
+    padding: 26px 14px 120px;
+    box-sizing: border-box;
   }
 
   /* ── Заголовок ── */
   .grab-header { margin-bottom: 20px; }
   .grab-title {
-    font-size: 24px; font-weight: 900; color: rgba(255,255,255,.92);
+    font-size: 24px; font-weight: 900; color: var(--text-primary);
     letter-spacing: -0.03em; margin: 0 0 6px;
   }
-  .grab-subtitle { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.5; }
+  .grab-subtitle { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin: 0; }
 
   /* ── Карточки вариантов ── */
   .grab-grid { display: flex; flex-direction: column; gap: 14px; }
@@ -31,6 +32,7 @@
     border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
     color: #fff; box-shadow: 0 16px 32px rgba(15,23,42,.22);
     animation: dce .4s cubic-bezier(.2,.8,.2,1) both;
+    width: 100%;
   }
   @keyframes dce {
     from { opacity:0; transform:translateY(10px) scale(.98); }
@@ -68,7 +70,7 @@
   .drop-card-body { padding: 18px 18px 18px 22px; position: relative; z-index: 2; }
   .drop-card-head {
     display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 12px; margin-bottom: 12px;
+    justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
   }
   .drop-cafe-name {
     font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
@@ -101,9 +103,10 @@
   .drop-card-footer {
     padding: 14px 18px 16px 22px;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    position: relative; z-index: 2;
+    position: relative; z-index: 2; flex-wrap: wrap;
   }
   .drop-card-rarity-label { font-size: 12px; color: rgba(236,241,248,.60); font-weight: 600; }
+  .drop-card-footer form { margin: 0; flex-shrink: 0; }
 
   .btn-choose {
     display: inline-flex; align-items: center; justify-content: center;
@@ -120,22 +123,22 @@
 
   /* ── Состояния (wait / completed / expired / no_tier) ── */
   .grab-state-card {
-    border: 1px solid rgba(255,255,255,.06); border-radius: 24px; padding: 28px 22px;
-    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-    box-shadow: 0 14px 30px rgba(0,0,0,.25);
+    border: 1px solid var(--border-soft); border-radius: 24px; padding: 28px 22px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-md);
   }
   .grab-state-emoji { font-size: 40px; margin-bottom: 12px; display: block; }
   .grab-state-title {
-    font-size: 22px; font-weight: 900; color: rgba(255,255,255,.92);
+    font-size: 22px; font-weight: 900; color: var(--text-primary);
     margin: 0 0 8px; letter-spacing: -0.02em;
   }
-  .grab-state-text { font-size: 14px; color: rgba(255,255,255,.50); line-height: 1.6; margin: 0 0 20px; }
+  .grab-state-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0 0 20px; }
 
   /* Таймер ожидания (фаза ACCUMULATE) */
   .grab-wait-timer {
     display: flex; align-items: center; gap: 8px;
     padding: 12px 16px; border-radius: 14px;
-    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+    background: var(--bg-surface); border: 1px solid var(--border-soft);
     margin-bottom: 16px;
   }
   .grab-wait-dot {
@@ -146,29 +149,45 @@
     0%,100%{ opacity:1; transform:scale(1); }
     50%    { opacity:.45; transform:scale(.75); }
   }
-  .grab-wait-timer-text { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.68); }
+  .grab-wait-timer-text { font-size: 13px; font-weight: 700; color: var(--text-primary); }
 
-  .grab-actions { display: flex; gap: 10px; }
+  .grab-actions { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn-primary {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 1; padding: 14px 12px; border-radius: 16px;
     font-weight: 700; font-size: 14px; border: none;
-    background: #6366f1; color: #fff; text-decoration: none;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); color: #fff; text-decoration: none;
     box-shadow: 0 8px 20px rgba(99,102,241,.18);
   }
   .btn-ghost {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 1; padding: 14px 12px; border-radius: 16px;
     font-weight: 700; font-size: 14px;
-    border: 1px solid rgba(255,255,255,.10); background: transparent;
-    color: rgba(255,255,255,.7); text-decoration: none;
+    border: 1px solid var(--border-soft); background: var(--bg-surface);
+    color: var(--text-primary); text-decoration: none;
   }
 
   /* Купон после выбора */
   .grab-coupon-label {
     font-size: 10px; font-weight: 700; letter-spacing: .12em;
-    text-transform: uppercase; color: rgba(255,255,255,.35);
+    text-transform: uppercase; color: var(--text-secondary);
     margin: 20px 0 10px;
+  }
+
+  @media (max-width: 430px) {
+    .grab-wrap { padding-left: 12px; padding-right: 12px; }
+    .drop-card-body { padding: 18px 16px 16px 20px; }
+    .drop-card-divider { margin: 0 16px 0 20px; }
+    .drop-card-footer { padding: 14px 16px 16px 20px; }
+  }
+
+  @media (max-width: 374px) {
+    .drop-card-footer form,
+    .btn-choose,
+    .grab-actions > a {
+      width: 100%;
+    }
+    .drop-card-rarity-label { width: 100%; }
   }
 </style>
 
@@ -185,7 +204,7 @@
     <div class="drop-card drop-card-{{ opt.rarity|lower }}">
       {% if opt.reward_offer and opt.reward_offer.background_image %}
       <div class="coupon-card__bg" style="position:absolute;inset:0;z-index:0;background-image:url('{{ opt.reward_offer.background_image.url }}');background-size:cover;background-position:{{ opt.reward_offer.background_focus }};"></div>
-      <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.5);"></div>
+      <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(17,12,28,0.54),rgba(17,12,28,0.68));"></div>
       {% endif %}
       <div class="drop-card-body">
         <div class="drop-card-head">
@@ -216,7 +235,7 @@
   {% elif state == 'wait' %}
   <div class="grab-state-card">
     <span class="grab-state-emoji">⏳</span>
-    <p class="grab-title" style="margin-bottom:8px;">Дождись конца недели</p>
+    <p class="grab-state-title">Дождись конца недели</p>
     <p class="grab-state-text">
       Неделя ещё идёт. Выбор дропа откроется в воскресенье вечером.
     </p>
@@ -233,7 +252,7 @@
   <!-- Уже выбрал -->
   <div class="grab-state-card">
     <span class="grab-state-emoji">🎉</span>
-    <p class="grab-title" style="margin-bottom:8px;">Дроп получен!</p>
+    <p class="grab-state-title">Дроп получен!</p>
     <p class="grab-state-text">Купон уже в твоей копилке. Используй его до истечения срока.</p>
     {% if earned_coupon %}
     <div class="grab-coupon-label">Твой купон</div>
@@ -249,7 +268,7 @@
   <!-- Дроп сгорел -->
   <div class="grab-state-card">
     <span class="grab-state-emoji">⏰</span>
-    <p class="grab-title" style="margin-bottom:8px;">Дроп истёк</p>
+    <p class="grab-state-title">Дроп истёк</p>
     <p class="grab-state-text">Окно выбора закрылось. Копи траты на этой неделе — и в следующий раз успеешь.</p>
     <div class="grab-actions">
       <a class="btn-ghost" href="{% url 'drops:drops_page' %}">← Назад</a>
@@ -260,7 +279,7 @@
   <!-- Недостаточно трат -->
   <div class="grab-state-card">
     <span class="grab-state-emoji">💸</span>
-    <p class="grab-title" style="margin-bottom:8px;">Мало трат</p>
+    <p class="grab-state-title">Мало трат</p>
     <p class="grab-state-text">
       Набери от 500&nbsp;₽ за неделю с учётом множителя уровня, чтобы попасть в Bronze.
       Дроп откроется после окончания недели.

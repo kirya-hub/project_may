@@ -4,21 +4,196 @@
 {% block title %}Активация купона{% endblock %}
 
 {% block content %}
-<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:24px 16px 100px;">
-  <div style="width:100%;max-width:380px;">
+<style>
+  .redeem-page {
+    min-height: calc(100dvh - 140px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 120px 16px calc(120px + env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+  }
 
-    <div style="text-align:center;margin-bottom:28px;">
-      <div style="font-size:26px;font-weight:900;color:rgba(255,255,255,0.95);letter-spacing:-0.03em;">
+  .redeem-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
+    padding: 22px;
+  }
+
+  .redeem-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .redeem-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .redeem-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 6px 0 0;
+  }
+
+  .redeem-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .redeem-input {
+    width: 100%;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: 0.25em;
+    padding: 20px 16px;
+    border-radius: 18px;
+    border: 2px solid rgba(124,58,237,0.35);
+    background: #FFFFFF;
+    color: var(--text-primary);
+    outline: none;
+    text-transform: uppercase;
+    caret-color: var(--accent-primary);
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+
+  .redeem-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .redeem-input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.14);
+  }
+
+  .redeem-button {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: opacity 0.18s, transform 0.12s;
+  }
+
+  .redeem-button:active {
+    transform: scale(0.97);
+  }
+
+  .redeem-error,
+  .redeem-result {
+    margin-top: 16px;
+    border-radius: 18px;
+  }
+
+  .redeem-error {
+    padding: 14px 16px;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #B91C1C;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .redeem-result {
+    padding: 20px;
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+  }
+
+  .redeem-result-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .redeem-result-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(34,197,94,0.14);
+    color: #15803D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .redeem-result-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #166534;
+  }
+
+  .redeem-result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .redeem-result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .redeem-result-label {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .redeem-result-value {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  @media (max-width: 430px) {
+    .redeem-page {
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-top: 88px;
+      min-height: calc(100dvh - 124px);
+    }
+
+    .redeem-card {
+      padding: 20px 18px;
+    }
+  }
+</style>
+
+<div class="redeem-page">
+  <div class="redeem-card">
+
+    <div class="redeem-header">
+      <div class="redeem-title">
         Активация купона
       </div>
-      <div style="font-size:14px;color:rgba(255,255,255,0.45);margin-top:6px;">
+      <div class="redeem-subtitle">
         Введите 4-значный код с экрана гостя
       </div>
     </div>
 
     <form method="post">
       {% csrf_token %}
-      <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="redeem-form">
         <input
           type="text"
           name="code"
@@ -29,44 +204,12 @@
           autocomplete="off"
           autocapitalize="characters"
           spellcheck="false"
-          style="
-            width:100%;
-            text-align:center;
-            font-size:40px;
-            font-weight:900;
-            letter-spacing:0.25em;
-            padding:20px 16px;
-            border-radius:18px;
-            border:2px solid rgba(123,47,247,0.4);
-            background:rgba(123,47,247,0.06);
-            color:#fff;
-            outline:none;
-            text-transform:uppercase;
-            caret-color:#7b2ff7;
-            transition:border-color 0.18s,box-shadow 0.18s;
-          "
-          onfocus="this.style.borderColor='#7b2ff7';this.style.boxShadow='0 0 0 4px rgba(123,47,247,0.18)'"
-          onblur="this.style.borderColor='rgba(123,47,247,0.4)';this.style.boxShadow='none'"
+          class="redeem-input"
         >
 
         <button
           type="submit"
-          style="
-            width:100%;
-            padding:16px;
-            border-radius:16px;
-            border:none;
-            background:linear-gradient(135deg,#7b2ff7,#6366f1);
-            color:#fff;
-            font-size:16px;
-            font-weight:800;
-            cursor:pointer;
-            letter-spacing:0.01em;
-            transition:opacity 0.18s,transform 0.12s;
-          "
-          onmousedown="this.style.transform='scale(0.97)'"
-          onmouseup="this.style.transform=''"
-          onmouseleave="this.style.transform=''"
+          class="redeem-button"
         >
           Активировать
         </button>
@@ -74,47 +217,31 @@
     </form>
 
     {% if error %}
-    <div style="
-      margin-top:16px;
-      padding:14px 16px;
-      border-radius:14px;
-      background:rgba(239,68,68,0.1);
-      border:1px solid rgba(239,68,68,0.3);
-      color:#f87171;
-      font-size:14px;
-      font-weight:600;
-      text-align:center;
-    ">
+    <div class="redeem-error">
       {{ error }}
     </div>
     {% endif %}
 
     {% if result %}
-    <div style="
-      margin-top:16px;
-      padding:20px;
-      border-radius:18px;
-      background:rgba(34,197,94,0.08);
-      border:1px solid rgba(34,197,94,0.3);
-    ">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;">✓</div>
-        <div style="font-size:17px;font-weight:800;color:#4ade80;">Купон активирован!</div>
+    <div class="redeem-result">
+      <div class="redeem-result-head">
+        <div class="redeem-result-icon">✓</div>
+        <div class="redeem-result-title">Купон активирован!</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;justify-content:space-between;gap:8px;">
-          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Купон</span>
-          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.display_title }}</span>
+      <div class="redeem-result-list">
+        <div class="redeem-result-row">
+          <span class="redeem-result-label">Купон</span>
+          <span class="redeem-result-value">{{ result.display_title }}</span>
         </div>
         {% if result.cafe_name %}
-        <div style="display:flex;justify-content:space-between;gap:8px;">
-          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Кафе</span>
-          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.cafe_name }}</span>
+        <div class="redeem-result-row">
+          <span class="redeem-result-label">Кафе</span>
+          <span class="redeem-result-value">{{ result.cafe_name }}</span>
         </div>
         {% endif %}
-        <div style="display:flex;justify-content:space-between;gap:8px;">
-          <span style="color:rgba(255,255,255,0.45);font-size:13px;">Владелец</span>
-          <span style="color:rgba(255,255,255,0.9);font-size:13px;font-weight:700;text-align:right;">{{ result.profile.user.username }}</span>
+        <div class="redeem-result-row">
+          <span class="redeem-result-label">Владелец</span>
+          <span class="redeem-result-value">{{ result.profile.user.username }}</span>
         </div>
       </div>
     </div>
