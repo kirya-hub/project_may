@@ -64,7 +64,11 @@ def feed_home(request):
             is_liked=models.Value(False, output_field=models.BooleanField())
         )
 
-    events_qs = FeedEvent.objects.select_related('user', 'user__profile', 'cafe').order_by(
+    events_qs = FeedEvent.objects.select_related(
+        'user', 'user__profile', 'cafe',
+        'promocode__source_offer__cafe',
+        'promocode__source_offer__menu_item',
+    ).order_by(
         '-created_at'
     )[:30]
 

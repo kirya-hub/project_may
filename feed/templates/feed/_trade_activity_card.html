@@ -2,40 +2,98 @@
 {% load feed_extras %}
 <div class="trade-feed-card">
 
-  <!-- Stacked coupon cards with exchange icon between them -->
-  <div class="trade-feed-card__coupons">
-    {% if e.offered_preview %}
-    {% with c=e.offered_preview.0 %}
-    <div class="trade-feed-card__coupon trade-feed-card__coupon--{{ c.rarity_code }}">
-      <div class="trade-feed-card__coupon-accent trade-feed-card__coupon-accent--{{ c.rarity_code }}"></div>
-      <div class="trade-feed-card__coupon-info">
-        <span class="trade-feed-card__coupon-name">{{ c.benefit_text }}</span>
-        <span class="trade-feed-card__coupon-rarity">{{ c.rarity_display }}</span>
-      </div>
-    </div>
-    {% endwith %}
-    {% endif %}
-
-    <div class="trade-feed-card__swap">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 1V13M7 1L4 4M7 1L10 4M7 13L4 10M7 13L10 10" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-
-    {% if e.requested_preview %}
-    {% with c=e.requested_preview.0 %}
-    <div class="trade-feed-card__coupon trade-feed-card__coupon--{{ c.rarity_code }}">
-      <div class="trade-feed-card__coupon-accent trade-feed-card__coupon-accent--{{ c.rarity_code }}"></div>
-      <div class="trade-feed-card__coupon-info">
-        <span class="trade-feed-card__coupon-name">{{ c.benefit_text }}</span>
-        <span class="trade-feed-card__coupon-rarity">{{ c.rarity_display }}</span>
-      </div>
-    </div>
-    {% endwith %}
-    {% endif %}
+  <div class="trade-feed-card__header">
+    <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}"
+       class="trade-feed-card__mini-av">
+      {% if e.trade.from_user.profile.avatar %}
+        <img src="{{ e.trade.from_user.profile.avatar.url }}" alt="">
+      {% else %}
+        <span>{{ e.trade.from_user.profile.name|default:e.trade.from_user.username|first|upper }}</span>
+      {% endif %}
+    </a>
+    <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}"
+       class="trade-feed-card__name">{{ e.trade.from_user.profile.name|default:e.trade.from_user.username }}</a>
+    <span class="trade-feed-card__gave">отдал</span>
   </div>
 
-  <!-- Bottom row: avatars + description + time -->
+  {% if e.offered_preview %}
+    {% with c=e.offered_preview.0 %}
+    <div class="trade-feed-card__coupon trade-feed-card__coupon--{{ c.rarity_code }}"{% if c.background_image %} style="--coupon-focus: {{ c.background_focus }};"{% endif %}>
+      {% if c.background_image %}
+        <div class="trade-feed-card__coupon-bg" style="background-image: url('{{ c.background_image.url }}');"></div>
+        <div class="trade-feed-card__coupon-overlay"></div>
+      {% endif %}
+      <div class="trade-feed-card__coupon-accent"></div>
+      <div class="trade-feed-card__coupon-content">
+        <span class="trade-feed-card__coupon-text">{{ c.benefit_text }}</span>
+        <div class="trade-feed-card__coupon-pills">
+          {% if c.cafe_name %}<span class="trade-feed-card__pill trade-feed-card__pill--cafe">{{ c.cafe_name }}</span>{% endif %}
+          <span class="trade-feed-card__pill trade-feed-card__pill--{{ c.rarity_code }}">{{ c.rarity_display }}</span>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+  {% else %}
+  <div class="trade-feed-card__coupon trade-feed-card__coupon--common">
+    <div class="trade-feed-card__coupon-accent"></div>
+    <div class="trade-feed-card__coupon-content">
+      <span class="trade-feed-card__coupon-text trade-feed-card__coupon-text--empty">Купон недоступен</span>
+    </div>
+  </div>
+  {% endif %}
+  {% if e.extra_offered_count %}<div class="trade-feed-card__extra">+{{ e.extra_offered_count }} ещё</div>{% endif %}
+
+  <div class="trade-feed-card__divider">
+    <div class="trade-feed-card__divider-line"></div>
+    <div class="trade-feed-card__swap">
+      <svg width="17" height="17" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1.5V12.5M4 5L7 1.5L10 5M4 9L7 12.5L10 9" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="trade-feed-card__divider-line"></div>
+  </div>
+
+  <div class="trade-feed-card__header">
+    <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}"
+       class="trade-feed-card__mini-av">
+      {% if e.trade.to_user.profile.avatar %}
+        <img src="{{ e.trade.to_user.profile.avatar.url }}" alt="">
+      {% else %}
+        <span>{{ e.trade.to_user.profile.name|default:e.trade.to_user.username|first|upper }}</span>
+      {% endif %}
+    </a>
+    <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}"
+       class="trade-feed-card__name">{{ e.trade.to_user.profile.name|default:e.trade.to_user.username }}</a>
+    <span class="trade-feed-card__gave">отдал</span>
+  </div>
+
+  {% if e.requested_preview %}
+    {% with c=e.requested_preview.0 %}
+    <div class="trade-feed-card__coupon trade-feed-card__coupon--{{ c.rarity_code }}"{% if c.background_image %} style="--coupon-focus: {{ c.background_focus }};"{% endif %}>
+      {% if c.background_image %}
+        <div class="trade-feed-card__coupon-bg" style="background-image: url('{{ c.background_image.url }}');"></div>
+        <div class="trade-feed-card__coupon-overlay"></div>
+      {% endif %}
+      <div class="trade-feed-card__coupon-accent"></div>
+      <div class="trade-feed-card__coupon-content">
+        <span class="trade-feed-card__coupon-text">{{ c.benefit_text }}</span>
+        <div class="trade-feed-card__coupon-pills">
+          {% if c.cafe_name %}<span class="trade-feed-card__pill trade-feed-card__pill--cafe">{{ c.cafe_name }}</span>{% endif %}
+          <span class="trade-feed-card__pill trade-feed-card__pill--{{ c.rarity_code }}">{{ c.rarity_display }}</span>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+  {% else %}
+  <div class="trade-feed-card__coupon trade-feed-card__coupon--common">
+    <div class="trade-feed-card__coupon-accent"></div>
+    <div class="trade-feed-card__coupon-content">
+      <span class="trade-feed-card__coupon-text trade-feed-card__coupon-text--empty">Купон недоступен</span>
+    </div>
+  </div>
+  {% endif %}
+  {% if e.extra_requested_count %}<div class="trade-feed-card__extra">+{{ e.extra_requested_count }} ещё</div>{% endif %}
+
   <div class="trade-feed-card__bottom">
     <div class="trade-feed-card__avatars">
       <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}"
@@ -43,7 +101,7 @@
         {% if e.trade.from_user.profile.avatar %}
           <img src="{{ e.trade.from_user.profile.avatar.url }}" alt="">
         {% else %}
-          <span>{{ e.trade.from_user.username|first|upper }}</span>
+          <span>{{ e.trade.from_user.profile.name|default:e.trade.from_user.username|first|upper }}</span>
         {% endif %}
       </a>
       <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}"
@@ -51,14 +109,16 @@
         {% if e.trade.to_user.profile.avatar %}
           <img src="{{ e.trade.to_user.profile.avatar.url }}" alt="">
         {% else %}
-          <span>{{ e.trade.to_user.username|first|upper }}</span>
+          <span>{{ e.trade.to_user.profile.name|default:e.trade.to_user.username|first|upper }}</span>
         {% endif %}
       </a>
     </div>
     <span class="trade-feed-card__desc">
-      <span class="trade-feed-card__username">@{{ e.trade.from_user.username }}</span>
+      <a href="{% url 'profile_by_username' e.trade.from_user.username %}?next={{ request.get_full_path|urlencode }}"
+         class="trade-feed-card__username">{{ e.trade.from_user.profile.name|default:e.trade.from_user.username }}</a>
       <span> обменялся с </span>
-      <span class="trade-feed-card__username">@{{ e.trade.to_user.username }}</span>
+      <a href="{% url 'profile_by_username' e.trade.to_user.username %}?next={{ request.get_full_path|urlencode }}"
+         class="trade-feed-card__username">{{ e.trade.to_user.profile.name|default:e.trade.to_user.username }}</a>
     </span>
     <div class="trade-feed-card__time">{{ e.created_at|smart_time }}</div>
   </div>

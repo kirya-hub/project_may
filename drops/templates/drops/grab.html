@@ -65,7 +65,7 @@
   .drop-card-rare::before      { background: linear-gradient(180deg,#cb63ff,#7b2cff); }
   .drop-card-legendary::before { background: linear-gradient(180deg,#ffd95a,#ff9f0a); }
 
-  .drop-card-body { padding: 18px 18px 18px 22px; }
+  .drop-card-body { padding: 18px 18px 18px 22px; position: relative; z-index: 2; }
   .drop-card-head {
     display: flex; align-items: flex-start;
     justify-content: space-between; gap: 12px; margin-bottom: 12px;
@@ -101,6 +101,7 @@
   .drop-card-footer {
     padding: 14px 18px 16px 22px;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    position: relative; z-index: 2;
   }
   .drop-card-rarity-label { font-size: 12px; color: rgba(236,241,248,.60); font-weight: 600; }
 
@@ -182,6 +183,10 @@
   <div class="grab-grid">
     {% for opt in options %}
     <div class="drop-card drop-card-{{ opt.rarity|lower }}">
+      {% if opt.reward_offer and opt.reward_offer.background_image %}
+      <div class="coupon-card__bg" style="position:absolute;inset:0;z-index:0;background-image:url('{{ opt.reward_offer.background_image.url }}');background-size:cover;background-position:{{ opt.reward_offer.background_focus }};"></div>
+      <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.5);"></div>
+      {% endif %}
       <div class="drop-card-body">
         <div class="drop-card-head">
           <p class="drop-cafe-name">{{ opt.cafe.name }}</p>
@@ -209,13 +214,11 @@
   </div>
 
   {% elif state == 'wait' %}
-  <!-- Неделя ещё идёт -->
   <div class="grab-state-card">
     <span class="grab-state-emoji">⏳</span>
     <p class="grab-title" style="margin-bottom:8px;">Дождись конца недели</p>
     <p class="grab-state-text">
-      Неделя ещё идёт. Опции дропа откроются в воскресенье вечером —
-      когда закроется текущий цикл накоплений.
+      Неделя ещё идёт. Выбор дропа откроется в воскресенье вечером.
     </p>
     <div class="grab-wait-timer">
       <span class="grab-wait-dot"></span>
@@ -234,7 +237,7 @@
     <p class="grab-state-text">Купон уже в твоей копилке. Используй его до истечения срока.</p>
     {% if earned_coupon %}
     <div class="grab-coupon-label">Твой купон</div>
-    {% include "promo/includes/coupon_card.html" with item=earned_coupon show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.code card_class="coupon-card--profile" %}
+    {% include "promo/includes/coupon_card.html" with item=earned_coupon show_status='1' footer_label="Срок" footer_value=earned_coupon.expires_at_display subfooter=earned_coupon.activation_code card_class="coupon-card--profile" %}
     {% endif %}
     <div class="grab-actions" style="margin-top:20px;">
       <a class="btn-primary" href="{% url 'promo:my_coupons' %}">Мои купоны</a>

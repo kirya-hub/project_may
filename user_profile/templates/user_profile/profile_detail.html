@@ -220,7 +220,7 @@
   <div class="profile-showcase-grid">
     {% for p in promocodes %}
     {% if is_own_profile %}
-    {% include "promo/includes/coupon_card.html" with item=p source_label=p.get_origin_display show_status='1' footer_label="Срок" footer_value=p.expires_at_display subfooter=p.code card_class="coupon-card--profile" %}
+    {% include "promo/includes/coupon_card.html" with item=p source_label=p.get_origin_display show_status='1' footer_label="Срок" footer_value=p.expires_at_display subfooter=p.activation_code card_class="coupon-card--profile" %}
     {% else %}
     {% include "promo/includes/coupon_card.html" with item=p source_label=p.get_origin_display show_status='1' footer_label="Срок" footer_value=p.expires_at_display card_class="coupon-card--profile" %}
     {% endif %}

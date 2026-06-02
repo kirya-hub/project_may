@@ -335,6 +335,7 @@ def choose_option(user, option_id: int) -> DropWeek:
 
     profile, _ = Profile.objects.select_for_update().get_or_create(user=user)
 
+    earned_promocode = None
     if option.reward_offer_id:
         previous_drop = get_active_drop_coupon(profile)
         if previous_drop is not None:
@@ -342,7 +343,7 @@ def choose_option(user, option_id: int) -> DropWeek:
             previous_drop.save(update_fields=['status'])
 
         expires_at = timezone.localdate() + timedelta(days=DROP_EXPIRATION_DAYS[option.rarity])
-        PromoCode.objects.create(
+        earned_promocode = PromoCode.objects.create(
             profile=profile,
             source_offer_id=option.reward_offer_id,
             origin=PromoCode.Origin.DROP,
@@ -362,6 +363,7 @@ def choose_option(user, option_id: int) -> DropWeek:
         cafe=option.cafe,
         rarity=option.rarity,
         text=f'выбрал Drop: {option.cafe.name}',
+        promocode=earned_promocode,
     )
 
     try:

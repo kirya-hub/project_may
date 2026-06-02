@@ -2,6 +2,10 @@
 {% load feed_extras %}
 
 <div class="post-card event-card event-card-drop event-card-{{ e.rarity|lower }}">
+    {% if e.promocode and e.promocode.background_image %}
+    <div class="coupon-card__bg" style="position:absolute;inset:0;z-index:0;background-image:url('{{ e.promocode.background_image.url }}');background-size:cover;background-position:{{ e.promocode.background_focus }};"></div>
+    <div class="coupon-card__bg-overlay" style="position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.55);"></div>
+    {% endif %}
     <div class="event-head">
         <div class="post-left">
             <a href="{% url 'profile_by_username' e.user.username %}?next={{ request.get_full_path|urlencode }}"
@@ -9,14 +13,14 @@
                 {% if e.user.profile.avatar %}
                 <img class="post-avatar-img" src="{{ e.user.profile.avatar.url }}" alt="ava" draggable="false">
                 {% else %}
-                <div class="post-avatar-fallback">{{ e.user.username|first|upper }}</div>
+                <div class="post-avatar-fallback">{{ e.user.profile.name|default:e.user.username|first|upper }}</div>
                 {% endif %}
             </a>
 
             <div class="post-userblock">
                 <div class="event-user-meta">
                     <a href="{% url 'profile_by_username' e.user.username %}?next={{ request.get_full_path|urlencode }}"
-                        class="post-user-link"><span class="post-user-link-text">{{ e.user.username }}</span></a>
+                        class="post-user-link"><span class="post-user-link-text">{{ e.user.profile.name|default:e.user.username }}</span></a>
                     {% include "includes/level_badge.html" with user=e.user size="compact" %}
                 </div>
 
@@ -39,8 +43,12 @@
             <div class="event-rarity event-rarity-{{ e.rarity|lower }}">{{ e.get_rarity_display }}</div>
         </div>
 
-        <div class="event-title">{{ e.user.username }} выбрал новый drop</div>
+        <div class="event-title">{{ e.user.profile.name|default:e.user.username }} выбрал новый drop</div>
+        {% if e.promocode %}
+        <div class="event-text">{{ e.promocode.benefit_text }}</div>
+        {% else %}
         <div class="event-text">{{ e.text }}</div>
+        {% endif %}
 
         <div class="event-footer">
             <div class="post-time-inline">{{ e.created_at|smart_time }}</div>

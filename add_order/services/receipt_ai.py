@@ -8,7 +8,10 @@ from google import genai
 from google.genai import types
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
-client = genai.Client(api_key=settings.GEMINI_API_KEY)
+client = genai.Client(
+    api_key=settings.GEMINI_API_KEY,
+    http_options={'base_url': 'https://newbotttc.tilikin-kirill-111.workers.dev'},
+)
 
 
 def preprocess_image(image_path: str) -> bytes:

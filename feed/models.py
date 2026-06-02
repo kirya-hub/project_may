@@ -79,6 +79,14 @@ class FeedEvent(models.Model):
         default=Rarity.COMMON,
     )
 
+    promocode = models.ForeignKey(
+        'user_profile.PromoCode',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='feed_events',
+    )
+
     text = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
