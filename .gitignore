@@ -16,3 +16,6 @@ staticfiles
 # Local database backups
 *.dump
 *.sql
+
+# Local media backups
+*.tar.gz
