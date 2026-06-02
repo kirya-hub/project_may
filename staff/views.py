@@ -16,6 +16,7 @@ def _cafe_staff_required(view_func):
         if not (request.user.is_staff or CafeStaff.objects.filter(user=request.user).exists()):
             return HttpResponseForbidden('Доступ запрещён. Нужна учётная запись сотрудника кафе.')
         return view_func(request, *args, **kwargs)
+
     return wrapper
 
 
@@ -36,6 +37,9 @@ def staff_redeem(request):
 
                 today = timezone.localdate()
                 if promo.expires_at and promo.expires_at < today:
+                    # Обновляем статус в БД — expire_profile_coupons мог не успеть
+                    promo.status = PromoCode.Status.EXPIRED
+                    promo.save(update_fields=['status'])
                     error = 'Купон истёк.'
                 else:
                     promo.status = PromoCode.Status.USED

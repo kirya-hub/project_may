@@ -35,9 +35,9 @@
 
 /* ── upload areas ── */
 .upload-area {
-  border: 1px solid #2a2a3a;
+  border: 1px solid var(--border-soft);
   border-radius: 14px;
-  background: #1c1c26;
+  background: var(--bg-surface);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,8 +47,8 @@
   gap: 8px;
 }
 .upload-area:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-medium);
+  background: var(--bg-surface);
 }
 
 .big-upload  { height: 120px; width: 100%; }
@@ -72,7 +72,7 @@
 
 .upload-gallery-text {
   font-size: 14px;
-  color: #8a82b8;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -84,14 +84,14 @@
 .plus-icon {
   font-size: 22px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-muted);
   line-height: 1;
 }
 
 .upload-text {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-muted);
   position: absolute;
   bottom: 7px;
 }
@@ -111,13 +111,13 @@
   padding: 11px 13px;
   font-size: 15px;
   font-family: inherit;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface);
   resize: none;
   outline: none;
   color: var(--ao-text);
   transition: border-color .18s;
 }
-.comment-input:focus { border-color: rgba(255, 255, 255, 0.18); }
+.comment-input:focus { border-color: var(--border-medium); }
 
 /* ── cafe select ── */
 .cafe-row   { display: flex; flex-direction: column; gap: 8px; }
@@ -138,8 +138,8 @@
   font-size: 15px;
   font-family: inherit;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.35);
+  background: var(--bg-surface);
+  color: var(--text-muted);
   outline: none;
   cursor: pointer;
   transition: border-color .18s;
@@ -155,7 +155,7 @@
 
 .cafe-dropdown__trigger:focus,
 .cafe-dropdown__trigger:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--border-medium);
 }
 
 .cafe-dropdown__arrow {
@@ -163,7 +163,7 @@
   right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-muted);
   pointer-events: none;
 }
 
@@ -180,10 +180,10 @@
   right: 0;
   max-height: 220px;
   overflow-y: auto;
-  background: #1c1c26;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
   z-index: 20;
   padding: 4px;
 }
@@ -193,13 +193,13 @@
   border-radius: 10px;
   font-size: 15px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
   cursor: pointer;
   transition: background .12s;
 }
 
 .cafe-dropdown__item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
 }
 
 /* ── preview images ── */
@@ -245,7 +245,7 @@
   content: "★";
   font-size: 34px;
   line-height: 1;
-  color: #3a3a50;
+  color: var(--border-medium);
 }
 .rating-stars label:hover,
 .rating-stars label:hover ~ label { transform: scale(1.10); }

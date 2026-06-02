@@ -116,18 +116,20 @@ class CouponOffer(models.Model):
     menu_item = models.ForeignKey(
         'cafes.MenuItem',
         on_delete=models.SET_NULL,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name='coupon_offers',
         verbose_name='Блюдо меню',
     )
 
     image = models.ImageField(
         upload_to='coupon_offers/',
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name='Фон купона',
     )
 
-    cost_points10 = models.PositiveIntegerField('Цена (баллы x10)', default=100)
+    cost_points10 = models.PositiveIntegerField('Цена (баллы x10)', default=500)
 
     available_in_shop = models.BooleanField('Доступен в магазине', default=True)
     available_in_drop = models.BooleanField('Доступен в Drop', default=True)

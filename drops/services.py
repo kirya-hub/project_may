@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import logging
 import random
 from datetime import timedelta
@@ -48,8 +49,9 @@ def get_user_tier_for_week(user, week_start) -> tuple[str | None, float]:
 
     Не фильтрует по минимальной сумме чека — считаем всё, кроме дублей.
     """
-    from django.db.models import Sum
     from datetime import timedelta
+
+    from django.db.models import Sum
 
     week_end = week_start + timedelta(days=7)
     result = Order.objects.filter(
@@ -123,7 +125,9 @@ def _weighted_choice(items: list[tuple[str, int]], rng: random.Random | None = N
     return items[-1][0]
 
 
-def _rarity_weights_for_profile(profile: Profile | None, tier: str = 'BRONZE') -> list[tuple[str, int]]:
+def _rarity_weights_for_profile(
+    profile: Profile | None, tier: str = 'BRONZE'
+) -> list[tuple[str, int]]:
     level = int(getattr(profile, 'level', 1) or 1) if profile else 1
 
     if tier == 'GOLD':
@@ -161,7 +165,9 @@ def _rarity_weights_for_profile(profile: Profile | None, tier: str = 'BRONZE') -
         ]
 
 
-def _pick_rarity(profile: Profile | None, tier: str = 'BRONZE', rng: random.Random | None = None) -> str:
+def _pick_rarity(
+    profile: Profile | None, tier: str = 'BRONZE', rng: random.Random | None = None
+) -> str:
     return _weighted_choice(_rarity_weights_for_profile(profile, tier), rng=rng)
 
 
@@ -233,6 +239,7 @@ def _pick_3_cafes_for_user(user, rng: random.Random | None = None) -> list[Cafe]
 
 # ─── Фазы и хелперы ────────────────────────────────────────────────────────
 
+
 def phase(week: DropWeek) -> Literal['ACCUMULATE', 'CLAIM', 'EXPIRED']:
     """Фаза по датам, независимо от статуса в БД."""
     today = timezone.localdate()
@@ -276,7 +283,23 @@ def _generate_options_for_week(week: DropWeek, user, tier: str) -> None:
     DropOption.objects.bulk_create(options)
 
 
+def expire_stale_drop_weeks(user) -> int:
+    """Переводит все недели старше 14 дней в EXPIRED.
+
+    _expire_if_needed обрабатывает только предыдущую неделю.
+    Эта функция чистит всё накопившееся мусорное CHOOSING/ACTIVE.
+    """
+    today = timezone.localdate()
+    cutoff = today - timedelta(days=14)
+    return DropWeek.objects.filter(
+        user=user,
+        week_start__lte=cutoff,
+        status__in=[DropWeek.Status.CHOOSING, DropWeek.Status.ACTIVE],
+    ).update(status=DropWeek.Status.EXPIRED)
+
+
 # ─── Резолверы недель ───────────────────────────────────────────────────────
+
 
 def get_current_week(user) -> DropWeek:
     """Запись DropWeek для текущей недели. Создаёт если не существует."""
@@ -321,6 +344,7 @@ def get_claimable_week(user) -> DropWeek | None:
 
 
 # ─── Выбор опции ────────────────────────────────────────────────────────────
+
 
 @transaction.atomic
 def choose_option(user, option_id: int) -> DropWeek:

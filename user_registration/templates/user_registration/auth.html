@@ -98,20 +98,21 @@
 .custom-select { position: relative; }
 .custom-select__trigger {
   display: flex; justify-content: space-between; align-items: center;
-  background: var(--input-bg, #1e1e2e); color: var(--text, #fff);
-  border: 1.5px solid var(--border, #333); border-radius: 12px;
-  padding: 12px 16px; cursor: pointer; font-size: 15px;
+  background: var(--bg-surface); color: var(--text-primary);
+  border: 1px solid var(--border-subtle); border-radius: 12px;
+  padding: 12px 16px; cursor: pointer; font-size: 15px; font-weight: 700;
 }
 .custom-select__dropdown {
   position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 100;
-  background: var(--card-bg, #1e1e2e); border: 1.5px solid var(--border, #333);
-  border-radius: 12px; overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md);
 }
 .custom-select__option {
-  padding: 12px 16px; cursor: pointer; font-size: 15px;
+  padding: 12px 16px; cursor: pointer; font-size: 15px; font-weight: 600;
+  color: var(--text-primary);
 }
 .custom-select__option:hover, .custom-select__option--active {
-  background: var(--accent, #7c3aed); color: #fff;
+  background: var(--accent-soft); color: var(--accent-primary);
 }
 </style>
 <script>

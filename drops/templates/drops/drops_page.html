@@ -20,11 +20,11 @@
     padding: 22px 18px 6px;
   }
   .dn-title {
-    font-size: 28px; font-weight: 900; color: #fff;
+    font-size: 28px; font-weight: 900; color: var(--text-primary);
     letter-spacing: -0.6px; line-height: 1; margin: 0 0 9px;
   }
   .dn-subtitle {
-    font-size: 13px; color: #5a5478; line-height: 1.55; margin: 0 0 20px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin: 0 0 20px;
   }
   .dn-how-link {
     font-size: 12px; font-weight: 500; color: #5a5478;
@@ -35,9 +35,10 @@
   /* ── Таймер ── */
   .dn-timer-card {
     margin: 0 14px 22px;
-    background: linear-gradient(145deg, #1e1b38 0%, #241f45 100%);
+    background: linear-gradient(145deg, #EDE9FE 0%, #F0E9FE 100%);
     border-radius: 20px;
-    border: 1px solid #332f58;
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.10);
     padding: 18px 16px 22px;
     position: relative;
     overflow: hidden;
@@ -70,40 +71,40 @@
     display: flex; flex-direction: column; align-items: center; flex: 1;
   }
   .dn-timer-num {
-    font-size: 46px; font-weight: 900; color: #fff; line-height: 1;
+    font-size: 46px; font-weight: 900; color: #7C3AED; line-height: 1;
     letter-spacing: -2px; font-variant-numeric: tabular-nums;
   }
   .dn-timer-label {
-    font-size: 9px; font-weight: 700; color: #4e4870;
+    font-size: 9px; font-weight: 700; color: var(--text-muted);
     letter-spacing: .13em; text-transform: uppercase; margin-top: 8px;
   }
   .dn-timer-sep {
-    color: #2c2848; font-size: 38px; font-weight: 800; line-height: 1;
+    color: rgba(124, 58, 237, 0.25); font-size: 38px; font-weight: 800; line-height: 1;
     padding-bottom: 14px; flex-shrink: 0; user-select: none;
   }
 
   /* ── Сумма юзера ── */
   .dn-sum-block {
     margin: 0 14px 22px;
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.11);
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
     padding: 14px 16px;
   }
   .dn-sum-kicker {
     font-size: 10px; font-weight: 700; letter-spacing: .10em;
-    text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 5px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
   }
   .dn-sum-value {
-    font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.5px; line-height: 1;
+    font-size: 26px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1;
   }
   .dn-sum-hint {
-    font-size: 11px; color: rgba(255,255,255,.32); margin-top: 4px;
+    font-size: 11px; color: var(--text-muted); margin-top: 4px;
   }
 
   /* ── Секция-заголовок ── */
   .dn-section-label {
-    font-size: 10.5px; font-weight: 700; letter-spacing: .12em; color: #6b6898;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .12em; color: var(--text-muted);
     text-transform: uppercase; margin-bottom: 11px;
   }
 
@@ -117,8 +118,8 @@
     position: relative;
   }
   .dn-tier--none {
-    background: rgba(255,255,255,.025);
-    border: 1.5px solid #1f1d32;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-medium);
   }
   .dn-tier--bronze {
     background: rgba(255,255,255,.025);
@@ -159,7 +160,7 @@
   .dn-tier-name {
     font-size: 12.5px; font-weight: 800; margin-bottom: 3px; letter-spacing: -.1px;
   }
-  .dn-tier--none   .dn-tier-name { color: #3d3856; }
+  .dn-tier--none   .dn-tier-name { color: var(--text-secondary); }
   .dn-tier--bronze .dn-tier-name { color: #e8924a; }
   .dn-tier--gold   .dn-tier-name { color: #a07820; }
   .dn-tier--bronze.dn-tier--active .dn-tier-name { color: #f0a060; }
@@ -167,12 +168,12 @@
   .dn-tier-range {
     font-size: 10.5px; font-weight: 600; line-height: 1.45;
   }
-  .dn-tier--none   .dn-tier-range { color: #332f4f; }
+  .dn-tier--none   .dn-tier-range { color: var(--text-muted); }
   .dn-tier--bronze .dn-tier-range { color: #9a5a28; }
   .dn-tier--bronze.dn-tier--active .dn-tier-range { color: rgba(232,146,74,.62); }
   .dn-tier--gold   .dn-tier-range { color: #5a4a18; }
   .dn-tier--gold.dn-tier--active   .dn-tier-range { color: rgba(212,160,23,.62); }
-  .dn-tier-note { font-size: 9.5px; color: #2e2b44; margin-top: 5px; line-height: 1.5; }
+  .dn-tier-note { font-size: 9.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.5; }
 
   /* ── Таблицы ── */
   .dn-tables-wrap { padding: 0 14px; }
@@ -181,24 +182,24 @@
   }
   .dn-table-head {
     display: flex; align-items: center;
-    padding-bottom: 9px; border-bottom: 1px solid #282540;
+    padding-bottom: 9px; border-bottom: 1px solid var(--border-medium);
   }
   .dn-table-head-cell {
-    font-size: 10px; font-weight: 700; color: #5a5680; letter-spacing: .09em;
+    font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: .09em;
   }
   .dn-table-row {
     display: flex; align-items: center;
-    padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.035);
+    padding: 9px 0; border-bottom: 1px solid var(--border-subtle);
   }
   .dn-table-row:last-child { border-bottom: none; }
-  .dn-table-col-lvl  { flex: 1.3; font-size: 13px; font-weight: 500; color: #8582a5; }
+  .dn-table-col-lvl  { flex: 1.3; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
   .dn-table-col-val  { flex: 1; text-align: right; font-size: 13px; font-weight: 700; }
-  .dn-table-col-center { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #c0bdd8; }
+  .dn-table-col-center { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
   .dn-table-col-head-center { flex: 1; text-align: center; }
   .dn-table-col-head-right  { flex: 1; text-align: right; }
   .val-bonus    { color: #3dd68c; }
-  .val-zero     { color: #36325a; }
-  .val-common   { color: #c0bdd8; }
+  .val-zero     { color: var(--text-muted); }
+  .val-common   { color: var(--text-secondary); }
   .val-rare     { color: #a78bfa; font-weight: 700; }
   .val-legendary{ color: #f59e0b; font-weight: 700; }
 
@@ -206,7 +207,7 @@
   .dn-received-block { padding: 0 14px; margin-bottom: 24px; }
   .dn-received-label {
     font-size: 10px; font-weight: 700; letter-spacing: .12em;
-    text-transform: uppercase; color: rgba(255,255,255,.38);
+    text-transform: uppercase; color: var(--text-muted);
     margin-bottom: 12px;
   }
 
@@ -214,7 +215,7 @@
   .dn-cta-wrap {
     position: fixed; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0;
     padding: 18px 16px 16px;
-    background: linear-gradient(to top, #111018 55%, rgba(17,16,24,0) 100%);
+    background: linear-gradient(to top, var(--bg-page) 60%, transparent 100%);
     z-index: 30;
   }
   .dn-cta-btn {
@@ -240,13 +241,13 @@
     box-shadow: 0 8px 32px rgba(139,92,246,.34), 0 2px 10px rgba(0,0,0,.35);
   }
   .dn-cta-btn--disabled {
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.10);
-    color: rgba(255,255,255,.38);
+    background: var(--border-subtle);
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
     cursor: default; pointer-events: none;
   }
   .dn-cta-hint {
-    text-align: center; font-size: 11px; color: rgba(255,255,255,.28);
+    text-align: center; font-size: 11px; color: var(--text-muted);
     margin-top: 7px;
   }
   .dn-cta-arrow {
@@ -355,7 +356,7 @@
       <div class="dn-table-head">
         <span class="dn-table-head-cell" style="flex:1.3;">УРОВЕНЬ</span>
         <span class="dn-table-head-cell dn-table-col-head-center">Common</span>
-        <span class="dn-table-head-cell dn-table-col-head-right" style="color:#a78bfa;">Rare</span>
+        <span class="dn-table-head-cell dn-table-col-head-right" style="color:var(--rar-rare-fg);">Rare</span>
       </div>
       {% for row in tier_table.BRONZE.levels %}
       <div class="dn-table-row">
@@ -372,8 +373,8 @@
       <div class="dn-table-head">
         <span class="dn-table-head-cell" style="flex:1.3;">УРОВЕНЬ</span>
         <span class="dn-table-head-cell dn-table-col-head-center">Common</span>
-        <span class="dn-table-head-cell dn-table-col-head-center" style="color:#a78bfa;">Rare</span>
-        <span class="dn-table-head-cell dn-table-col-head-right" style="color:#f59e0b;">Legend</span>
+        <span class="dn-table-head-cell dn-table-col-head-center" style="color:var(--rar-rare-fg);">Rare</span>
+        <span class="dn-table-head-cell dn-table-col-head-right" style="color:var(--rar-leg-fg);">Legend</span>
       </div>
       {% for row in tier_table.GOLD.levels %}
       <div class="dn-table-row">

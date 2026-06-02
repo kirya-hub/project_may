@@ -9,7 +9,7 @@
   --profile-bg:   var(--bg-page);
   --card-bg:      linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
   --card-border:  var(--border-subtle);
-  --card-shadow:  0 14px 32px rgba(0, 0, 0, 0.25);
+  --card-shadow:  var(--shadow-md);
   --accent:       var(--accent-secondary);
 }
 
@@ -32,9 +32,9 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 3px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: var(--bg-surface);
+  border: 3px solid var(--border-medium);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,11 +109,11 @@
   height: 36px;
   padding: 8px 20px;
   border-radius: 10px;
-  border: 1px solid #25253a;
-  background: #1c1c26;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-surface);
   font-size: 13px;
   font-weight: 500;
-  color: #e0dfe8;
+  color: var(--text-primary);
   text-decoration: none;
   cursor: pointer;
   transition: background .14s, border-color .14s;
@@ -122,7 +122,7 @@
 }
 
 .profile-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-surface);
 }
 
 .profile-settings-btn:active {
@@ -130,21 +130,21 @@
 }
 
 .profile-settings-btn--danger {
-  border-color: #3a2020;
+  border-color: rgba(229, 57, 53, 0.3);
   background: none;
-  color: #e24b4a;
+  color: var(--error);
 }
 
 .profile-settings-btn--danger:hover {
-  background: rgba(226, 75, 74, 0.06);
+  background: rgba(229, 57, 53, 0.06);
 }
 
 .icon-btn {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-soft);
+  background: var(--bg-surface);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -155,13 +155,13 @@
 }
 
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .icon-btn:active {
   transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface);
 }
 
 .icon-btn img {
@@ -180,8 +180,8 @@
   margin-top: 16px;
   padding: 14px 16px;
   border-radius: 12px;
-  background: #1c1c26;
-  border: 1px solid #25253a;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
   position: relative;
   overflow: hidden;
 }
@@ -244,7 +244,7 @@
 .level-progress-bar-shell {
   padding: 0;
   border-radius: 3px;
-  background: #25253a;
+  background: var(--border-soft);
   position: relative;
   z-index: 1;
 }
@@ -253,7 +253,7 @@
   --p: 0%;
   height: 6px;
   border-radius: 3px;
-  background: #25253a;
+  background: var(--border-soft);
   overflow: hidden;
 }
 
@@ -289,13 +289,13 @@
   margin-top: 16px;
   padding: 14px 16px;
   border-radius: 12px;
-  background: #1c1c26;
+  background: var(--bg-card);
   color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #25253a;
+  border: 1px solid var(--border-soft);
 }
 
 .friends-card.light::before {
@@ -336,8 +336,8 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .friend-ava.stub {
@@ -385,7 +385,7 @@
   margin-top: 3px;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-muted);
   line-height: 1.4;
 }
 
@@ -400,9 +400,9 @@
   margin-top: 2px;
   padding: 20px 16px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 700;
@@ -431,8 +431,8 @@
   min-height: 42px;
   padding: 0 18px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  background: var(--bg-surface);
   font-size: 14px;
   font-weight: 800;
   color: var(--text-secondary);
@@ -456,8 +456,8 @@
 }
 
 .profile-action-btn--ghost {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
   color: var(--text-primary);
   box-shadow: none;
 }
@@ -491,7 +491,7 @@
   width: min(420px, calc(100% - 28px));
   padding: 18px;
   border-radius: 20px;
-  background: #1c1c26;
+  background: var(--bg-card);
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
 }
@@ -526,13 +526,13 @@
 #id_name {
   width: 100%;
   padding: 11px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   outline: none;
   font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface);
 }
 
 .avatar-row {
@@ -549,8 +549,8 @@
   min-height: 44px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
   font-weight: 800;
   font-size: 13px;
   cursor: pointer;
@@ -608,8 +608,8 @@
   height: 28px;
   padding: 0 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.92);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 800;
   flex-shrink: 0;

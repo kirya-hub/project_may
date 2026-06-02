@@ -1,10 +1,10 @@
 .level-badge {
     --level-size: 24px;
     --level-font-size: 12px;
-    --level-bg-start: #2a2a2a;
-    --level-bg-end: #111111;
-    --level-border: rgba(255, 255, 255, 0.18);
-    --level-shadow: rgba(0, 0, 0, 0.2);
+    --level-bg-start: #7C3AED;
+    --level-bg-end: #6366f1;
+    --level-border: rgba(124, 58, 237, 0.25);
+    --level-shadow: rgba(34, 30, 43, 0.12);
 
     position: relative;
     display: inline-flex;

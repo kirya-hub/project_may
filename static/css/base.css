@@ -38,16 +38,9 @@ img {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, #121212 0%, #171717 100%);
+  background: var(--bg-header);
   border-bottom: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-sm);
-}
-
-.header::after {
-  content: "";
-  display: block;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #7c3aed 30%, #6366f1 70%, transparent);
 }
 
 .header-inner {
@@ -90,7 +83,7 @@ img {
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  color: #ffffffec;
+  color: var(--text-primary);
   font-weight: 740;
   letter-spacing: 5px;
   font-size: 28px;
@@ -102,7 +95,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #c4c4d8;
+  color: var(--text-secondary);
   text-decoration: none;
   padding: 0;
   cursor: pointer;
@@ -130,7 +123,7 @@ img {
   width: 24px;
   height: 24px;
   display: block;
-  background: #c4c4d8;
+  background: var(--text-secondary);
   -webkit-mask-image: var(--ico-url);
   mask-image: var(--ico-url);
   -webkit-mask-repeat: no-repeat;
@@ -165,8 +158,8 @@ img {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #e24b4a;
-  border: 2px solid #141418;
+  background: var(--error);
+  border: 2px solid var(--bg-header);
 }
 
 .inbox-badge {
@@ -210,9 +203,9 @@ img {
   width: min(100%, 430px);
   min-height: 64px;
   padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
+  background: var(--bg-nav);
   border-top: 1px solid var(--border-subtle);
-  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
   display: grid;
   grid-template-columns: 1fr 1fr 68px 1fr 1fr;
   align-items: center;
@@ -250,7 +243,7 @@ img {
   justify-content: center;
   gap: 4px;
   padding: 0;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted);
   text-decoration: none;
   transition: transform 0.16s ease, color 0.16s ease;
 }
@@ -275,7 +268,7 @@ img {
   height: 36px;
   object-fit: contain;
   flex: 0 0 auto;
-  filter: invert(1) brightness(0.85);
+  filter: none;
   transition: transform 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
 }
 
@@ -344,7 +337,7 @@ img {
 .nav-item:hover .nav-icon,
 .nav-item:focus .nav-icon,
 .nav-item:active .nav-icon {
-  filter: invert(1) brightness(0.85);
+  filter: none;
 }
 
 .toast-stack {
@@ -366,7 +359,7 @@ img {
   gap: 10px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: #1c1c26;
+  background: var(--bg-card);
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-toast);
   transition: opacity 0.18s ease, transform 0.18s ease;
@@ -388,7 +381,7 @@ img {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #111111;
+  background: var(--text-muted);
   flex: 0 0 auto;
 }
 
@@ -417,7 +410,7 @@ img {
 .toast-close {
   border: 0;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -477,26 +470,48 @@ img {
 
 /* ── UI colour tokens ─────────────────────────────────────── */
 :root {
-  --bg-page:          #141418;
-  --bg-card:          #1c1c26;
-  --bg-surface:       #181822;
+  --bg-page:          #FAF7F2;
+  --bg-card:          #FFFFFF;
+  --bg-surface:       #F2EEE7;
+  --bg-elevated:      #FFFFFF;
+  --bg-header:        #FFFFFF;
+  --bg-nav:           #FFFFFF;
 
-  --text-primary:     rgba(255, 255, 255, 0.92);
-  --text-secondary:   rgba(255, 255, 255, 0.55);
-  --text-muted:       rgba(255, 255, 255, 0.35);
-  --text-disabled:    rgba(255, 255, 255, 0.25);
+  --text-primary:     #221E2B;
+  --text-secondary:   #726C7C;
+  --text-muted:       #A49EAD;
+  --text-disabled:    #C5C0CC;
 
-  --border-subtle:    rgba(255, 255, 255, 0.06);
-  --border-soft:      rgba(255, 255, 255, 0.08);
-  --border-medium:    rgba(255, 255, 255, 0.12);
+  --border-subtle:    #ECE6DF;
+  --border-soft:      #E4DFD8;
+  --border-medium:    #DED7CE;
 
-  --shadow-sm:        0 4px 18px rgba(0, 0, 0, 0.18);
-  --shadow-md:        0 10px 24px rgba(0, 0, 0, 0.25);
-  --shadow-lg:        0 16px 30px rgba(0, 0, 0, 0.25);
-  --shadow-toast:     0 12px 24px rgba(0, 0, 0, 0.4);
+  --shadow-sm:        0 1px 2px rgba(34,30,43,.05), 0 1px 3px rgba(34,30,43,.04);
+  --shadow-md:        0 6px 18px rgba(34,30,43,.07), 0 2px 6px rgba(34,30,43,.04);
+  --shadow-lg:        0 14px 40px rgba(34,30,43,.10);
+  --shadow-toast:     0 12px 24px rgba(34,30,43,.12);
 
-  --accent-primary:   #7c3aed;
+  --accent-primary:   #7C3AED;
   --accent-secondary: #6366f1;
+  --accent-soft:      #F0E9FE;
+
+  --success:          #1F9E6A;
+  --error:            #E53935;
+  --warning:          #F5A623;
+  --info:             #2D7EF7;
+
+  --like:             #EE4A6E;
+  --like-soft:        #FCE4EA;
+
+  --rar-common-bg:    #E7F4EC;
+  --rar-common-fg:    #1B8A56;
+  --rar-common-dot:   #2FA56F;
+  --rar-rare-bg:      #ECE6FE;
+  --rar-rare-fg:      #6A30DE;
+  --rar-rare-dot:     #7C3AED;
+  --rar-leg-bg:       #FBEEDA;
+  --rar-leg-fg:       #B0760E;
+  --rar-leg-dot:      #E0992B;
 }
 
 /* ── Rarity palette (shared across promo, feed, drops) ───── */

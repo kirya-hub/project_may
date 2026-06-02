@@ -58,10 +58,10 @@ class DropWeek(models.Model):
         return self.week_start + timedelta(days=14)
 
     def _seconds_until(self, target_date) -> int:
+        import datetime as _dt
+
         now = timezone.now()
-        end = timezone.make_aware(
-            timezone.datetime.combine(target_date, timezone.datetime.min.time())
-        )
+        end = timezone.make_aware(_dt.datetime.combine(target_date, _dt.time.min))
         return max(0, int((end - now).total_seconds()))
 
     @property

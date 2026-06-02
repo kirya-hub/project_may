@@ -13,6 +13,7 @@ from user_profile.models import Profile
 from .models import DropOption, DropWeek
 from .services import (
     choose_option,
+    expire_stale_drop_weeks,
     get_claimable_week,
     get_current_week,
     get_user_week_stats,
@@ -23,33 +24,34 @@ logger = logging.getLogger(__name__)
 _TIER_TABLE = {
     'BRONZE': {
         'levels': [
-            {'range': '1–6',   'COMMON': 85, 'RARE': 15, 'LEGENDARY': None},
-            {'range': '7–12',  'COMMON': 75, 'RARE': 25, 'LEGENDARY': None},
+            {'range': '1–6', 'COMMON': 85, 'RARE': 15, 'LEGENDARY': None},
+            {'range': '7–12', 'COMMON': 75, 'RARE': 25, 'LEGENDARY': None},
             {'range': '13–15', 'COMMON': 65, 'RARE': 35, 'LEGENDARY': None},
         ],
     },
     'GOLD': {
         'levels': [
-            {'range': '1–6',   'COMMON': 65, 'RARE': 25, 'LEGENDARY': 10},
-            {'range': '7–12',  'COMMON': 50, 'RARE': 35, 'LEGENDARY': 15},
+            {'range': '1–6', 'COMMON': 65, 'RARE': 25, 'LEGENDARY': 10},
+            {'range': '7–12', 'COMMON': 50, 'RARE': 35, 'LEGENDARY': 15},
             {'range': '13–15', 'COMMON': 35, 'RARE': 40, 'LEGENDARY': 25},
         ],
     },
 }
 
 _LEVEL_BONUSES = [
-    {'range': '1–3',  'bonus': 0},
-    {'range': '4–6',  'bonus': 5},
-    {'range': '7–9',  'bonus': 10},
-    {'range': '10–12','bonus': 15},
-    {'range': '13–14','bonus': 18},
-    {'range': '15',   'bonus': 25},
+    {'range': '1–3', 'bonus': 0},
+    {'range': '4–6', 'bonus': 5},
+    {'range': '7–9', 'bonus': 10},
+    {'range': '10–12', 'bonus': 15},
+    {'range': '13–14', 'bonus': 18},
+    {'range': '15', 'bonus': 25},
 ]
 
 
 @login_required
 def drops_page(request):
     user = request.user
+    expire_stale_drop_weeks(user)  # чистим мусорные CHOOSING старше 14 дней
     current_week = get_current_week(user)
     claimable_week = get_claimable_week(user)
     tier, adjusted_sum = get_user_week_stats(user)
@@ -123,12 +125,16 @@ def grab(request):
 
 
 def drops_info(request):
-    return render(request, 'drops/info.html', {
-        'tier_table': _TIER_TABLE,
-        'level_bonuses': _LEVEL_BONUSES,
-        'show_back': True,
-        'header_back_url': reverse('drops:drops_page'),
-    })
+    return render(
+        request,
+        'drops/info.html',
+        {
+            'tier_table': _TIER_TABLE,
+            'level_bonuses': _LEVEL_BONUSES,
+            'show_back': True,
+            'header_back_url': reverse('drops:drops_page'),
+        },
+    )
 
 
 @require_POST

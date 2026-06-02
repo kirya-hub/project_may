@@ -17,7 +17,7 @@
     letter-spacing: -0.02em;
     line-height: 1.15;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
 }
 
 .trades-muted,
@@ -25,7 +25,7 @@
 .trades-date,
 .trade-card-meta,
 .trade-empty {
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-secondary);
 }
 
 .trades-status,
@@ -42,9 +42,9 @@
     min-height: 28px;
     padding: 0 11px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border-soft);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -63,10 +63,10 @@
 .trade-section,
 .trade-message,
 .trade-card {
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: #1c1c26;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-md);
 }
 
 .trade-form {
@@ -83,7 +83,7 @@
     font-size: 17px;
     line-height: 1.2;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
 }
 
 /* ── COUPON PICKER ─────────────────────────────────── */
@@ -110,7 +110,7 @@
     border-radius: 16px;
     overflow: hidden;
     transition: transform .12s, box-shadow .12s;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-sm);
 }
 
 .trade-coupon-pick:active {
@@ -145,7 +145,7 @@
 .trade-coupon-pick input:checked ~ .trade-coupon-pick__box {
     background: #6366f1;
     border-color: #6366f1;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+    box-shadow: var(--shadow-sm);
 }
 
 .trade-coupon-pick input:checked ~ .trade-coupon-pick__box::after {
@@ -177,16 +177,16 @@
     padding: 14px;
     text-decoration: none;
     color: inherit;
-    border-color: rgba(255, 255, 255, 0.06);
-    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    border-color: var(--border-subtle);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-md);
     transition: transform .13s, box-shadow .13s;
 }
 
 .trade-card:hover {
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
+    box-shadow: var(--shadow-md);
 }
 
 .trade-card:active {
@@ -215,9 +215,9 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.07);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    background: var(--bg-surface);
+    border: 2px solid var(--border-medium);
+    box-shadow: var(--shadow-sm);
 }
 
 .trade-card-avatar__img {
@@ -235,8 +235,8 @@
     justify-content: center;
     font-size: 17px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.55);
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    background: var(--bg-surface);
 }
 
 .trade-card-usertext {
@@ -249,14 +249,14 @@
     font-weight: 800;
     letter-spacing: .10em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--text-muted);
     margin-bottom: 2px;
 }
 
 .trade-card-name {
     font-size: 15px;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
     line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -266,23 +266,23 @@
 .trade-card-title {
     font-weight: 900;
     line-height: 1.3;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
 }
 
 .trade-card-meta {
     margin-top: 2px;
     font-size: 12px;
     line-height: 1.35;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-secondary);
 }
 
 /* ── TRADE DETAIL: members card ─────────────────────── */
 .trade-members-card {
     padding: 16px;
     border-radius: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-md);
 }
 
 .trade-members-route {
@@ -310,9 +310,9 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.07);
-    border: 2.5px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    background: var(--bg-surface);
+    border: 2.5px solid var(--border-medium);
+    box-shadow: var(--shadow-sm);
 }
 
 .trade-member-avatar__img {
@@ -330,8 +330,8 @@
     justify-content: center;
     font-size: 20px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.55);
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    background: var(--bg-surface);
 }
 
 .trade-member-content {
@@ -344,14 +344,14 @@
     font-weight: 800;
     letter-spacing: .10em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--text-muted);
     margin-bottom: 2px;
 }
 
 .trade-member-name {
     font-size: 15px;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
     line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -361,7 +361,7 @@
 .trade-member-username {
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--text-muted);
     margin-top: 1px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -389,16 +389,16 @@
     align-items: flex-start;
     gap: 10px;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-surface);
     cursor: pointer;
     transition: border-color 0.12s ease, background 0.12s ease;
 }
 
 .trade-option:has(input:checked) {
     border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.08);
+    background: rgba(99, 102, 241, 0.06);
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
 }
 
@@ -408,16 +408,16 @@
 }
 
 .trade-option-body { min-width: 0; flex: 1; }
-.trade-option-code { font-weight: 900; line-height: 1.35; color: rgba(255, 255, 255, 0.92); word-break: break-word; }
+.trade-option-code { font-weight: 900; line-height: 1.35; color: var(--text-primary); word-break: break-word; }
 .trade-option-owner,
-.trade-option-desc { margin-top: 4px; font-size: 13px; line-height: 1.35; color: rgba(255, 255, 255, 0.55); }
+.trade-option-desc { margin-top: 4px; font-size: 13px; line-height: 1.35; color: var(--text-secondary); }
 
 .trade-empty-inline {
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    color: rgba(255, 255, 255, 0.55);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
     font-weight: 700;
 }
 
@@ -425,18 +425,18 @@
     width: 100%;
     min-height: 96px;
     resize: vertical;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-soft);
     border-radius: 16px;
     padding: 12px 14px;
     outline: none;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-surface);
     font: inherit;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
     box-sizing: border-box;
 }
 
 .trade-textarea:focus {
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: var(--border-medium);
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
 }
 
@@ -469,10 +469,10 @@
 }
 
 .trade-btn-outline {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
 }
 
 .trade-submit {
@@ -491,13 +491,13 @@
     font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
-.trade-code { font-weight: 900; line-height: 1.2; color: rgba(255, 255, 255, 0.92); }
-.trade-desc { margin-top: 4px; font-size: 14px; line-height: 1.4; color: rgba(255, 255, 255, 0.55); }
-.trade-expire { margin-top: 6px; font-size: 12px; line-height: 1.3; color: rgba(255, 255, 255, 0.35); }
+.trade-code { font-weight: 900; line-height: 1.2; color: var(--text-primary); }
+.trade-desc { margin-top: 4px; font-size: 14px; line-height: 1.4; color: var(--text-secondary); }
+.trade-expire { margin-top: 6px; font-size: 12px; line-height: 1.3; color: var(--text-muted); }
 
 .trade-actions {
     margin-top: 14px;
@@ -508,7 +508,7 @@
 
 .trade-actions form { margin: 0; }
 
-.trades-date { margin-top: 14px; font-size: 12px; color: rgba(255, 255, 255, 0.35); font-weight: 600; }
+.trades-date { margin-top: 14px; font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
 /* ── CARD LIST ───────────────────────────────────────── */
 .trade-card-list {
@@ -518,10 +518,10 @@
 }
 
 .trade-empty {
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: #1c1c26;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-md);
     padding: 18px;
     font-weight: 700;
     text-align: center;
@@ -547,15 +547,15 @@
     display: block;
     padding: 16px;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: linear-gradient(180deg, #1c1c26 0%, #181822 100%);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-lg);
     color: inherit;
     text-decoration: none;
     transition: box-shadow .15s, transform .13s;
 }
 
-.trade-activity-card:hover { color: inherit; text-decoration: none; box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3); }
+.trade-activity-card:hover { color: inherit; text-decoration: none; box-shadow: var(--shadow-lg); }
 .trade-activity-card:active { transform: scale(0.99); }
 
 .trade-activity-card__top {
@@ -565,11 +565,11 @@
     gap: 12px;
 }
 
-.trade-activity-card__title { color: rgba(255, 255, 255, 0.92); font-size: 17px; font-weight: 900; line-height: 1.2; }
-.trade-activity-card__user { color: rgba(255, 255, 255, 0.92); }
+.trade-activity-card__title { color: var(--text-primary); font-size: 17px; font-weight: 900; line-height: 1.2; }
+.trade-activity-card__user { color: var(--text-primary); }
 .trade-activity-card__arrow { color: #3b82f6; margin: 0 4px; }
-.trade-activity-card__time { color: rgba(255, 255, 255, 0.35); font-size: 12px; font-weight: 800; white-space: nowrap; }
-.trade-activity-card__subtitle { margin-top: 8px; color: rgba(255, 255, 255, 0.55); font-size: 13px; font-weight: 700; }
+.trade-activity-card__time { color: var(--text-muted); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.trade-activity-card__subtitle { margin-top: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 700; }
 
 .trade-activity-card__coupons {
     display: grid;
@@ -578,7 +578,7 @@
     margin-top: 14px;
 }
 
-.trade-activity-card__more { margin-top: 10px; color: rgba(255, 255, 255, 0.35); font-size: 12px; font-weight: 700; }
+.trade-activity-card__more { margin-top: 10px; color: var(--text-muted); font-size: 12px; font-weight: 700; }
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media (max-width: 420px) {
