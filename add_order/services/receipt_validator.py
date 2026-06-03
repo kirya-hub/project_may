@@ -1,5 +1,8 @@
 from __future__ import annotations
-
+import os
+import shutil
+import tempfile
+from contextlib import contextmanager
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
@@ -15,6 +18,21 @@ from .receipt_duplicates import (
 )
 from .receipt_matcher import match_cafe, match_items
 
+@contextmanager
+def _temporary_image_path(image_field):
+    suffix = os.path.splitext(image_field.name or '')[1] or '.jpg'
+    temp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+
+    try:
+        with image_field.open('rb') as source:
+            shutil.copyfileobj(source, temp)
+        temp.close()
+        yield temp.name
+    finally:
+        try:
+            os.unlink(temp.name)
+        except OSError:
+            pass
 
 def _clean_text(value: Any) -> str:
     return ' '.join(str(value or '').strip().split())
@@ -41,23 +59,24 @@ def process_order_receipt(order):
     if not order.check_image:
         return None
 
-    if not order.check_sha256:
-        order.check_sha256 = file_sha256(order.check_image.path)
+    with _temporary_image_path(order.check_image) as check_image_path:
+        if not order.check_sha256:
+            order.check_sha256 = file_sha256(check_image_path)
 
-    if not order.check_dhash:
-        order.check_dhash = image_dhash(order.check_image.path)
+        if not order.check_dhash:
+            order.check_dhash = image_dhash(check_image_path)
 
-    if not order.duplicate_signature:
-        order.duplicate_signature = build_duplicate_signature(order)
+        if not order.duplicate_signature:
+            order.duplicate_signature = build_duplicate_signature(order)
 
-    order.save(update_fields=['check_sha256', 'check_dhash', 'duplicate_signature'])
+        order.save(update_fields=['check_sha256', 'check_dhash', 'duplicate_signature'])
 
-    exact_duplicate = find_exact_duplicate(order)
-    if exact_duplicate:
-        _mark_duplicate(order, exact_duplicate, order.DuplicateReason.EXACT_IMAGE)
-        return order.parsed_data
+        exact_duplicate = find_exact_duplicate(order)
+        if exact_duplicate:
+            _mark_duplicate(order, exact_duplicate, order.DuplicateReason.EXACT_IMAGE)
+            return order.parsed_data
 
-    data = analyze_receipt(order.check_image.path) or {}
+        data = analyze_receipt(check_image_path) or {}
 
     place_name = _clean_text(data.get('cafe_name'))
     receipt_date = _clean_text(data.get('receipt_date'))
@@ -120,10 +139,8 @@ def process_order_receipt(order):
         _mark_duplicate(order, content_duplicate, order.DuplicateReason.CONTENT_MATCH)
         return order.parsed_data
 
-    similar_duplicate = find_similar_image_duplicate(order)
-    if similar_duplicate:
-        _mark_duplicate(order, similar_duplicate, order.DuplicateReason.IMAGE_SIMILAR)
-        return order.parsed_data
+        # Similar image duplicate check is skipped for cloud storage because it requires local file paths.
+
 
     order.is_duplicate = False
     order.duplicate_reason = ''

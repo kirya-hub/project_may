@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -18,30 +17,23 @@ logger = logging.getLogger(__name__)
 
 
 def _delete_order_files(order: Order) -> None:
-    paths: list[str] = []
+    files = []
     if order.check_image:
-        try:
-            paths.append(order.check_image.path)
-        except ValueError:
-            pass
+        files.append(order.check_image)
     if order.dish_photo:
-        try:
-            paths.append(order.dish_photo.path)
-        except ValueError:
-            pass
+        files.append(order.dish_photo)
 
     order.delete()
 
-    for path in paths:
+    for file in files:
         try:
-            p = Path(path)
-            if p.exists():
-                p.unlink()
-                logger.debug('Удалён медиафайл: %s', path)
-        except OSError as exc:
-            logger.warning('Не удалось удалить файл %s: %s', path, exc)
-
-
+            storage = file.storage
+            name = file.name
+            if name and storage.exists(name):
+                storage.delete(name)
+                logger.debug('Удалён медиафайл: %s', name)
+        except Exception as exc:
+            logger.warning('Не удалось удалить файл %s: %s', getattr(file, 'name', ''), exc)
 @login_required
 def add_order_page(request):
     if request.method == 'POST':
