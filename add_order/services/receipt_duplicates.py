@@ -317,10 +317,13 @@ def build_duplicate_signature(order: Order, receipt_data: dict | None = None) ->
     if not order.check_image:
         return ''
 
-    image_bytes = _normalized_image_bytes(order.check_image.path)
+    image_path = getattr(order, '_temp_check_image_path', None)
+    if not image_path:
+        return ''
+
+    image_bytes = _normalized_image_bytes(image_path)
     payload = (f'user:{order.user_id}|cafe:{order.cafe_id}|').encode() + image_bytes
     return hashlib.sha256(payload).hexdigest()
-
 
 def build_content_signature(receipt_data: dict | None) -> str:
     data = receipt_data or {}

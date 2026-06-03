@@ -60,6 +60,8 @@ def process_order_receipt(order):
         return None
 
     with _temporary_image_path(order.check_image) as check_image_path:
+        order._temp_check_image_path = check_image_path
+
         if not order.check_sha256:
             order.check_sha256 = file_sha256(check_image_path)
 
